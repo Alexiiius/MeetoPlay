@@ -11,8 +11,8 @@ README still under construction...
 
 ## Developers
 
-- Daniel Ramírez Vaquero
-- Alejandro Sánchez Fernández
+- [Daniel Ramírez Vaquero](https://github.com/DaniRamirezVaquero)
+- [Alejandro Sánchez Fernández](https://github.com/Alexiiius)
 
 ## Draft
 

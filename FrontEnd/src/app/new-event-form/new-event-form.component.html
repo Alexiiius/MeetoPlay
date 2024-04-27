@@ -1,0 +1,59 @@
+<div class="w-full h-full border-white flex items-center justify-center gap-6 flex-wrap">
+<form [formGroup]="newEventForm" (ngSubmit)="onSubmit()" action="#" class="flex flex-col gap-3 flex-wrap">
+
+  @if (showWhatBlock) {
+    <div id="what" class="flex flex-col gap-3" formGroupName="what">
+      <div class="text-3xl font-bold text-center mb-6">¿A qué jugamos?</div>
+      <div class="flex gap-6">
+        <input type="text" placeholder="Título del evento" class="input" formControlName="title" autofocus>
+        <input type="text" placeholder="Juego" class="input" formControlName="game">
+      </div>
+      <div class="flex gap-6">
+        <input type="text" placeholder="Plataforma" class="input" formControlName="platform">
+        <input type="text" placeholder="Modo de juego" class="input" formControlName="gameMode">
+      </div>
+      <button id="nextBtn" [class.btn]="newEventForm.controls.what.status !== 'INVALID'" [class.btn-disabled]="newEventForm.controls.what.status === 'INVALID'" (click)="nextBlock()" [disabled]="newEventForm.controls.what.status === 'INVALID'">Siguente</button>
+    </div>
+  }
+
+  @if (showWhenBlock) {
+    <div id="when" class="flex flex-col" formGroupName="when">
+      <div class="text-3xl font-bold">¿Cuándo?</div>
+      <input type="text" placeholder="Fecha y hora de inicio" class="input" formControlName="dateTimeBegin">
+      <input type="text" placeholder="Fecha y hora de fin" class="input" formControlName="dateTimeEnd">
+    </div>
+  }
+
+  @if (showRequirementsBlock) {
+    <div id="requirments" class="flex flex-col">
+    <div class="text-3xl font-bold">Requisitos</div>
+    <input type="text" placeholder="Rango mínimo" class="input">
+    <input type="text" placeholder="Rango máximo" class="input">
+    <input type="text" placeholder="Nivel mínimo" class="input">
+    <input type="text" placeholder="Nivel máximo" class="input">
+  </div>
+}
+
+  @if (showInscriptionBlock) {
+    <div id="inscription" class="flex flex-col">
+      <div class="text-3xl font-bold">Plazo de Inscripción</div>
+      <input type="text" placeholder="Fecha y hora de incio" class="input">
+      <input type="text" placeholder="Fecha y hora de fin" class="input">
+    </div>
+  }
+
+  @if (showWhoBlock) {
+    <div id="who" class="flex flex-col">
+      <div class="text-3xl font-bold">¿Quíen?</div>
+      <input type="text" placeholder="Privacidad" class="input">
+      <input type="text" placeholder="Plazas" class="input">
+    </div>
+  }
+
+  @if (showSubmitBtn) {
+  <div id="submit" class="flex">
+    <button type="submit" class="btn" [disabled]="!newEventForm.valid">Crear evento</button>
+    <button class="btn">Cancelar</button>
+  </div>}
+</form>
+</div>

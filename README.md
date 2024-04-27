@@ -16,5 +16,5 @@ README still under construction...
 
 ## Draft
 
-[Notion Link](https://sepia-cosmos-8cb.notion.site/Ante-Proyecto-1b793ed8a66144b0a4edd08d21fe5c7b)
+[Notion Link](https://abrasive-hero-fc5.notion.site/Ante-Proyecto-38e379f81d054bee9f4d5a9adf676640?pvs=4)
 

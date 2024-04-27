@@ -7,43 +7,27 @@ use Illuminate\Http\Request;
 use App\Models\Game;
 
 class GameController extends Controller{
-    /**
-     * Display a listing of the resource.
-     */
+    
+
+
     public function index(){
         Game::all();
         return response()->json(Game::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function gamemodes(string $id){
+        $game = Game::find($id);
+        return response()->json($game->gamemodes);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+    public function store(Request $request){
+        $game = new Game();
+        $game->name = $request->name;
+        $game->description = $request->description;
+        $game->image = $request->image;
+        $game->save();
+        return response()->json($game);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    
 }

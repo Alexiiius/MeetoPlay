@@ -5,6 +5,7 @@ import { EventsComponent } from './events/events.component';
 import { FiltersComponent } from './filters/filters.component';
 import { ProfilecardComponent } from './profilecard/profilecard.component';
 import { NewEventFormComponent } from './new-event-form/new-event-form.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,8 @@ import { NewEventFormComponent } from './new-event-form/new-event-form.component
     EventsComponent,
     FiltersComponent,
     ProfilecardComponent,
-    NewEventFormComponent
+    NewEventFormComponent,
+    HttpClientModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

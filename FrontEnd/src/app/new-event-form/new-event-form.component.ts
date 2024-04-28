@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { SelectGameComponent } from './select-game/select-game.component';
+import { APIService } from '../apiservice.service';
 
 
 @Component({
@@ -7,13 +9,22 @@ import { ReactiveFormsModule, FormControl, FormGroup, FormBuilder, Validators } 
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    SelectGameComponent
   ],
   templateUrl: './new-event-form.component.html',
   styleUrl: './new-event-form.component.css'
 })
 export class NewEventFormComponent {
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private apiService: APIService) { }
+
+  games:any[] = [];
+
+  ngOnInit() {
+    this.apiService.getGames().subscribe((data) => {
+      this.games = data.games;
+    });
+  }
 
   newEventForm = this.formBuilder.group({
     what: this.formBuilder.group({

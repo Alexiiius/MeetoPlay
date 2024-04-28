@@ -1,14 +1,14 @@
 <div class="w-full h-full border-white flex items-center justify-center gap-6 flex-wrap">
-<form [formGroup]="newEventForm" (ngSubmit)="onSubmit()" action="#" class="flex flex-col gap-3 flex-wrap">
+<form [formGroup]="newEventForm" (ngSubmit)="onSubmit()" action="#" class="flex flex-col gap-3 flex-wrap w-2/3 font-light ">
 
   @if (showWhatBlock) {
     <div id="what" class="flex flex-col gap-3" formGroupName="what">
       <div class="text-3xl font-bold text-center mb-6">¿A qué jugamos?</div>
       <div class="flex gap-6">
         <input type="text" placeholder="Título del evento" class="input" formControlName="title" autofocus>
-        <input type="text" placeholder="Juego" class="input" formControlName="game">
+        <app-select-game [games]="games" formControlName="game" class="w-full input"/>
       </div>
-      <div class="flex gap-6">
+      <div class="flex gap-6 w-full">
         <input type="text" placeholder="Plataforma" class="input" formControlName="platform">
         <input type="text" placeholder="Modo de juego" class="input" formControlName="gameMode">
       </div>

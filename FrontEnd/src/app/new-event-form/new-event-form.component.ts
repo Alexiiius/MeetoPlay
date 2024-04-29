@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SelectGameComponent } from './select-game/select-game.component';
 import { APIService } from '../apiservice.service';
+import { Game } from '../models/game';
 
 
 @Component({
@@ -18,7 +19,7 @@ export class NewEventFormComponent {
 
   constructor(private formBuilder: FormBuilder, private apiService: APIService) { }
 
-  games:any[] = [];
+  games:Game[] = [];
 
   ngOnInit() {
     this.apiService.getGames().subscribe((data) => {

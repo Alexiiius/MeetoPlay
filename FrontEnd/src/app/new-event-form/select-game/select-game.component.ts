@@ -19,6 +19,9 @@ import { Game } from '../../models/game';
 })
 export class SelectGameComponent implements ControlValueAccessor {
 
+  @Input() games: Game[] = [];
+  @Output() selectionChange = new EventEmitter<string>();
+
   value: any;
   onChange: any = () => {};
   onTouch: any = () => {};
@@ -36,10 +39,12 @@ export class SelectGameComponent implements ControlValueAccessor {
 
   updateSearchValue(value: string) {
     this.searchValue = value;
+    this.onChange(value);
+    this.gameSelected = false;
   }
 
-  writeValue(value: any): void {
-    this.value = value;
+  writeValue(value: Game): void {
+    this.selectedGame = value;
   }
 
   registerOnChange(fn: any): void {
@@ -65,10 +70,9 @@ export class SelectGameComponent implements ControlValueAccessor {
     this.searchValue = game.name;
     this.showDropdown = false;
     this.gameSelected = true;
+    this.onChange(game);
+    this.onTouch();
   }
-
-  @Input() games: {id: number, name: string, image: string}[] = [];
-  @Output() selectionChange = new EventEmitter<string>();
 
   selectOption(value: string) {
     this.value = value;
@@ -81,6 +85,6 @@ export class SelectGameComponent implements ControlValueAccessor {
     this.searchValue = '';
     this.selectedGame = null;
     this.gameSelected = false;
-    console.log('reset');
+    this.onChange();
   }
 }

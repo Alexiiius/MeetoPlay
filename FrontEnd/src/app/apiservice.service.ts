@@ -2,8 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Game } from './models/game';
-import { GetGamesResponse } from './models/get-games-response';
+import { GetGamesResponse } from './interfaces/get-games-response';
 
 @Injectable({
   providedIn: 'root'

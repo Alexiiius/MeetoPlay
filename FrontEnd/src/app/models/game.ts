@@ -1,4 +1,5 @@
 import { Gamemode } from "./gamemode";
+import { Platform } from "./platform";
 
 export class Game {
   id: number;
@@ -7,7 +8,8 @@ export class Game {
   nickname_name: string[];
   description: string;
   image: string;
-  gamemodes: Gamemode[];
+  platforms: Platform[];
+  game_modes: Gamemode[];
 
 
   constructor(
@@ -17,7 +19,8 @@ export class Game {
     account_level_name: string = '',
     nickname_name: string[] = [],
     description: string = '',
-    gamemodes: Gamemode[] = [])
+    platforms: Platform[] = [],
+    game_modes: Gamemode[])
   {
     this.id = id;
     this.name = name;
@@ -25,6 +28,7 @@ export class Game {
     this.nickname_name = nickname_name;
     this.description = description;
     this.image = image;
-    this.gamemodes = gamemodes;
+    this.platforms = platforms;
+    this.game_modes = game_modes;
   }
 }

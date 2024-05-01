@@ -1,4 +1,4 @@
-<div id="dropdown" class="relative w-full">
+<div id="dropdown" class="relative w-full input" [ngClass]="{'outline outline-red-500 rounded': isInvalid}">
   <div class="w-full h-6 flex items-center gap-2 relative justify-between">
     <div class="flex gap-2 w-full">
       @if (gameSelected && searchValue) {
@@ -7,7 +7,7 @@
       }
       <input type="text" [value]="searchValue" (focus)="toggleDropdown(true)" (blur)="toggleDropdown(false)"
         (input)="updateSearchValue($any($event.target).value)" placeholder="Search a game"
-        class="h-6 text-left pl-0.5 flex items-center gap-2 relative " style="all:unset; width:100%;">
+        class="h-6 text-left pl-0.5 flex items-center gap-2 relative" style="all:unset; width:100%;">
     </div>
     @if (searchValue === '') {
       <div (click)="toggleDropdown(true)" class="cursor-pointer w-7 h-6" style="background: url('./assets/icons/search.svg') no-repeat;"></div>

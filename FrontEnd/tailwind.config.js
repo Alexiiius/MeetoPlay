@@ -24,7 +24,7 @@ module.exports = {
           '@apply dark:bg-neutral-900 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-6 rounded-xl': {},
         },
         '.input': {
-          '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-100 text-neutral-900 p-2 rounded-md border w-full': {},
+          '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-100 text-neutral-900 p-2 rounded-md border w-full h-10': {},
         },
         '.btn': {
           '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-2 rounded-md shadow-lg': {},

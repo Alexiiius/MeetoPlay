@@ -3,8 +3,8 @@ import { NewEventFormComponent } from './components/new-event-form/new-event-for
 import { WhatFormComponent } from './components/new-event-form/what-form/what-form.component';
 import { WhenFormComponent } from './components/new-event-form/when-form/when-form.component';
 
-import { MainComponent } from './components/main/main.component';
 import { EventsComponent } from './components/events/events.component';
+import { animation } from '@angular/animations';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full'},
@@ -14,8 +14,8 @@ export const routes: Routes = [
     component: NewEventFormComponent,
     children: [
       { path: '', redirectTo: 'what', pathMatch: 'full' },
-      { path: 'what', component: WhatFormComponent },
-      { path: 'when', component: WhenFormComponent },
+      { path: 'what', component: WhatFormComponent, data: { animation: 'whatAnim' }},
+      { path: 'when', component: WhenFormComponent, data: { animation: 'whenAnim' }},
       // otras rutas hijas aquí
     ]
   },

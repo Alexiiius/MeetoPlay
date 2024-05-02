@@ -1,5 +1,5 @@
-import { NewEventFormService } from './../../../services/new-event-form-service.service';
-import { Game } from './../../../models/game';
+import { NewEventFormService } from '../../../../services/new-event-form-service.service';
+import { Game } from '../../../../models/game';
 import { Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -52,6 +52,8 @@ export class SelectGameComponent implements ControlValueAccessor {
     this.onChange(value);
     this.isGameSelected = false;
     this.newEventFromService.changeSelectedGame(null);
+    console.log(this.searchValue);
+    console.log(this.selectedGame);
   }
 
   //Reactiveform

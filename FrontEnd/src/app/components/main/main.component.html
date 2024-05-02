@@ -1,0 +1,21 @@
+<main class="w-full h-screen p-6 overflow-hidden">
+  <div id="main-container" class="bg-gradient-to-r from-violet-800 to-cyan-400 w-full h-full rounded-xl p-3
+  grid grid-cols-12 grid-rows-5 gap-3">
+  <div class="container row-span-full col-span-3">
+    <app-chats></app-chats>
+  </div>
+  <div class="container row-span-full col-span-7">
+    <!-- <app-new-event-form></app-new-event-form> -->
+    <router-outlet></router-outlet>
+  </div>
+  <div class="flex flex-col gap-3 row-span-full col-span-2">
+    <div class="container h-3/4">
+      <app-filters class=""></app-filters>
+    </div>
+    <div class="container h-1/4">
+      <app-profilecard class=""></app-profilecard>
+    </div>
+  </div>
+  </div>
+
+  </main>

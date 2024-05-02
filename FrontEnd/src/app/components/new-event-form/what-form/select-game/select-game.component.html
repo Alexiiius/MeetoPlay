@@ -1,7 +1,7 @@
 <div id="dropdown" class="relative w-full input" [ngClass]="{'outline outline-red-500 rounded': isInvalid}">
   <div class="w-full h-6 flex items-center gap-2 relative justify-between">
     <div class="flex gap-2 w-full">
-      @if (gameSelected && searchValue) {
+      @if (isGameSelected && searchValue) {
         <img [src]="selectedGame?.image" alt="{{selectedGame?.name}}"
         class="w-7 h-7 object-cover">
       }

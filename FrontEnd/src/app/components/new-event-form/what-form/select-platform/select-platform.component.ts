@@ -1,6 +1,6 @@
-import { NewEventFormService } from './../../../services/new-event-form-service.service';
-import { Platform } from './../../../models/platform';
-import { Game } from './../../../models/game';
+import { NewEventFormService } from '../../../../services/new-event-form-service.service';
+import { Platform } from '../../../../models/platform';
+import { Game } from '../../../../models/game';
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 ;
@@ -61,9 +61,5 @@ export class SelectPlatformComponent implements OnInit, ControlValueAccessor {
         this.value = null;
         this.onChange(null);
       });
-  }
-
-  onPlatformSelect(platform: string) {
-    //TODO handle platform selection
   }
 }

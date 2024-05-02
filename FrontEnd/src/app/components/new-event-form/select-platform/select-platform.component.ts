@@ -1,8 +1,9 @@
+import { NewEventFormService } from './../../../services/new-event-form-service.service';
+import { Platform } from './../../../models/platform';
+import { Game } from './../../../models/game';
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
-import { NewEventFormService } from '../../services/new-event-form-service.service';
-import { Platform } from '../../models/platform';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Game } from '../../models/game';
+;
 import { CommonModule } from '@angular/common';
 
 @Component({

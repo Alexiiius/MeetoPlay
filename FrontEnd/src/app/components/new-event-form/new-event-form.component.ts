@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { SelectGameComponent } from './select-game/select-game.component';
-import { APIService } from '../services/api-service.service';
-import { Game } from '../models/game';
+import { APIService } from '../../services/api-service.service';
+import { Game } from '../../models/game';
 import { CommonModule } from '@angular/common';
 import { SelectPlatformComponent } from './select-platform/select-platform.component';
 import { SelectGamemodeComponent } from './select-gamemode/select-gamemode.component';
-import { NewEventFormService } from '../services/new-event-form-service.service';
+import { NewEventFormService } from '../../services/new-event-form-service.service';
 
 @Component({
   selector: 'app-new-event-form',

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ChatsComponent } from './chats/chats.component';
-import { EventsComponent } from './events/events.component';
-import { FiltersComponent } from './filters/filters.component';
-import { ProfilecardComponent } from './profilecard/profilecard.component';
-import { NewEventFormComponent } from './new-event-form/new-event-form.component';
+import { ChatsComponent } from './components/chats/chats.component';
+import { EventsComponent } from './components/events/events.component';
+import { FiltersComponent } from './components/filters/filters.component';
+import { ProfilecardComponent } from './components/profilecard/profilecard.component';
+import { NewEventFormComponent } from './components/new-event-form/new-event-form.component';
 import { HttpClientModule } from '@angular/common/http';
 
 @Component({

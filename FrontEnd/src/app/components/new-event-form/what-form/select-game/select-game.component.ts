@@ -39,6 +39,7 @@ export class SelectGameComponent implements ControlValueAccessor {
   selectedGame: Game | null;
   showDropdown = false;
   isGameSelected = false;
+  isFocused = false;
 
   //Filter games based on search value
   get filteredGames() {

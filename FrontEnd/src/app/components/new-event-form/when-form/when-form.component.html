@@ -1,1 +1,5 @@
-<p>when-form works!</p>
+<form action="#" method="post" class="grid grid-cols-2 gap-4" [formGroup]="whenForm">
+  <div class="text-3xl font-bold col-span-2 text-center">¿Cuándo?</div>
+  <input type="text" placeholder="Fecha y hora de inicio" class="input" formControlName="dateTimeBegin">
+  <input type="text" placeholder="Fecha y hora de fin" class="input" formControlName="dateTimeEnd">
+</form>

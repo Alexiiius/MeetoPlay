@@ -1,7 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'media',
   content: [
     "./src/**/*.{html,ts}",
+    "./node_modules/flowbite/**/*.js"
   ],
   theme: {
     fontFamily: {
@@ -18,13 +20,13 @@ module.exports = {
 
   },
   plugins: [
-    function({ addComponents }) {
+    function ({ addComponents }) {
       const components = {
         '.container': {
           '@apply dark:bg-neutral-900 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-6 rounded-xl': {},
         },
         '.input': {
-          '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-100 text-neutral-900 p-2 rounded-md border w-full h-10': {},
+          '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-100 text-neutral-900 p-2 rounded-md w-full h-10': {},
         },
         '.btn': {
           '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-2 rounded-md shadow-lg': {},
@@ -36,5 +38,6 @@ module.exports = {
 
       addComponents(components)
     },
+      require('flowbite/plugin')
   ],
 }

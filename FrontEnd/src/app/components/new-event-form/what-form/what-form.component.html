@@ -1,7 +1,7 @@
 
 <form action="#" method="post"  class="grid grid-rows-4 grid-cols-2 gap-x-4" [formGroup]="whatForm">
     <div class="text-3xl font-bold text-center mb-6 col-span-full">¿A qué jugamos?</div>
-    <input type="text" placeholder="Título del evento" class="input" formControlName="title" autofocus
+    <input type="text" placeholder="Título del evento" class="input focus:ring-1 focus:ring-purple-500" formControlName="title" autofocus
     [ngClass]="{'outline outline-red-500 rounded': whatForm.get('title')?.invalid && whatForm.get('title')?.touched}">
     <app-select-game [games]="games" formControlName="game" (gameSelected)="whatForm.get('platform')?.reset()"
       [isInvalid]="whatForm.get('game')?.invalid && whatForm.get('game')?.touched" />

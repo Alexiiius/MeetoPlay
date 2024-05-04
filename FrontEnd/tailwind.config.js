@@ -3,7 +3,7 @@ module.exports = {
   darkMode: 'media',
   content: [
     "./src/**/*.{html,ts}",
-    "./node_modules/flowbite/**/*.js"
+
   ],
   theme: {
     fontFamily: {
@@ -26,7 +26,7 @@ module.exports = {
           '@apply dark:bg-neutral-900 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-6 rounded-xl': {},
         },
         '.input': {
-          '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-100 text-neutral-900 p-2 rounded-md w-full h-10': {},
+          '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-100 text-neutral-900 p-2 rounded-md w-full h-10 focus:ring-1 focus:ring-purple-500 focus:border-purple-500': {},
         },
         '.btn': {
           '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-2 rounded-md shadow-lg': {},

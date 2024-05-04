@@ -7,7 +7,6 @@ import { FiltersComponent } from './components/filters/filters.component';
 import { ProfilecardComponent } from './components/profilecard/profilecard.component';
 import { NewEventFormComponent } from './components/new-event-form/new-event-form.component';
 
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -25,4 +24,5 @@ import { NewEventFormComponent } from './components/new-event-form/new-event-for
 })
 export class AppComponent {
   title = 'FrontEnd';
+
 }

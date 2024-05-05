@@ -1,5 +1,5 @@
 <div class="relative" [ngClass]="{'outline outline-red-500 rounded': isInvalid}">
-  <select name="platform" class="input appearance-none" (change)="selectPlatform($any($event.target).value)">
+  <select name="platform" class="myinput appearance-none" (change)="selectPlatform($any($event.target).value)">
     @for (platform of options; track $index) {
       @if (selectedGame !== null) {
         <option value="" selected hidden>Select a platform</option>

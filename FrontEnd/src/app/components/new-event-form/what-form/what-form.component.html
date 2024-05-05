@@ -1,7 +1,7 @@
 
 <form action="#" method="post"  class="grid grid-rows-4 grid-cols-2 gap-x-4" [formGroup]="whatForm">
     <div class="text-3xl font-bold text-center mb-6 col-span-full">¿A qué jugamos?</div>
-    <input type="text" placeholder="Título del evento" class="input " formControlName="title" autofocus
+    <input type="text" placeholder="Título del evento" class="myinput" formControlName="title" autofocus
     [ngClass]="{'outline outline-red-500 rounded': whatForm.get('title')?.invalid && whatForm.get('title')?.touched}">
     <app-select-game [games]="games" formControlName="game" (gameSelected)="whatForm.get('platform')?.reset()"
       [isInvalid]="whatForm.get('game')?.invalid && whatForm.get('game')?.touched" />
@@ -10,8 +10,7 @@
     <app-select-gamemode formControlName="gameMode"
     [isInvalid]="whatForm.get('gameMode')?.invalid && whatForm.get('gameMode')?.touched"/>
 
-    <button id="nextBtn" type="submit" [class.btn]="whatForm.status !== 'INVALID'"
-      [class.btn-disabled]="whatForm.status === 'INVALID'" (click)="onSubmit()"
-      [disabled]="whatForm.status === 'INVALID'" class="col-span-2 h-10">Siguente</button>
+    <button id="nextBtn" type="submit" [ngClass]="{'mybtn': whatForm.status !== 'INVALID', 'btn-disabled': whatForm.status === 'INVALID'}"
+      (click)="onSubmit()" [disabled]="whatForm.status === 'INVALID'" class="col-span-2 h-10">Siguente</button>
 </form>
 

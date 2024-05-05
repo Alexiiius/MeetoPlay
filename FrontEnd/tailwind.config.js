@@ -25,10 +25,10 @@ module.exports = {
         '.container': {
           '@apply dark:bg-neutral-900 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-6 rounded-xl': {},
         },
-        '.input': {
+        '.myinput': {
           '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-100 text-neutral-900 p-2 rounded-md w-full h-10 border border-gray-500 focus:ring-1 focus:ring-purple-500 focus:border-purple-500': {},
         },
-        '.btn': {
+        '.mybtn': {
           '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-2 rounded-md shadow-lg': {},
         },
         '.btn-disabled': {
@@ -37,6 +37,7 @@ module.exports = {
       }
 
       addComponents(components)
-    }
+    },
+    require('daisyui')
   ],
 }

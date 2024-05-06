@@ -7,7 +7,8 @@
   </div>
 
   <div class="relative">
-    <select formControlName="privacy" class="myinput appearance-none">
+    <select formControlName="privacy" class="myinput appearance-none"
+      [ngClass]="{'border border-red-500 rounded': isInvalid('privacy')}">
       <option value="public">Público</option>
       <option value="private">Privado</option>
       <option value="friends">Amigos</option>
@@ -42,11 +43,13 @@
     <fieldset class="col-span-full" [disabled]="!ranked">
       <div class="flex gap-3">
         <label class="label cursor-pointer">
-          <input type="checkbox" checked="checked" class="checkbox checkbox-primary" />
-          <span class="label-text text-base text-nowrap min-w-36 text-center"> Rango</span>
+          <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="rank" />
+          <span class="label-text text-base text-nowrap min-w-36 ml-3">Rango</span>
         </label>
-        <input type="text" class="myinput" placeholder="Max">
-        <input type="text" class="myinput" placeholder="Min">
+        <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxRank"
+          [ngClass]="{'opacity-10' : !whoForm.get('rank')?.value, 'border border-red-500 rounded': isInvalid('maxRank')}">
+        <input type="number" min="0" class="myinput" placeholder="Min" formControlName="minRank"
+          [ngClass]="{'opacity-10' : !whoForm.get('rank')?.value, 'border border-red-500 rounded': isInvalid('mixRank')}">
       </div>
     </fieldset>
     }
@@ -54,25 +57,27 @@
     <div class="flex flex-col gap-3 max-h-56 h-full p-y-1">
       <div class="flex gap-3">
         <label class="label cursor-pointer ">
-          <input type="checkbox" checked="checked" class="checkbox checkbox-primary" />
-          <span class="label-text text-base text-nowrap min-w-36 text-center">Por nivel</span>
+          <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="level" />
+          <span class="label-text text-base text-nowrap min-w-36 ml-3">Por nivel</span>
         </label>
-        <input type="text" class="myinput" placeholder="Max">
-        <input type="text" class="myinput" placeholder="Min">
+        <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxLevel"
+          [ngClass]="{'opacity-10' : !whoForm.get('level')?.value, 'border border-red-500 rounded': isInvalid('maxLevel')}">
+        <input type="number" min="0" class="myinput" placeholder="Min" formControlName="minLevel"
+          [ngClass]="{'opacity-10' : !whoForm.get('level')?.value, 'border border-red-500 rounded': isInvalid('minLevel')}">
       </div>
 
       <div class="flex gap-3">
         <label class="label cursor-pointer">
-          <input type="checkbox" checked="checked" class="checkbox checkbox-primary" />
-          <span class="label-text text-base text-nowrap min-w-36 text-center"> Horas jugadas</span>
+          <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="hoursPlayed" />
+          <span class="label-text text-base text-nowrap min-w-36 ml-3"> Horas jugadas</span>
         </label>
-        <input type="text" class="myinput" placeholder="Max">
-        <input type="text" class="myinput" placeholder="Min">
+        <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxHours"
+          [ngClass]="{'opacity-10' : !whoForm.get('hoursPlayed')?.value, 'border border-red-500 rounded': isInvalid('maxHours')}">
+        <input type="number" min="0" class="myinput" placeholder="Min" formControlName="minHours"
+          [ngClass]="{'opacity-10' : !whoForm.get('hoursPlayed')?.value, 'border border-red-500 rounded': isInvalid('minHours')}">
       </div>
     </div>
 
-  </fieldset>
-
-  <button id="nextBtn" type="submit" (click)="onSubmit()" [disabled]="whoForm.status === 'INVALID'"
+  </fieldset><button id="nextBtn" type="submit" (click)="onSubmit()" [disabled]="whoForm.status === 'INVALID'"
     class="col-span-full btn btn-neutral">Siguente</button>
 </form>

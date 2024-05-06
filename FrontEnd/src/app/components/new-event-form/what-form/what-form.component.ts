@@ -54,7 +54,7 @@ export class WhatFormComponent implements OnInit {
   }
 
   whatForm = this.formBuilder.group({
-    ranked: [false],
+    ranked: [false], 
     title: ['', Validators.required],
     game: ['', [this.gameSelectedValidator(), Validators.required]],
     platform: ['', Validators.required],

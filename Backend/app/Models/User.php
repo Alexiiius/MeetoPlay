@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasApiTokens;
 
@@ -95,6 +97,24 @@ class User extends Authenticatable
     //return the users socials
     public function getSocialsAttribute($value) {
         return json_decode($value);
+    }
+
+    public function verificationUrl() {
+        return URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $this->id, 'hash' => sha1($this->email), 'token' => $this->email_verification_token]
+        );
+    }
+
+    public function generateEmailVerificationToken() {
+        $token = hash_hmac('sha256', Str::random(40), config('app.key'));
+
+        $this->forceFill([
+            'email_verification_token' => hash('sha256', $token),
+        ])->save();
+
+        return $token;
     }
 
 

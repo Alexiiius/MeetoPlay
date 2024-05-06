@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('bio')->default('Hello, I am using MeetoPlay!');
             $table->json('socials')->nullable();
             $table->rememberToken();
+            $table->string('email_verification_token')->nullable();
             $table->timestamps();
         });
 

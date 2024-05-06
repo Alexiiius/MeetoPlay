@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\URL;
 
 class AuthController extends Controller{
 
@@ -27,6 +29,14 @@ class AuthController extends Controller{
         ]);
     
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        //generate email verification token
+        $tokenEmail = $user->generateEmailVerificationToken();
+
+        //send email verification notification by adding the event of registered user
+        //this is needed because we are not using the default kit otherwise it would be sent automatically
+        //for a custom url we are editing the notification at appserviceprovider
+        event(new Registered($user));
     
         return response()->json([
             'data' => [

@@ -42,6 +42,9 @@ return [
         ],
     ],
 
+    //not adding sanctum instead of session because i want to use session for web and sanctum for api
+    //and permit the use of both at the same time
+
     /*
     |--------------------------------------------------------------------------
     | User Providers

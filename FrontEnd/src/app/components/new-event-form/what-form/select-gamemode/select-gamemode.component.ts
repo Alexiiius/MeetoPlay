@@ -3,7 +3,7 @@ import { Gamemode } from '../../../../models/gamemode';
 import { Game } from '../../../../models/game';
 import { NewEventFormService } from '../../../../services/new-event-form-service.service';
 import { CommonModule } from '@angular/common';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-select-gamemode',
@@ -27,6 +27,8 @@ export class SelectGamemodeComponent implements OnInit {
   selectedGame: Game | null;
 
   @Input() isInvalid: boolean | undefined;
+  @Input() ranked: boolean;
+  @Input() whatForm: FormGroup;
 
   constructor(private newEventFormService: NewEventFormService) { }
 
@@ -54,9 +56,28 @@ export class SelectGamemodeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.newEventFormService.selectedGame$.subscribe(game => {
-      this.selectedGame = game;
-      this.options = game ? game.game_modes : [{
+     // Suscribirse a los cambios en el juego seleccionado
+  this.newEventFormService.selectedGame$.subscribe(game => {
+    this.selectedGame = game;
+    this.filterGameModes();
+  });
+
+  // Suscribirse a los cambios en el valor de 'ranked'
+  this.whatForm.get('ranked')?.valueChanges.subscribe(value => {
+    this.ranked = value;
+    this.filterGameModes();
+
+  // Actualiza el valor de 'ranked' en el servicio
+  this.newEventFormService.updateRanked(this.ranked);
+  });
+  }
+
+  filterGameModes(): void {
+    if (this.selectedGame) {
+      // Filtrar los modos de juego basándose en el valor de 'ranked'
+      this.options = this.selectedGame.game_modes.filter(gamemode => gamemode.ranked === this.ranked);
+    } else {
+      this.options = [{
         id: 0,
         name: 'No game selected',
         description: '',
@@ -67,9 +88,7 @@ export class SelectGamemodeComponent implements OnInit {
         scenario_name: [''],
         game_id: 0
       }];
-      this.value = null;
-      this.onChange(null);
-    });
+    }
   }
 }
 

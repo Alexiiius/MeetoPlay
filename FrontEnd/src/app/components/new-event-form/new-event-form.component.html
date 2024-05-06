@@ -1,47 +1,8 @@
-<div class="flex flex-col h-full items-center gap-6">
-  <h2 class="text-center text-3xl ">New Event</h2>
-  <div class="p-1 bg-gradient-to-r from-violet-500 to-sky-400 rounded w-full"
+<div class="flex flex-col h-full items-center justify-center gap-6">
+  <div class="p-1 bg-gradient-to-r from-violet-500 to-sky-400 rounded max-w-full max-h-full w-full"
   [@routeAnimations]="getRouteAnimationData()">
-  <div class="w-full font-light p-6 pt-8 rounded bg-neutral-800">
-    <!-- <form [formGroup]="newEventForm" (ngSubmit)="onSubmit()" action="#"
-      class="flex flex-col gap-3 flex-wrap w-full font-light "> -->
-        <!-- <app-what-form/> -->
+  <div class="w-full h-full font-light p-6 pt-8 rounded bg-neutral-800">
         <router-outlet></router-outlet>
-
-      <!--
-
-      @if (showRequirementsBlock) {
-      <div id="requirments" class="flex flex-col">
-        <div class="text-3xl font-bold">Requisitos</div>
-        <input type="text" placeholder="Rango mínimo" class="input">
-        <input type="text" placeholder="Rango máximo" class="input">
-        <input type="text" placeholder="Nivel mínimo" class="input">
-        <input type="text" placeholder="Nivel máximo" class="input">
-      </div>
-      }
-
-      @if (showInscriptionBlock) {
-      <div id="inscription" class="flex flex-col">
-        <div class="text-3xl font-bold">Plazo de Inscripción</div>
-        <input type="text" placeholder="Fecha y hora de incio" class="input">
-        <input type="text" placeholder="Fecha y hora de fin" class="input">
-      </div>
-      }
-
-      @if (showWhoBlock) {
-      <div id="who" class="flex flex-col">
-        <div class="text-3xl font-bold">¿Quíen?</div>
-        <input type="text" placeholder="Privacidad" class="input">
-        <input type="text" placeholder="Plazas" class="input">
-      </div>
-      }
-
-      @if (showSubmitBtn) {
-      <div id="submit" class="flex">
-        <button type="submit" class="mybtn" [disabled]="!newEventForm.valid">Crear evento</button>
-        <button class="mybtn">Cancelar</button>
-      </div>} -->
-    <!-- </form> -->
   </div>
 </div>
 </div>

@@ -1,16 +1,37 @@
+<form action="#" method="post" class="grid grid-cols-2 gap-6" [formGroup]="whatForm">
+  <div class="text-3xl font-bold text-center mb-6 col-span-full">¿A qué jugamos?</div>
 
-<form action="#" method="post"  class="grid grid-rows-4 grid-cols-2 gap-x-4" [formGroup]="whatForm">
-    <div class="text-3xl font-bold text-center mb-6 col-span-full">¿A qué jugamos?</div>
-    <input type="text" placeholder="Título del evento" class="myinput" formControlName="title" autofocus
-    [ngClass]="{'outline outline-red-500 rounded': whatForm.get('title')?.invalid && whatForm.get('title')?.touched}">
-    <app-select-game [games]="games" formControlName="game" (gameSelected)="whatForm.get('platform')?.reset()"
-      [isInvalid]="whatForm.get('game')?.invalid && whatForm.get('game')?.touched" />
-    <app-select-platform formControlName="platform"
-    [isInvalid]="whatForm.get('platform')?.invalid && whatForm.get('platform')?.touched"/>
-    <app-select-gamemode formControlName="gameMode"
-    [isInvalid]="whatForm.get('gameMode')?.invalid && whatForm.get('gameMode')?.touched"/>
+  <div class="col-span-full">
+    <div class="text-xl col-span-full">Event</div>
+    <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+  </div>
 
-    <button id="nextBtn" type="submit" [ngClass]="{'mybtn': whatForm.status !== 'INVALID', 'btn-disabled': whatForm.status === 'INVALID'}"
-      (click)="onSubmit()" [disabled]="whatForm.status === 'INVALID'" class="col-span-2 h-10">Siguente</button>
+  <input type="text" placeholder="Título del evento" class="myinput col-span-full" formControlName="title" autofocus
+    [ngClass]="{'border border-red-500 rounded': whatForm.get('title')?.invalid && whatForm.get('title')?.touched}">
+
+  <div class="col-span-full">
+    <div class="text-xl col-span-full">Game</div>
+    <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+  </div>
+
+  <app-select-game [games]="games" formControlName="game" (gameSelected)="whatForm.get('platform')?.reset()"
+    [isInvalid]="whatForm.get('game')?.invalid && whatForm.get('game')?.touched" />
+
+  <div class="flex items-center justify-center">
+    <label class="cursor-pointer label gap-3">
+      <span class="label-text text-base">Ranked</span>
+      <input type="checkbox" class="toggle toggle-primary" checked formControlName="ranked" />
+    </label>
+  </div>
+
+  <app-select-gamemode formControlName="gameMode" [ranked]="whatForm.get('ranked')?.value || false"
+    [isInvalid]="whatForm.get('gameMode')?.invalid && whatForm.get('gameMode')?.touched" [whatForm]="whatForm"/>
+
+  <app-select-platform formControlName="platform"
+    [isInvalid]="whatForm.get('platform')?.invalid && whatForm.get('platform')?.touched" />
+
+  <div class="col-span-full"></div>
+
+  <button id="nextBtn" type="submit" class="btn btn-neutral col-span-full" (click)="onSubmit()"
+    [disabled]="whatForm.status === 'INVALID'">Siguente</button>
 </form>
-

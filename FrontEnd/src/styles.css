@@ -16,13 +16,13 @@
 
 /* Estilo para la pista de la barra de desplazamiento */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #262626;
   border-radius: 10px;
 }
 
 /* Estilo para la manija de la barra de desplazamiento */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #404040;
   border-radius: 10px;
 }
 
@@ -37,5 +37,12 @@
   width: 6px;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

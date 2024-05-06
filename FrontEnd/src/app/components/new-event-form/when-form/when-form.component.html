@@ -13,18 +13,19 @@
 
   <div class="col-span-5">
     <input type="datetime-local" class="myinput" formControlName="eventEnd"
-    [ngClass]="{'border border-red-500 rounded': isInvalid('eventEnd')}">
+      [ngClass]="{'border border-red-500 rounded': isInvalid('eventEnd')}">
   </div>
 
-<div class="col-span-full flex items-center justify-center">
+  <div class="col-span-full flex items-center justify-center">
     <label class="cursor-pointer label gap-3">
-      <span class="label-text w-40 text-right">None will inscript</span>
-      <input type="checkbox" class="toggle toggle-primary" checked formControlName="toggle"/>
-      <span class="label-text w-40">People can participate</span>
+      <span class="label-text w-40 text-right text-base">None will inscript</span>
+      <input type="checkbox" class="toggle toggle-primary" checked formControlName="toggle" />
+      <span class="label-text w-40 text-base">People can participate</span>
     </label>
-</div>
+  </div>
 
-  <div class="col-span-full grid grid-cols-11 gap-y-6 transition-opacity duration-1000" [ngClass]="{'opacity-10': !whenForm.get('toggle')?.value}">
+  <fieldset class="col-span-full grid grid-cols-11 gap-y-6 transition-opacity duration-1000"
+    [ngClass]="{'opacity-10': !whenForm.get('toggle')?.value}" [disabled]="!whenForm.get('toggle')?.value">
     <div class="col-span-full ">
       <div class="text-xl col-span-full">Registration deadline</div>
       <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
@@ -32,21 +33,18 @@
 
     <div class="col-span-5">
       <input type="datetime-local" class="myinput" formControlName="inscriptionBegin"
-      [ngClass]="{'border border-red-500 rounded': isInvalid('inscriptionBegin')}"
-      [disabled]="!whenForm.get('toggle')?.value">
+        [ngClass]="{'border border-red-500 rounded': isInvalid('inscriptionBegin')}">
     </div>
 
     <div class="flex w-full h-full items-center justify-center opacity-60">to</div>
 
     <div class="col-span-5">
       <input type="datetime-local" class="myinput" formControlName="inscriptionEnd"
-      [ngClass]="{'border border-red-500 rounded': isInvalid('inscriptionEnd')}"
-      [disabled]="!whenForm.get('toggle')?.value">
+        [ngClass]="{'border border-red-500 rounded': isInvalid('inscriptionEnd')}">
     </div>
-  </div>
+  </fieldset>
 
   <div class="col-span-full"></div>
-  <button id="nextBtn" type="submit"
-    (click)="onSubmit()" [disabled]="whenForm.status === 'INVALID'"
-    class="col-span-full h-10 btn btn-neutral">Siguente</button>
+  <button id="nextBtn" type="submit" (click)="onSubmit()" [disabled]="whenForm.status === 'INVALID'"
+    class="col-span-full btn btn-neutral">Siguente</button>
 </form>

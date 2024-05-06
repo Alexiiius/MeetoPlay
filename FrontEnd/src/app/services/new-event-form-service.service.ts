@@ -7,11 +7,19 @@ import { Game } from '../models/game';
 })
 export class NewEventFormService {
   private selectedGameSource = new BehaviorSubject<Game | null>(null);
+
   selectedGame$ = this.selectedGameSource.asObservable();
+
+  private rankedSource = new BehaviorSubject<boolean>(false);
+  ranked$ = this.rankedSource.asObservable();
 
   constructor() { }
 
   changeSelectedGame(game: Game | null) {
     this.selectedGameSource.next(game);
+  }
+
+  updateRanked(value: boolean) {
+    this.rankedSource.next(value);
   }
 }

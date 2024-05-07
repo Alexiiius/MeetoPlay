@@ -25,4 +25,3 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('health-check', function () {
     return response()->json([ 'status' => 'OK', 'timestamp' => Carbon::now() ]);
 });
-

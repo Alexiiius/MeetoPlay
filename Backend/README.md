@@ -1,6 +1,3 @@
-
-
-
 ## Requirements
 
 - PHP >= 8.3

@@ -99,6 +99,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return json_decode($value);
     }
 
+    //generate a temeporal verification url of 60 minutes
     public function verificationUrl() {
         return URL::temporarySignedRoute(
             'verification.verify',
@@ -107,6 +108,7 @@ class User extends Authenticatable implements MustVerifyEmail
         );
     }
 
+    //generate a token for email verification and save it into the database
     public function generateEmailVerificationToken() {
         $token = hash_hmac('sha256', Str::random(40), config('app.key'));
 
@@ -115,6 +117,10 @@ class User extends Authenticatable implements MustVerifyEmail
         ])->save();
 
         return $token;
+    }
+
+    public function sendEmailVerificationNotification() {
+        $this->notify(new \App\Notifications\VerifyEmail);
     }
 
 

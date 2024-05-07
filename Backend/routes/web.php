@@ -1,6 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Carbon;
+
+Route::get('health-check-json', function () {
+    return response()->json([ 'status' => 'OK', 'timestamp' => Carbon::now() ]);
+});
+
+Route::get('health-check', function () {
+    return "LARAVEL 11 IS A HELL";
+});
 
 Route::view('/', 'welcome');
 

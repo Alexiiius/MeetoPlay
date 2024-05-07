@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
+import { NewEventFormService } from '../../../services/new-event-form.service';
 
 @Component({
   selector: 'app-when-form',
@@ -22,6 +23,7 @@ export class WhenFormComponent {
     private formBuilder: FormBuilder,
     private router: Router,
     private cdr: ChangeDetectorRef,
+    private newEventFormService: NewEventFormService
   ) { }
 
   ngOnInit() {
@@ -112,9 +114,8 @@ export class WhenFormComponent {
     let storedForm = sessionStorage.getItem('newEventForm');
     let newEventForm = storedForm ? JSON.parse(storedForm) : {};
     newEventForm.whenForm = this.whenForm.value;
+    this.newEventFormService.setToggleInscription(this.whenForm.get('inscriptionToggle')?.value);
     sessionStorage.setItem('newEventForm', JSON.stringify(newEventForm));
-    console.log('When form submitted');
-    console.log(this.whenForm.value);
     this.router.navigate(['/newEvent/who']);
   }
 }

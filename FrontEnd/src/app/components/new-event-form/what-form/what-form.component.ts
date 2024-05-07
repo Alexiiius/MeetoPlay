@@ -94,7 +94,6 @@ export class WhatFormComponent implements OnInit {
       if (!selectedGameMode) {
         return { 'gameModeNotSelected': { value: control.value } };
       }
-      console.log(selectedGameMode.id)
       const isGameModeSelected = this.selectedGame?.game_modes.some(gameMode => gameMode.id === selectedGameMode.id);
       return isGameModeSelected ? null : { 'gameModeNotSelected': { value: control.value } };
     };
@@ -105,8 +104,6 @@ export class WhatFormComponent implements OnInit {
     let newEventForm = storedForm ? JSON.parse(storedForm) : {};
     newEventForm.whatForm = this.whatForm.value;
     sessionStorage.setItem('newEventForm', JSON.stringify(newEventForm));
-    console.log('What form submitted');
-    console.log(this.whatForm.value);
     this.router.navigate(['/newEvent/when']);
   }
 }

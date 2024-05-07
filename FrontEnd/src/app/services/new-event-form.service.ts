@@ -20,6 +20,9 @@ export class NewEventFormService {
   private whoFormSubmittedSource = new BehaviorSubject<boolean>(false);
   whoFormSubmitted$ = this.whoFormSubmittedSource.asObservable();
 
+  private toggleInscriptionSource = new BehaviorSubject<boolean>(false);
+  toggleInscription$ = this.toggleInscriptionSource.asObservable();
+
   constructor() {
   }
 
@@ -29,11 +32,14 @@ export class NewEventFormService {
 
   changeSelectedGameMode(gamemode: Gamemode | null) {
     this.selectedGamemodeSource.next(gamemode);
-    console.log('Gamemode changed to: ', gamemode)
   }
 
   updateRanked(value: boolean) {
     this.rankedSource.next(value);
+  }
+
+  setToggleInscription(value: boolean) {
+    this.toggleInscriptionSource.next(value);
   }
 
   submitWhoForm() {

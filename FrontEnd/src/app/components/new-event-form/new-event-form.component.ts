@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChildrenOutletContexts, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { fadeAnimation } from './formAnimations';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { NewEventFormService } from '../../services/new-event-form.service';
 import { BackEndService } from '../../services/back-end.service';
 import { Subscription } from 'rxjs';
@@ -39,8 +38,6 @@ export class NewEventFormComponent implements OnInit {
         let storedForm = sessionStorage.getItem('newEventForm');
         if (storedForm) {
           this.newEventFormJSON = JSON.parse(storedForm);
-          console.log('Form restored from session storage');
-          console.log(this.newEventFormJSON);
           this.submitNewEventForm();
         }
       }
@@ -53,8 +50,6 @@ export class NewEventFormComponent implements OnInit {
   }
 
   submitNewEventForm() {
-    console.log('New event form submitted');
-    console.log(this.newEventFormJSON);
     this.backEndService.postNewEvent(this.newEventFormJSON);
   }
 }

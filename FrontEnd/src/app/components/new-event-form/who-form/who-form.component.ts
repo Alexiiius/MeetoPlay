@@ -5,14 +5,13 @@ import { Router } from '@angular/router';
 import { NewEventFormService } from '../../../services/new-event-form.service';
 import { Gamemode } from '../../../models/gamemode';
 
-//TODO: El validador de maxPlayersValidator no está funcionando correctamente
 
 @Component({
   selector: 'app-who-form',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    CommonModule,
+    CommonModule
   ],
   templateUrl: './who-form.component.html',
   styleUrl: './who-form.component.css'
@@ -22,6 +21,8 @@ export class WhoFormComponent {
   whoForm: FormGroup;
   ranked: boolean;
   selectedGamemode: Gamemode | null;
+  toggleInscription: boolean = true;
+  ranks: string[] = [''];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -33,11 +34,11 @@ export class WhoFormComponent {
   ngOnInit() {
     this.whoForm = this.formBuilder.group({
       privacy: ['public', Validators.required], // Para el select de privacidad
-      max_participants: ['', [Validators.required, this.minZero, this.maxPlayersValidator]], // Para el input de Max participantes
+      maxParticipants: ['', [Validators.required, this.minZero, this.maxPlayersValidator()]], // Para el input de Max participantes
       toggleRequirments: [false], // Para el checkbox de Requirments
       rank: [false], // Para el checkbox de Rango
-      maxRank: [{ value: '', disabled: true }, [Validators.required, this.minZero]], // Para el input de Max en Rango
-      minRank: [{ value: '', disabled: true }, [Validators.required, this.minZero]], // Para el input de Min en Rango
+      maxRank: [{ value: '', disabled: true }, Validators.required], // Para el input de Max en Rango
+      minRank: [{ value: '', disabled: true }, Validators.required], // Para el input de Min en Rango
       level: [false], // Para el checkbox de Por nivel
       maxLevel: [{ value: '', disabled: true }, [Validators.required, this.minZero]], // Para el input de Max en Por nivel
       minLevel: [{ value: '', disabled: true }, [Validators.required, this.minZero]], // Para el input de Min en Por nivel
@@ -47,7 +48,7 @@ export class WhoFormComponent {
     },
       {
         validators: [
-          this.maxGreaterThanMin('maxRank', 'minRank'),
+          this.rankOrderValidator('minRank', 'maxRank'),
           this.maxGreaterThanMin('maxLevel', 'minLevel'),
           this.maxGreaterThanMin('maxHours', 'minHours')
         ]
@@ -56,12 +57,24 @@ export class WhoFormComponent {
 
     // Suscribirse al valor de 'ranked' en el servicio
     this.newEventFormService.ranked$.subscribe(value => {
-      this.ranked = value;
+      this.ranked = true; // TODO cambiar por value
     });
 
     // Suscribirse al valor de 'selectedGame' en el servicio
-    this.newEventFormService.selectedGamemode$.subscribe(gamemode => {
-      this.selectedGamemode = gamemode;
+    this.newEventFormService.selectedGamemode$.subscribe(value => {
+      this.selectedGamemode = value;
+      this.ranks = ["Hierro", "Bronce", "Plata", "Oro", "Platino", "Diamante", "Maestro", "Gran Maestro", "Challenger"]
+      // TODO cambiar por esto this.ranks = this.selectedGamemode?.ranks || ['No Ranked Gamemode'];
+    });
+
+    this.newEventFormService.toggleInscription$.subscribe(value => {
+      this.toggleInscription = value;
+
+      if (this.toggleInscription) {
+        this.whoForm.get('maxParticipants')?.enable();
+      } else {
+        this.whoForm.get('maxParticipants')?.disable();
+      }
     });
 
     // Suscribirse a los cambios en el valor de 'rank'
@@ -119,11 +132,24 @@ export class WhoFormComponent {
   }
 
   maxPlayersValidator(): ValidatorFn {
-    console.log(this.selectedGamemode?.max_players)
     return (control: AbstractControl): {[key: string]: any} | null => {
       let maxPlayers = this.selectedGamemode?.max_players;
       const forbidden = maxPlayers !== undefined && control.value > maxPlayers;
       return forbidden ? {maxPlayers: {value: control.value}} : null;
+    };
+  }
+
+  rankOrderValidator(minControlName: string, maxControlName: string) {
+    return (group: FormGroup) => {
+      const minControl = group.controls[minControlName];
+      const maxControl = group.controls[maxControlName];
+      const minRankIndex = this.ranks.indexOf(minControl.value);
+      const maxRankIndex = this.ranks.indexOf(maxControl.value);
+      if (minRankIndex > maxRankIndex) {
+        maxControl.setErrors({ minGreaterThanMax: true });
+        return { minGreaterThanMax: true };
+      }
+      return null;
     };
   }
 

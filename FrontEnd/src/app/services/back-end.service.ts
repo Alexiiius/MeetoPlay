@@ -10,13 +10,12 @@ export class BackEndService {
 
   postNewEvent(newEvent: any) {
     let formatedNewEvent = this.formatNewEvent(newEvent);
-    console.log('New event posted');
+    console.log('Enviando evento al back-end');
     console.log(formatedNewEvent);
   }
 
   formatNewEvent(newEvent: any): FormatedNewEvent {
-    console.log('Formating new event')
-    console.log(newEvent);
+
     let formatedNewEvent = {
       data: {
         event: {
@@ -31,7 +30,7 @@ export class BackEndService {
           date_time_end: newEvent.whenForm.eventEnd,
           date_time_inscription_begin: newEvent.toggleInscription ? newEvent.whenForm.inscriptionBegin : null,
           date_time_inscription_end: newEvent.toggleInscription ? newEvent.whenForm.inscriptionEnd : null,
-          max_participants: newEvent.whoForm.max_participants,
+          max_participants: newEvent.whoForm.maxParticipants,
           privacy: newEvent.whoForm.privacy,
         },
         event_requirements: {

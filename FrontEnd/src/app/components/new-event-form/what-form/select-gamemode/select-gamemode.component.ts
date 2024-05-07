@@ -1,7 +1,7 @@
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { Gamemode } from '../../../../models/gamemode';
 import { Game } from '../../../../models/game';
-import { NewEventFormService } from '../../../../services/new-event-form-service.service';
+import { NewEventFormService } from '../../../../services/new-event-form.service';
 import { CommonModule } from '@angular/common';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -52,7 +52,7 @@ export class SelectGamemodeComponent implements OnInit {
     this.value = gamemode;
     this.onChange(gamemode);
     this.onTouch();
-    console.log(gamemode);
+    this.newEventFormService.changeSelectedGameMode(gamemode);
   }
 
   ngOnInit(): void {
@@ -83,7 +83,6 @@ export class SelectGamemodeComponent implements OnInit {
         description: '',
         ranked: false,
         max_players: 0,
-        min_players: 0,
         ranks: [''],
         scenario_name: [''],
         game_id: 0

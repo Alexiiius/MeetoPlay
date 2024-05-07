@@ -1,4 +1,4 @@
-import { NewEventFormService } from '../../../../services/new-event-form-service.service';
+import { NewEventFormService } from '../../../../services/new-event-form.service';
 import { Platform } from '../../../../models/platform';
 import { Game } from '../../../../models/game';
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
@@ -51,7 +51,6 @@ export class SelectPlatformComponent implements OnInit, ControlValueAccessor {
     this.value = platform;
     this.onChange(platform);
     this.onTouch();
-    console.log(platform);
   }
 
   ngOnInit(): void {

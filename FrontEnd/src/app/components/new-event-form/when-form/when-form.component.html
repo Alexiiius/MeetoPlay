@@ -19,13 +19,13 @@
   <div class="col-span-full flex items-center justify-center">
     <label class="cursor-pointer label gap-3">
       <span class="label-text w-40 text-right text-base">None will inscript</span>
-      <input type="checkbox" class="toggle toggle-primary" checked formControlName="toggle" />
+      <input type="checkbox" class="toggle toggle-primary" checked formControlName="inscriptionToggle"/>
       <span class="label-text w-40 text-base">People can participate</span>
     </label>
   </div>
 
   <fieldset class="col-span-full grid grid-cols-11 gap-y-6 transition-opacity duration-1000"
-    [ngClass]="{'opacity-10': !whenForm.get('toggle')?.value}" [disabled]="!whenForm.get('toggle')?.value">
+    [ngClass]="{'opacity-10': !whenForm.get('inscriptionToggle')?.value}" [disabled]="!whenForm.get('inscriptionToggle')?.value">
     <div class="col-span-full ">
       <div class="text-xl col-span-full">Registration deadline</div>
       <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>

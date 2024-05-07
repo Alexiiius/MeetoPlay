@@ -21,12 +21,12 @@ export class WhenFormComponent {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
     this.whenForm = this.formBuilder.group({
-      toggle: [true],
+      inscriptionToggle: [true],
       eventBegin: ['', [Validators.required, this.notInPastValidator()]],
       eventEnd: ['', Validators.required],
       inscriptionBegin: ['', Validators.required],
@@ -109,6 +109,11 @@ export class WhenFormComponent {
   }
 
   onSubmit(): void {
+    let storedForm = sessionStorage.getItem('newEventForm');
+    let newEventForm = storedForm ? JSON.parse(storedForm) : {};
+    newEventForm.whenForm = this.whenForm.value;
+    sessionStorage.setItem('newEventForm', JSON.stringify(newEventForm));
+    console.log('When form submitted');
     console.log(this.whenForm.value);
     this.router.navigate(['/newEvent/who']);
   }

@@ -4,8 +4,8 @@ import { SelectPlatformComponent } from './select-platform/select-platform.compo
 import { SelectGamemodeComponent } from './select-gamemode/select-gamemode.component';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
-import { APIService } from '../../../services/api-service.service';
-import { NewEventFormService } from '../../../services/new-event-form-service.service';
+import { APIService } from '../../../services/api.service';
+import { NewEventFormService } from '../../../services/new-event-form.service';
 import { Game } from '../../../models/game';
 import { Router } from '@angular/router';
 
@@ -50,11 +50,16 @@ export class WhatFormComponent implements OnInit {
         platformControl.setValidators([this.platformSelectedValidator(), Validators.required]);
         platformControl.updateValueAndValidity();
       }
+      const gameModeControl = this.whatForm.get('gameMode');
+      if (gameModeControl) {
+        gameModeControl.setValidators([this.gameModeSelectedValidator(), Validators.required]);
+        gameModeControl.updateValueAndValidity();
+      }
     });
   }
 
   whatForm = this.formBuilder.group({
-    ranked: [false], 
+    ranked: [false],
     title: ['', Validators.required],
     game: ['', [this.gameSelectedValidator(), Validators.required]],
     platform: ['', Validators.required],
@@ -78,7 +83,7 @@ export class WhatFormComponent implements OnInit {
       if (!selectedPlatform) {
         return { 'platformNotSelected': { value: control.value } };
       }
-      const isPlatformSelected = this.selectedGame?.platforms.some(platform => platform.id === Number(selectedPlatform));
+      const isPlatformSelected = this.selectedGame?.platforms.some(platform => platform.id === selectedPlatform.id);
       return isPlatformSelected ? null : { 'platformNotSelected': { value: control.value } };
     };
   }
@@ -87,16 +92,20 @@ export class WhatFormComponent implements OnInit {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const selectedGameMode = control.value;
       if (!selectedGameMode) {
-        console.log('control.value: ', control.value);
         return { 'gameModeNotSelected': { value: control.value } };
       }
+      console.log(selectedGameMode.id)
       const isGameModeSelected = this.selectedGame?.game_modes.some(gameMode => gameMode.id === selectedGameMode.id);
       return isGameModeSelected ? null : { 'gameModeNotSelected': { value: control.value } };
     };
   }
 
   onSubmit() {
-    // TODO: Use EventEmitter with form value
+    let storedForm = sessionStorage.getItem('newEventForm');
+    let newEventForm = storedForm ? JSON.parse(storedForm) : {};
+    newEventForm.whatForm = this.whatForm.value;
+    sessionStorage.setItem('newEventForm', JSON.stringify(newEventForm));
+    console.log('What form submitted');
     console.log(this.whatForm.value);
     this.router.navigate(['/newEvent/when']);
   }

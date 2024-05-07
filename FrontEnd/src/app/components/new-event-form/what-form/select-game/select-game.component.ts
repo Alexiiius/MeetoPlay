@@ -1,4 +1,4 @@
-import { NewEventFormService } from '../../../../services/new-event-form-service.service';
+import { NewEventFormService } from '../../../../services/new-event-form.service';
 import { Game } from '../../../../models/game';
 import { Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';

@@ -1,13 +1,13 @@
 <div class="relative" [ngClass]="{'border border-red-500 rounded': isInvalid}">
-  <select name="platform" class="myinput appearance-none" (change)="selectGamemode($any($event.target).value)">
-    @for (platform of options; track $index) {
+  <select name="game_mode" class="myinput appearance-none" (change)="selectGamemode(options[$any($event.target).value])">
+    @for (game_mode of options; track $index) {
       @if (selectedGame !== null) {
-        <option value="" selected hidden>Select a game mode</option>
+        <option value="-1" selected hidden>Select a game mode</option>
       }
       @if (selectedGame === null) {
-        <option value="{{platform.id}}" selected hidden>{{platform.name}}</option>
+        <option [value]="$index" selected hidden>{{game_mode.name}}</option>
       } @else {
-        <option value="{{platform.id}}">{{platform.name}}</option>
+        <option [value]="$index">{{game_mode.name}}</option>
       }
     }
   </select>

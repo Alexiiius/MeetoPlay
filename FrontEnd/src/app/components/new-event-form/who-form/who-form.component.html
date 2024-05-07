@@ -1,4 +1,4 @@
-<form action="#" method="post" class="grid grid-cols-2 gap-y-6" [formGroup]="whoForm">
+<form action="#" method="post" class="grid grid-cols-2 gap-6" [formGroup]="whoForm">
   <div class="text-3xl font-bold col-span-full text-center mb-0">¿Quíen?</div>
 
   <div class="col-span-full">
@@ -22,9 +22,11 @@
     </svg>
   </div>
 
-  <div class="flex items-center justify-center">
+  <div class="flex items-center gap-3">
+    <input type="number" placeholder="Plazas" class="myinput" formControlName="max_participants" min="0"
+      [attr.max]="selectedGamemode?.max_players" [ngClass]="{'border border-red-500 rounded': isInvalid('max_participants')}">
     <label class="cursor-pointer label gap-3">
-      <span class="label-text w-40 text-right text-base">Requirments</span>
+      <span class="label-text text-right text-base">Requirments</span>
       <input type="checkbox" class="toggle toggle-secondary" checked formControlName="toggleRequirments" />
     </label>
   </div>
@@ -46,10 +48,10 @@
           <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="rank" />
           <span class="label-text text-base text-nowrap min-w-36 ml-3">Rango</span>
         </label>
-        <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxRank"
-          [ngClass]="{'opacity-10' : !whoForm.get('rank')?.value, 'border border-red-500 rounded': isInvalid('maxRank')}">
         <input type="number" min="0" class="myinput" placeholder="Min" formControlName="minRank"
           [ngClass]="{'opacity-10' : !whoForm.get('rank')?.value, 'border border-red-500 rounded': isInvalid('mixRank')}">
+        <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxRank"
+          [ngClass]="{'opacity-10' : !whoForm.get('rank')?.value, 'border border-red-500 rounded': isInvalid('maxRank')}">
       </div>
     </fieldset>
     }
@@ -60,10 +62,10 @@
           <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="level" />
           <span class="label-text text-base text-nowrap min-w-36 ml-3">Por nivel</span>
         </label>
-        <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxLevel"
-          [ngClass]="{'opacity-10' : !whoForm.get('level')?.value, 'border border-red-500 rounded': isInvalid('maxLevel')}">
         <input type="number" min="0" class="myinput" placeholder="Min" formControlName="minLevel"
           [ngClass]="{'opacity-10' : !whoForm.get('level')?.value, 'border border-red-500 rounded': isInvalid('minLevel')}">
+        <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxLevel"
+          [ngClass]="{'opacity-10' : !whoForm.get('level')?.value, 'border border-red-500 rounded': isInvalid('maxLevel')}">
       </div>
 
       <div class="flex gap-3">
@@ -71,10 +73,10 @@
           <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="hoursPlayed" />
           <span class="label-text text-base text-nowrap min-w-36 ml-3"> Horas jugadas</span>
         </label>
-        <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxHours"
-          [ngClass]="{'opacity-10' : !whoForm.get('hoursPlayed')?.value, 'border border-red-500 rounded': isInvalid('maxHours')}">
         <input type="number" min="0" class="myinput" placeholder="Min" formControlName="minHours"
           [ngClass]="{'opacity-10' : !whoForm.get('hoursPlayed')?.value, 'border border-red-500 rounded': isInvalid('minHours')}">
+        <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxHours"
+          [ngClass]="{'opacity-10' : !whoForm.get('hoursPlayed')?.value, 'border border-red-500 rounded': isInvalid('maxHours')}">
       </div>
     </div>
 

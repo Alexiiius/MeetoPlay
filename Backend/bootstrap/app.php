@@ -26,6 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(prepend: [
             App\Http\Middleware\EnsureApiRequestsAcceptJson::class
         ]);
+        $middleware->alias ([
+            'admin' => App\Http\Middleware\RoleCheck::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
        //

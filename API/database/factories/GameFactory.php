@@ -23,7 +23,7 @@ class GameFactory extends Factory
         return [
             'name' => $this->faker->unique()->word(),
             'description' => $this->faker->sentence(),
-            'nickname_name' => json_encode($this->faker->words(5)), // Genera un array de 5 palabras aleatorias
+            'nickname_name' => json_encode($this->faker->words(5)),
             'account_level_name' => $this->faker->word(),
             'image' => $this->faker->imageUrl(),
         ];

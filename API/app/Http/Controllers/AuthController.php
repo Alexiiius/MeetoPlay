@@ -83,15 +83,15 @@ class AuthController extends Controller{
     // Destroy all tokens related to the user
     public function logout(Request $request) {
         
-        $validationTry = $this->validateLoginCredentials($request);
-        if ($validationTry) {
-            return $validationTry;
-        }
+        // $validationTry = $this->validateLoginCredentials($request);
+        // if ($validationTry) {
+        //     return $validationTry;
+        // }
 
-        $validationTry = $this->verifyCredentials($request);
-        if ($validationTry) {
-            return $validationTry;
-        }
+        // $validationTry = $this->verifyCredentials($request);
+        // if ($validationTry) {
+        //     return $validationTry;
+        // }
 
         //destroy user related tokens
         $request->user()->tokens()->delete();

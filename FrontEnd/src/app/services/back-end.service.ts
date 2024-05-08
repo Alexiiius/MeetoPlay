@@ -48,7 +48,7 @@ export class BackEndService {
           date_time_end: newEvent.whenForm.eventEnd,
           date_time_inscription_begin: newEvent.toggleInscription ? newEvent.whenForm.inscriptionBegin : null,
           date_time_inscription_end: newEvent.toggleInscription ? newEvent.whenForm.inscriptionEnd : null,
-          max_participants: newEvent.whoForm.maxParticipants,
+          max_participants: newEvent.whoForm.maxParticipants ? newEvent.whoForm.maxParticipants : 0,
           privacy: newEvent.whoForm.privacy,
         },
         event_requirements: {

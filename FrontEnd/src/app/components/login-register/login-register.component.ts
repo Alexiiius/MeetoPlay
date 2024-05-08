@@ -2,28 +2,38 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+import { loginAnimation, registerAnimation } from './login-register-animation';
 
 @Component({
   selector: 'app-login-register',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLink
   ],
   templateUrl: './login-register.component.html',
-  styleUrl: './login-register.component.css'
+  styleUrl: './login-register.component.css',
+  animations: [loginAnimation, registerAnimation]
 })
 export class LoginRegisterComponent implements OnInit {
   loginForm: FormGroup;
   registerForm: FormGroup;
-  mode: String = 'login';
+  state: String = 'login';
 
   constructor
-  (private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private route: ActivatedRoute,
-    private router: Router) { }
+    (private formBuilder: FormBuilder,
+      private authService: AuthService,
+      private route: ActivatedRoute,
+      private router: Router) {
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.state = this.router.url === '/register' ? 'register' : 'login';
+      }
+    });
+  }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -37,10 +47,6 @@ export class LoginRegisterComponent implements OnInit {
       email: ['', Validators.required],
       password: ['', Validators.required],
       password_confirmation: ['', Validators.required]
-    });
-
-    this.route.data.subscribe(data => {
-      this.mode = data['mode'];
     });
   }
 

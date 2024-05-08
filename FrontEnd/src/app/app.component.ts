@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatsComponent } from './components/chats/chats.component';
 import { EventsComponent } from './components/events/events.component';
@@ -17,7 +17,7 @@ import { NewEventFormComponent } from './components/new-event-form/new-event-for
     FiltersComponent,
     ProfilecardComponent,
     NewEventFormComponent,
-    HttpClientModule
+    HttpClientModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

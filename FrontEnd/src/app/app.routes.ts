@@ -7,8 +7,7 @@ import { WhoFormComponent } from './components/new-event-form/who-form/who-form.
 import { EventsComponent } from './components/events/events.component';
 import { LoginRegisterComponent } from './components/login-register/login-register.component';
 import { MainComponent } from './components/main/main.component';
-import { authGuard } from './auth.guard';
-
+import { authGuard, loggedGuard } from './auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full'},
@@ -26,8 +25,8 @@ export const routes: Routes = [
       ]
     },
   ]},
-  { path: 'login', component: LoginRegisterComponent, data: { mode: 'login' } },
-  { path: 'register', component: LoginRegisterComponent, data: { mode: 'register' } },
+  { path: 'login', component: LoginRegisterComponent, canActivate: [loggedGuard], data: { mode: 'login' } },
+  { path: 'register', component: LoginRegisterComponent, canActivate: [loggedGuard], data: { mode: 'register' } },
 
   // otras rutas aquí
   { path: '**', redirectTo: 'main'},

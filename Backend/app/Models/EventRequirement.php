@@ -19,8 +19,7 @@ class EventRequirement extends Model {
         'max_hours_played',
     ];
 
-    public function event()
-    {
-        return $this->hasOne(Event::class, 'id', 'event_id');
+    public function event() {
+        return $this->belongsTo(Event::class);
     }
 }

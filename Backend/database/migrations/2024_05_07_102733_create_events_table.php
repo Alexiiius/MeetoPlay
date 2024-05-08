@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('event_title');
             $table->integer('game_id')->index();
             $table->string('game_pic');
             $table->string('game_name')->index();
-            $table->integer('game_mode');
-            $table->integer('platform')->index();
+            $table->string('game_mode');
+            $table->string('platform')->index();
             $table->bigInteger('event_owner_id')->unsigned()->index();
             $table->foreign('event_owner_id')->references('id')->on('users')->onDelete('cascade');
             $table->dateTime('date_time_begin');
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->dateTime('date_time_inscription_end')->nullable();
             $table->integer('max_participants');
             $table->string('privacy');
-            $table->bigInteger('event_requirement_id')->unsigned()->index();
+            $table->bigInteger('event_requirement_id')->unsigned()->nullable()->index();
             $table->foreign('event_requirement_id')->references('id')->on('event_requirements')->onDelete('cascade');
             $table->timestamps();
         });

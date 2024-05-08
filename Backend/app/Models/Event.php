@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\Event_requirement;
+use App\Models\EventRequirement;
 
 class Event extends Model {
     use HasFactory;
 
     protected $fillable = [
-        'title',
+        'event_title',
         'game_id',
         'game_pic',
         'game_name',
@@ -32,7 +32,7 @@ class Event extends Model {
     }
 
     public function requirement() {
-        return $this->belongsTo(Event_requirement::class, 'event_requirement_id');
+        return $this->belongsTo(EventRequirement::class, 'event_requirement_id');
     }
 
     

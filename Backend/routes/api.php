@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 //import the controllers
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\EventController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -23,6 +24,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::post('/user/{id}', [UserController::class, 'update']);
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
+
+    //create a new event and its requirements
+    Route::post('/create/event', [EventController::class, 'store']);
+    //show a specific event wih its requirements
+    Route::get('/event/{id}', [EventController::class, 'show']);
 
 });
 

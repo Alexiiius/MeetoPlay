@@ -20,6 +20,15 @@ export class BackEndService {
       'Authorization': 'Bearer ' + this.YOUR_TOKEN
     });
 
+    this.postNewEvent(newEvent).subscribe(
+      response => {
+        console.log('Response from server: ', response);
+      },
+      error => {
+        console.error('Error: ', error);
+      }
+    );
+
     return this.http.post(this.backUrl + '/create/event', formatedNewEvent, { headers: headers });
   }
 

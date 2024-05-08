@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChildrenOutletContexts, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { fadeAnimation } from './formAnimations';
 import { NewEventFormService } from '../../services/new-event-form.service';
-import { BackEndService } from '../../services/back-end.service';
+import { EventsService } from '../../services/events.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -26,7 +26,7 @@ export class NewEventFormComponent implements OnInit {
 
   constructor(
     private contexts: ChildrenOutletContexts,
-    private backEndService: BackEndService,
+    private eventsService: EventsService,
     private newEventFormService: NewEventFormService,
   ) {
     sessionStorage.setItem('newEventForm', JSON.stringify({}));
@@ -50,6 +50,13 @@ export class NewEventFormComponent implements OnInit {
   }
 
   submitNewEventForm() {
-    this.backEndService.postNewEvent(this.newEventFormJSON);
+    this.eventsService.postNewEvent(this.newEventFormJSON).subscribe(
+      response => {
+        console.log(response); // Aquí puedes manejar la respuesta del servidor
+      },
+      error => {
+        console.log(error); // Aquí puedes manejar los errores
+      }
+    );
   }
 }

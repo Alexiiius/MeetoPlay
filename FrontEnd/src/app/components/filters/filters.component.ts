@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-filters',
@@ -9,4 +11,12 @@ import { Component } from '@angular/core';
 })
 export class FiltersComponent {
 
+  constructor(private authService: AuthService, private router: Router) {
+
+  }
+
+  logout() {
+    console.log('Login out')
+    this.authService.logout()
+  }
 }

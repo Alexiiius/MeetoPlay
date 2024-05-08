@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { FormatedNewEvent } from '../interfaces/formated-new-event';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { backAPIUrl } from '../config';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BackEndService {
+export class EventsService {
 
   YOUR_TOKEN = 'YOUR_TOKEN'
-  private backUrl = 'http://localhost:80/api';
+  private backAPIUrl = backAPIUrl;
   constructor(private http: HttpClient) { }
 
   postNewEvent(newEvent: any) {
@@ -20,17 +21,8 @@ export class BackEndService {
       'Authorization': 'Bearer ' + this.YOUR_TOKEN
     });
 
-    this.http.post(this.backUrl + '/create/event', formatedNewEvent, { headers: headers }).subscribe(
-      response => {
-        console.log('Response from server: ', response);
-      },
-      error => {
-        console.error('Error: ', error);
-      }
-    );
+    return this.http.post(this.backAPIUrl + '/create/event', formatedNewEvent, { headers: headers });
   }
-
-
 
   formatNewEvent(newEvent: any): FormatedNewEvent {
 

@@ -104,6 +104,6 @@ export class WhatFormComponent implements OnInit {
     let newEventForm = storedForm ? JSON.parse(storedForm) : {};
     newEventForm.whatForm = this.whatForm.value;
     sessionStorage.setItem('newEventForm', JSON.stringify(newEventForm));
-    this.router.navigate(['/newEvent/when']);
+    this.router.navigate(['/main/newEvent/when']);
   }
 }

@@ -116,6 +116,6 @@ export class WhenFormComponent {
     newEventForm.whenForm = this.whenForm.value;
     this.newEventFormService.setToggleInscription(this.whenForm.get('inscriptionToggle')?.value);
     sessionStorage.setItem('newEventForm', JSON.stringify(newEventForm));
-    this.router.navigate(['/newEvent/who']);
+    this.router.navigate(['/main/newEvent/who']);
   }
 }

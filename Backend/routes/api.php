@@ -10,6 +10,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\EventController;
 
 // Public routes
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -35,8 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 //Private routes for admin
 Route::middleware(['auth:sanctum' , 'admin'])->group(function () {
 
-    //register a new user
-    Route::post('/register', [AuthController::class, 'register']);
+    //
 
 });
 

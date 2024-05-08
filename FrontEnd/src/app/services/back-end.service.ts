@@ -20,7 +20,7 @@ export class BackEndService {
       'Authorization': 'Bearer ' + this.YOUR_TOKEN
     });
 
-    this.postNewEvent(newEvent).subscribe(
+    this.http.post(this.backUrl + '/create/event', formatedNewEvent, { headers: headers }).subscribe(
       response => {
         console.log('Response from server: ', response);
       },
@@ -28,9 +28,9 @@ export class BackEndService {
         console.error('Error: ', error);
       }
     );
-
-    return this.http.post(this.backUrl + '/create/event', formatedNewEvent, { headers: headers });
   }
+
+
 
   formatNewEvent(newEvent: any): FormatedNewEvent {
 

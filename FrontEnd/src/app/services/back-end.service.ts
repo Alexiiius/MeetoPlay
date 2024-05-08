@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import { FormatedNewEvent } from '../interfaces/formated-new-event';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackEndService {
 
-  constructor() { }
+  private backUrl = 'http://localhost:8080/api';
+  constructor(private http: HttpClient) { }
 
   postNewEvent(newEvent: any) {
     let formatedNewEvent = this.formatNewEvent(newEvent);
-    console.log('Enviando evento al back-end');
+    console.log('Creating new event: ');
     console.log(formatedNewEvent);
+    return this.http.post(this.backUrl + '/create/event', formatedNewEvent);
   }
 
   formatNewEvent(newEvent: any): FormatedNewEvent {

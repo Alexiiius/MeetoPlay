@@ -71,7 +71,6 @@ export class WhenFormComponent {
     });
   }
 
-
   isInvalid(fieldName: string) {
     const field = this.whenForm.get(fieldName);
     return field?.invalid && field?.touched;

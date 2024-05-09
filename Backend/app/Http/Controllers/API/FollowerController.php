@@ -1,0 +1,175 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Follower;
+use App\Models\User;
+
+class FollowerController extends Controller {
+
+    public function follow(Request $request, $id) {
+        
+        $follower = $request->user();
+        $followed = User::find($id);
+
+        if ($followed) {
+            $follow = Follower::where('user_id', $followed->id)
+                ->where('follower_id', $follower->id)
+                ->first();
+
+            if ($follow) {
+                return $this->jsonResponse(
+                    'User already followed.',
+                    [
+                        'self' => url('/api/follow/' . $followed->id),
+                    ],
+                    [],
+                    400
+                );
+            } else {
+                $follow = new Follower();
+                $follow->user_id = $followed->id;
+                $follow->follower_id = $follower->id;
+                $follow->save();
+                return $this->jsonResponse(
+                    'User followed successfully',
+                    [
+                        'self' => url('/api/follow/' . $followed->id),
+                        'user followed' => url('/api/user/' . $followed->id),
+                        'followers of user followed' => url('/api/followers/' . $followed->id),
+                    ],
+                    [
+                        'follow_count' => 'WIP',
+                    ]
+                );
+            }
+        } else {
+            return $this->jsonResponse(
+                'User not found.',
+                [
+                    'self' => url('/api/follow/' . $id),
+                ],
+                [],
+                404
+            );
+        }
+
+    }
+
+    public function unfollow(Request $request, $id) {
+            
+            $follower = $request->user();
+            $followed = User::find($id);
+    
+            if ($followed) {
+                $follow = Follower::where('user_id', $followed->id)
+                    ->where('follower_id', $follower->id)
+                    ->first();
+    
+                if ($follow) {
+                    $follow->delete();
+                    return $this->jsonResponse(
+                        'User unfollowed successfully',
+                        [
+                            'self' => url('/api/unfollow/' . $followed->id),
+                            'user unfollowed' => url('/api/user/' . $followed->id),
+                            'followers' => url('/api/followers/' . $followed->id),
+                        ],
+                        [
+                            'follow_count' => 'WIP',
+                        ]
+                    );
+                } else {
+                    return $this->jsonResponse(
+                        'User not followed.',
+                        [
+                            'self' => url('/api/unfollow/' . $followed->id),
+                        ],
+                        [],
+                        400
+                    );
+                }
+            } else {
+                return $this->jsonResponse(
+                    'User not found.',
+                    [
+                        'self' => url('/api/unfollow/' . $id),
+                    ],
+                    [],
+                    404
+                );
+            }
+    
+        }
+        
+
+    public function followers($id) {
+        $user = User::find($id);
+        if ($user) {
+            return $this->jsonResponse(
+                'Followers retrieved successfully! Empty array means no followers found.',
+                [
+                    'self' => url('/api/followers/' . $user->id),
+                    'user' => url('/api/user/' . $user->id),
+                ],
+                [
+                    'followers_count' => $user->followers->count(),
+                    'followers' => $user->getFollowersWithTags()
+                ]
+            );
+        } else {
+            return $this->jsonResponse(
+                'User not found.',
+                [
+                    'self' => url('/api/followers/' . $id),
+                ],
+                [],
+                404
+            );
+        }
+    }
+
+    public function following($id) {
+        $user = User::find($id);
+        if ($user) {
+            return $this->jsonResponse(
+                'Following retrieved successfully! Empty array means no following found.',
+                [
+                    'self' => url('/api/following/' . $user->id),
+                    'user' => url('/api/user/' . $user->id),
+                ],
+                [
+                    'following_count' => $user->following->count(),
+                    'following' => $user->getFollowingWithTags()
+                ]
+            );
+        } else {
+            return $this->jsonResponse(
+                'User not found.',
+                [
+                    'self' => url('/api/following/' . $id),
+                ],
+                [],
+                404
+            );
+        }
+    }
+
+
+    public function jsonResponse($message, $links, $extraData = [], $status = 200) {
+        return response()->json([
+            'data' => array_merge([
+                'message' => $message,
+                'Links' => $links,
+            ], $extraData),
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], $status);
+    }
+
+
+    
+}

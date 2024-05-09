@@ -123,4 +123,34 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new VerifyEmail);
     }
 
+    public function followers() {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
+    }
+
+    public function following() {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
+    }
+
+    public function getFollowersWithTags() {
+        return $this->followers()->get()->map(function ($follower) {
+            return [
+                'id' => $follower->id,
+                'tag' => $follower->tag,
+                'name' => $follower->name,
+                'full_tag' => $follower->getFullNameAttribute()
+            ];
+        });
+    }
+
+    public function getFollowingWithTags() {
+        return $this->following()->get()->map(function ($following) {
+            return [
+                'id' => $following->id,
+                'tag' => $following->tag,
+                'name' => $following->name,
+                'full_tag' => $following->getFullNameAttribute()
+            ];
+        });
+    }
+
 }

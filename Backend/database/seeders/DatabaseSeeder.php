@@ -3,6 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Event;
+use App\Models\EventRequirement;
+use App\Models\Follower;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +24,8 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'is_Admin' => true,
         ]);
+
+        Follower::factory(10)->create();
 
         
     }

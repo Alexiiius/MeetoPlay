@@ -12,11 +12,12 @@ use App\Http\Controllers\API\EventController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
+
 
 // Private routes for users
 Route::middleware(['auth:sanctum'])->group(function () {
 
+    Route::post('/logout', [AuthController::class, 'logout']);
     //all data from specific user
     Route::get('/user/{id}', [UserController::class, 'show']);
     //return all data from the authenticated user

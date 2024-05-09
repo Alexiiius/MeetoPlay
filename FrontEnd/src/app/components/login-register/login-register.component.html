@@ -1,0 +1,199 @@
+<div class="w-screen h-screen p-6 relative">
+  <div id="login" [@loginAnimation]="state"
+    class="absolute 2xl:w-[600px] w-[400px] 2x:px-24 px-12 rounded-box bg-gradient-to-b from-violet-500 to-accent col-span-3 flex flex-col items-center justify-center gap-6">
+
+    <h2 class="mb-3 text-base-100 text-2xl">Sign In</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="flex flex-col gap-6 w-full">
+
+      <label class="input input-bordered flex items-center gap-2"
+        [ngClass]="{'input-error': isInvalid(loginForm, 'email')}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
+          <path
+            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+          <path
+            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+        </svg>
+        <input class="grow" type="email" placeholder="Email" formControlName="email">
+      </label>
+
+      <label class="input input-bordered flex items-center gap-2"
+        [ngClass]="{'input-error': isInvalid(loginForm, 'password')}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
+          <path fill-rule="evenodd"
+            d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+            clip-rule="evenodd" />
+        </svg>
+        <input class="grow" type="password" placeholder="Contraseña" formControlName="password">
+      </label>
+
+      <label class="label cursor-pointer">
+        <span class="label-text text-neutral-800">Remember me</span>
+        <input type="checkbox" checked="checked" class="checkbox" formControlName="rememberMe" />
+      </label>
+
+      @if (logingIn) {
+      <button class="btn pointer-events-none">
+        <span class="loading loading-spinner"></span>
+        Iniciando sesión...
+      </button>
+      } @else {
+      <div class="rounded-lg bg-base-100/50">
+        <button class="btn w-full" type="submit" [disabled]="loginForm.status === 'INVALID'">Iniciar sesión</button>
+      </div>
+      }
+
+      @if (loginErrorMessage) {
+        <div role="alert" class="alert alert-error">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span class="text-sm">{{loginErrorMessage}}</span>
+        </div>
+      }
+
+    </form>
+
+    <span class="text-center text-base-100">¿No tienes cuenta?<a routerLink="/register" class="link ml-2">Crear
+        cuenta</a></span>
+  </div>
+
+  <div id="letters"
+    class="absolute z-30 2xl:w-[1200px] w-[700px] right-6 top-6 bottom-6 col-span-5 grid grid-cols-4 grid-rows-6 font-Raleway bg-base-100">
+    <div class="col-span-3 row-span-4 font-semibold 2xl:text-[254px]/[190px] text-[150px]/[115px]
+      bg-clip-text text-transparent bg-gradient-to-b from-primary to-secondary">
+      MEET TO PLAY
+    </div>
+    <div class="row-span-4  flex justify-center items-center">
+      <div
+        class="2xl:text-9xl text-8xl font-semibold transform rotate-90 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+        WHEN?</div>
+    </div>
+    <div class="row-span-2">
+      <svg width="280" height="280" class="w-full h-auto max-w-full" viewBox="0 0 31 30" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M6.49377 15.456C6.49372 16.0742 6.99325 16.5754 7.60946 16.5754C10.891 16.5753 20.0614 16.5754 23.339 16.5754C23.9552 16.5754 24.4547 16.0742 24.4547 15.456C24.4547 14.8379 23.9552 14.3368 23.339 14.3368C20.0612 14.3367 10.891 14.3374 7.60946 14.3368C6.99329 14.3368 6.49379 14.8379 6.49377 15.456Z"
+          fill="#40cef5" fill-opacity="0.988235" />
+        <path
+          d="M6.49377 9.40506C6.49372 10.0232 6.99325 10.5244 7.60946 10.5244C10.891 10.5243 20.0614 10.5244 23.339 10.5244C23.9552 10.5244 24.4547 10.0232 24.4547 9.40506C24.4547 8.78694 23.9552 8.28586 23.339 8.28585C20.0612 8.2857 10.891 8.28647 7.60946 8.28585C6.99329 8.28586 6.49379 8.78694 6.49377 9.40506Z"
+          fill="#9B6CFE" />
+        <path
+          d="M1.25415 5.90072V18.5672C1.25415 19.1174 1.36122 19.6622 1.56922 20.1704C1.77723 20.6786 2.0821 21.1403 2.4664 21.5291C2.85069 21.9179 3.30689 22.2262 3.80888 22.4362C4.31087 22.6463 4.84881 22.7541 5.39195 22.7534L18.2528 22.7371C18.3745 22.7369 18.5439 22.8063 18.6316 22.8917C19.996 24.2222 23.3505 27.4098 24.7168 28.7328C24.8047 28.8179 24.8778 28.7871 24.8804 28.664L24.9938 23.1321C24.9958 23.038 25.0339 22.9484 25.1001 22.8824C25.1663 22.8164 25.2554 22.7792 25.3483 22.7788C26.4914 22.771 27.585 22.3049 28.3898 21.4825C29.1945 20.6601 29.645 19.5483 29.6426 18.3904V5.9007C29.6426 5.35029 29.5356 4.80526 29.3276 4.29674C29.1197 3.78822 28.8149 3.32618 28.4307 2.93698C28.0464 2.54777 27.5903 2.23904 27.0883 2.0284C26.5862 1.81777 26.0482 1.70935 25.5048 1.70935L5.39195 1.70938C4.29454 1.70938 3.24207 2.15097 2.46608 2.93701C1.6901 3.72304 1.25415 4.78911 1.25415 5.90072Z"
+          stroke="#FBFBFB" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </div>
+
+    <div class="col-span-3 row-span-2 flex items-center justify-center">
+      <div
+        class="2xl:text-9xl text-7xl font-semibold bg-clip-text text-transparent bg-gradient-to-b from-primary to-secondary">
+        WHERE?</div>
+      <div class="relative w-28 h-36">
+        <div class="absolute 2xl:right-8 2xl:w-72 2xl:top-[-52px] w-44 h-auto top-[-4px] right-8">
+          <svg width="280" height="241" class="transfrom rotate-90 w-full h-auto max-w-full" viewBox="0 0 86 74"
+            fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M70.6151 36.3355H70.5771C70.0683 21.2892 57.9112 9.3 43.0322 9.29594C28.0508 9.31218 15.8198 21.4783 15.4832 36.6744L15.4831 36.6852C15.4794 39.817 15.4823 43.936 15.4854 48.4508C15.4911 56.5297 15.4976 65.8763 15.4687 73.1027L15.0725 73.1039C14.5198 73.1057 13.7543 73.1078 12.903 73.1096C11.2 73.1133 9.15478 73.116 7.78252 73.1116C3.74449 73.0987 0.78502 69.4567 0.448037 66.0254C-0.167193 59.7607 -0.130917 49.0542 0.447076 44.0716C0.70253 41.8694 1.43332 40.4704 2.38157 39.5046C3.34098 38.5274 4.56296 37.9517 5.88238 37.4695C6.13591 37.3768 6.34008 37.2588 6.49129 37.1038C6.65177 36.9394 6.72603 36.7607 6.75705 36.5995L6.76505 36.558L6.76613 36.5156C7.2744 16.522 23.3584 0.539328 43.0784 0.517761C62.8759 0.523249 79.0229 16.6169 79.4282 36.7159L79.4317 36.8894L79.5395 37.0243C79.6934 37.2168 79.917 37.3602 80.216 37.4695C81.5354 37.9517 82.7575 38.5274 83.7169 39.5046C84.6652 40.4704 85.3959 41.8694 85.6513 44.0716C86.2283 49.0466 85.9898 60.182 85.6488 66.0456C85.4505 69.4547 82.3689 73.0986 78.3162 73.1116C76.944 73.116 74.8987 73.1133 73.1957 73.1096C72.3444 73.1078 71.5789 73.1057 71.0263 73.1039L70.63 73.1027C70.6011 65.8634 70.6076 56.5106 70.6132 48.4318C70.6163 43.9978 70.6191 39.9477 70.6156 36.8414L70.6151 36.3355Z"
+              fill="#FBFBFB" />
+            <path
+              d="M63.6754 36.5667C61.8339 36.5666 60.341 38.0793 60.341 39.9453C60.3412 49.8825 60.341 59.8398 60.341 69.7651C60.341 71.6311 61.8339 73.1438 63.6754 73.1437C65.5167 73.1436 67.0093 71.631 67.0094 69.7651C67.0098 59.8391 67.0068 49.8826 67.0094 39.9453C67.0093 38.0794 65.5167 36.5668 63.6754 36.5667Z"
+              fill="#40cef5" fill-opacity="0.988235" />
+            <path
+              d="M21.4376 36.5667C19.5962 36.5666 18.1033 38.0793 18.1033 39.9453C18.1035 49.8825 18.1033 59.8398 18.1033 69.7651C18.1033 71.6311 19.5962 73.1438 21.4376 73.1437C23.2789 73.1436 24.7716 71.631 24.7716 69.7651C24.7721 59.8391 24.7688 49.8826 24.7716 39.9453C24.7716 38.0794 23.2789 36.5668 21.4376 36.5667Z"
+              fill="#9B6CFE" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="register" [@registerAnimation]="state"
+    class="absolute  2xl:w-[600px] w-[400px] 2x:px-24 px-12 rounded-box bg-gradient-to-b from-violet-500 to-accent col-span-3  flex flex-col items-center justify-center gap-6">
+    <h2 class="mb-3 text-base-100 text-2xl">Sign Up</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="flex flex-col gap-6 w-full">
+
+      <label class="input input-bordered flex items-center gap-2"
+        [ngClass]="{'input-error': isInvalid(registerForm, 'username')}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
+          <path
+            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+        </svg>
+        <input type="text" class="grow" placeholder="Username" formControlName="name" />
+      </label>
+
+      <label class="input input-bordered flex items-center gap-2"
+        [ngClass]="{'input-error': isInvalid(registerForm, 'email')}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
+          <path
+            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+          <path
+            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+        </svg>
+        <input class="grow" type="email" placeholder="Email" formControlName="email">
+      </label>
+
+      <div>
+        <label class="input input-bordered flex items-center gap-2"
+          [ngClass]="{'input-error': isInvalid(registerForm, 'password')}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
+            <path fill-rule="evenodd"
+              d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+              clip-rule="evenodd" />
+          </svg>
+          <input class="grow" type="password" placeholder="Contraseña" formControlName="password">
+        </label>
+        @if (isInvalid(registerForm, 'password')) {
+        <div class="label">
+          <span class="label-text-alt text-error">{{strongPasswordError}}</span>
+        </div>
+        }
+      </div>
+
+      <div>
+        <label class="input input-bordered flex items-center gap-2"
+          [ngClass]="{'input-error': isInvalid(registerForm, 'password_confirmation')}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
+            <path fill-rule="evenodd"
+              d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+              clip-rule="evenodd" />
+          </svg>
+          <input class="grow" type="password" placeholder="Confirmar contraseña"
+            formControlName="password_confirmation">
+        </label>
+        @if (isInvalid(registerForm, 'password_confirmation')) {
+        <div class="label">
+          <span class="label-text-alt text-error">{{passwordConfirmationError}}</span>
+        </div>
+        }
+      </div>
+
+      @if (logingIn) {
+      <button class="btn pointer-events-none">
+        <span class="loading loading-spinner"></span>
+        Registrandose...
+      </button>
+      } @else {
+      <div class="rounded-lg bg-base-100/50">
+        <button class="btn w-full" type="submit" [disabled]="registerForm.status === 'INVALID'">Registrarse</button>
+      </div>
+
+      }
+
+    </form>
+
+    @if (objectKeys(fieldErrors).length > 0) {
+      <div role="alert" class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        @for (key of objectKeys(fieldErrors); track $index) {
+          @for (error of fieldErrors[key]; track $index) {
+            <span class="text-sm">{{error}}</span>
+          }
+        }
+      </div>
+    }
+
+    <span class="text-center text-base-100">¿Ya tienes cuenta?
+      <a routerLink="/login" class="link ml-2">Iniciar sesión</a>
+    </span>
+  </div>
+</div>

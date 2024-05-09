@@ -17,17 +17,17 @@ class AuthController extends Controller{
 
 
     public function register(Request $request)  {
-        
+
         if ($this->validateCredentials($request)) {
             return $this->validateCredentials($request);
         }
-    
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-    
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         //generate email verification token
@@ -37,7 +37,7 @@ class AuthController extends Controller{
         //this is needed because we are not using the default kit otherwise it would be sent automatically
         //for a custom url we are editing the notification at appserviceprovider
         event(new Registered($user));
-    
+
         return response()->json([
             'data' => [
                 'message' => 'User created',
@@ -56,7 +56,7 @@ class AuthController extends Controller{
     }
 
     public function login(Request $request) {
-        
+
 
         $validationTry = $this->validateLoginCredentials($request);
         if ($validationTry) {
@@ -92,16 +92,16 @@ class AuthController extends Controller{
 
     // Destroy all tokens related to the user
     public function logout(Request $request) {
-        
-        $validationTry = $this->validateLoginCredentials($request);
-        if ($validationTry) {
-            return $validationTry;
-        }
 
-        $validationTry = $this->verifyCredentials($request);
-        if ($validationTry) {
-            return $validationTry;
-        }
+        // $validationTry = $this->validateLoginCredentials($request);
+        // if ($validationTry) {
+        //     return $validationTry;
+        // }
+
+        // $validationTry = $this->verifyCredentials($request);
+        // if ($validationTry) {
+        //     return $validationTry;
+        // }
 
         //destroy user related tokens
         $request->user()->tokens()->delete();
@@ -147,7 +147,7 @@ class AuthController extends Controller{
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed',
         ]);
-    
+
         if ($validator->fails()) {
             return $this->genericError('Invalid form fields. Please correct the errors and try again.', $validator->errors());
         }
@@ -160,7 +160,7 @@ class AuthController extends Controller{
             'email' => 'required|email',
             'password' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return $this->genericError('Invalid form fields. Please correct the errors and try again.', $validator->errors());
         }

@@ -1,0 +1,92 @@
+<div class="dark:bg-neutral-800 dark:text-neutral-200 bg-neutral-300 text-neutral-900 h-full w-full p-6 rounded-xl ">
+  <div class="scrollFeed" id="scroll">
+        <!-- {% for event in eventsData.events %} -->
+            <div class="eventCard">
+                <div class="eventCard--dropDownBtn" id="dropDownArrow">
+                    <img class="dropDownArrow"  src="" alt="dropdownIcon">
+                </div>
+                <div class="eventCard--gameInfo">
+                    <div class="eventCard--gameInfo--gameLogo">
+                        <img src="" alt="gameLogo">
+                    </div>
+                    <div class="eventCard--gameInfo--gameTitle"> </div>
+                    <div class="eventCard--gameInfo--gameName-gameMode"> </div>
+                    <div class="eventCard--gameInfo--platform"></div>
+                </div>
+                <div class="eventCard--dateInfo">
+                    <div class="eventCard--dateInfo--dateB">Fecha: </div>
+                    <div class="eventCard--dateInfo--timeB">Hora: </div>
+                    <div class="eventCard--dateInfo--datetimeEnd">Fin del evento: </div>
+                </div>
+                <div class="eventCard--requirements">
+                    <div class="eventCard--requirements--title">Requesitos de inscripción:</div>
+                <!-- {% if event.eventRequirementId != null %} -->
+                    <!-- {% if eventsData.eventsRequirements[eventCount].minLvl != null %} -->
+                        <div class="eventCard--requirement--minlvl">Nivel mínimo: </div>
+                    <!-- {% endif %} -->
+                    <!-- {% if eventsData.eventsRequirements[eventCount].maxLvl != null %} -->
+                        <div class="eventCard--requirement--maxlvl">Nivel máximo: </div>
+                    <!-- {% endif %} -->
+                    <!-- {% if eventsData.eventsRequirements[eventCount].minRank != null %} -->
+                        <div class="eventCard--requirement--minRank">Rango mínimo: </div>
+                    <!-- {% endif %} -->
+                    <!-- {% if eventsData.eventsRequirements[eventCount].maxRank != null %} -->
+                        <div class="eventCard--requirement--maxlvl">Rango máximo: </div>
+                    <!-- {% endif %} -->
+                <!-- {% else %} -->
+                    <div class="eventCard--requirements--no">No hay requisitos</div>
+                <!-- {% endif %} -->
+                </div>
+                <div class="eventCard--owner">
+                    <div class="eventCard--owner--proPic"><img src="" alt="eventOwnerprofPic"></div>
+                    <div class="eventCard--owner--userName">Evento creado por: </div>
+                </div>
+                <div class="eventCard--participants">
+                    <div class="eventCard--participants--title">Participantes:</div>
+                    <div class="eventCard--participants--list">
+
+                        <!-- {% if event.participants != null %} -->
+                            <!-- {% for participant in eventsData.eventsParticipants[eventCount] %} -->
+                                <!-- {% if counter <= 10 %} -->
+                                    <div class="eventCard--participants--list--participantName"></div>
+                                <!-- {% elseif counter == 11 and not loop.last %} -->
+                                    <div class="eventCard--participants--list--participantName">...</div>
+                                <!-- {% endif %} -->
+                                <!-- {% set counter = counter + 1 %} -->
+                            <!-- {% endfor %} -->
+                        <!-- {% else %} -->
+                            <div class="eventCard--participants--list--no">No hay participantes por ahora</div>
+                        <!-- {% endif %} -->
+                    </div>
+                </div>
+                <div class="eventCard--dateInscriptionEnd">
+                    <div class="eventCard--dateInscriptionEnd--title">Fecha límite de inscripción:</div>
+                    <div class="eventCard--dateInscriptionEnd--dateTime">
+                        <div class="eventCard--dateInscriptionEnd--dateTime--date"> </div><div class="eventCard--dateInscriptionEnd--dateTime--time"> </div>
+                    </div>
+                </div>
+                <div class="eventCard--slots">
+                    <div class="eventCard--slots--title">Plazas: &nbsp;</div>
+                    <div class="eventCard--slots--slots">
+                        <!-- {% set availablesSlots = event.slots - eventsData.eventsParticipants[eventCount]|length %} -->
+                        <!-- {% set totalSlots = event.slots %} -->
+                        <div class="eventCard--slots--slots--available"></div><div class="eventCard--slots--slots--total"></div>
+                    </div>
+                </div>
+                <div class="eventCard--btns">
+                    <!-- {% if UserJoinedEvent(event.eventId, baseTemplateData.logedUser.userId)  %} -->
+                    <div class="eventCard--btns--joinBtn--green--border">
+                        <a href=""><div class="eventCard--btns--joinBtn--green--content">Unido</div></a>
+                    </div>
+                    <!-- {% else %} -->
+                    <div class="eventCard--btns--joinBtn--normal--border">
+                        <a href=""><div class="eventCard--btns--joinBtn--normal--content">Unirse</div></a>
+                    </div>
+                    <!-- {% endif %} -->
+                </div>
+            </div>
+            <!-- {% set eventCount = eventCount + 1 %} -->
+        <!-- {% endfor %} -->
+</div>
+</div>
+

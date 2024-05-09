@@ -9,6 +9,7 @@ module.exports = {
     fontFamily: {
       'Kanit': ['Kanit'],
       'Raleway': ['Raleway'],
+      'mono': ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace']
     },
     keyframes: {
       gradient: {

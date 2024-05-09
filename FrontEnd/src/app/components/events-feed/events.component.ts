@@ -10,6 +10,6 @@ import { EventCardComponent } from './event-card/event-card.component';
   templateUrl: './events.component.html',
   styleUrl: './events.component.css'
 })
-export class EventsComponent {
+export class EventsFeedComponent {
 
 }

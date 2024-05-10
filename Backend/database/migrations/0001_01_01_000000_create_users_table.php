@@ -17,7 +17,15 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->integer('tag')->unique();
+            $table->string('avatar')->default('avatars/default.jpg'); //<img src="{{ asset('storage/' . $user->avatar) }}" alt="User Avatar">
+            $table->date('date_of_birth')->nullable();
+            $table->string('status')->default('offline');
+            $table->boolean('is_admin')->default(false);
+            $table->string('bio')->default('Hello, I am using MeetoPlay!');
+            $table->json('socials')->nullable();
             $table->rememberToken();
+            $table->string('email_verification_token')->nullable();
             $table->timestamps();
         });
 
@@ -40,8 +48,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

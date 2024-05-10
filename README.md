@@ -58,3 +58,6 @@ README still under construction...
   - [Render Exceptios](https://laravel.com/docs/11.x/errors#renderable-exceptions)
   - [Middleware](https://laravel.com/docs/11.x/middleware)
   - [Unauthorized request JSON response](https://laracasts.com/discuss/channels/laravel/laravel-11-api-unauthorized-requests-redirects-to-login-page?page=1&replyId=930192)
+
+## Checkpoint Video
+  [Video🎬](https://drive.google.com/file/d/1F81V0F58sIDZHxnyY5XTL2U2HFycFt-Y/view?usp=sharing)

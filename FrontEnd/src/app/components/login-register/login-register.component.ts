@@ -64,8 +64,12 @@ export class LoginRegisterComponent implements OnInit {
     this.logingIn = true;
     this.authService.login(this.loginForm.value).subscribe(
       token => {
-        this.authService.storeToken(token, this.loginForm.value.rememberMe);
-        this.router.navigate(['/main']);
+        this.authService.storeToken(token, this.loginForm.value.rememberMe).then(() => {
+          this.authService.getUserData().subscribe(() => {
+            this.router.navigate(['/main']);
+          })
+        });
+
       },
       error => {
         if (error.error) {

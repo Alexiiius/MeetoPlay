@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Game } from '../models/game';
 import { Gamemode } from '../models/gamemode';
+import { FullGame } from '../models/fullgame';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewEventFormService {
 
-  private selectedGameSource = new BehaviorSubject<Game | null>(null);
+  private selectedGameSource = new BehaviorSubject<FullGame | null>(null);
   selectedGame$ = this.selectedGameSource.asObservable();
 
   private selectedGamemodeSource = new BehaviorSubject<Gamemode | null>(null);
@@ -26,7 +27,7 @@ export class NewEventFormService {
   constructor() {
   }
 
-  changeSelectedGame(game: Game | null) {
+  changeSelectedGame(game: FullGame | null) {
     this.selectedGameSource.next(game);
   }
 

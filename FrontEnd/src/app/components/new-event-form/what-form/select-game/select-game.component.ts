@@ -1,8 +1,11 @@
 import { NewEventFormService } from '../../../../services/new-event-form.service';
 import { Game } from '../../../../models/game';
-import { Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { APIService } from '../../../../services/api.service';
+import { FullGame } from '../../../../models/fullgame';
+import { map, Observable } from 'rxjs';
 
 
 @Component({
@@ -28,18 +31,19 @@ export class SelectGameComponent implements ControlValueAccessor {
   @Input() isInvalid: boolean | undefined;
   @Output() gameSelected = new EventEmitter<Game>();
 
-  constructor(private newEventFromService: NewEventFormService) { }
+  constructor(private newEventFromService: NewEventFormService, private apiService: APIService) { }
 
   //Reactiveform
   value: any;
-  onChange: any = () => {};
-  onTouch: any = () => {};
+  onChange: any = () => { };
+  onTouch: any = () => { };
 
   searchValue = '';
-  selectedGame: Game | null;
+  selectedGame: FullGame | null;
   showDropdown = false;
   isGameSelected = false;
   isFocused = false;
+  imageLoaded = false;
 
   //Filter games based on search value
   get filteredGames() {
@@ -53,12 +57,10 @@ export class SelectGameComponent implements ControlValueAccessor {
     this.onChange(value);
     this.isGameSelected = false;
     this.newEventFromService.changeSelectedGame(null);
-    console.log(this.searchValue);
-    console.log(this.selectedGame);
   }
 
   //Reactiveform
-  writeValue(value: Game): void {
+  writeValue(value: FullGame): void {
     this.selectedGame = value;
   }
 
@@ -83,13 +85,27 @@ export class SelectGameComponent implements ControlValueAccessor {
 
   //When a option of the dropdown is selected
   selectGame(game: Game) {
-    this.selectedGame = game;
     this.searchValue = game.name;
     this.showDropdown = false;
     this.isGameSelected = true;
     this.onChange(game);
     this.onTouch();
-    this.newEventFromService.changeSelectedGame(game);
+
+    this.getFullGame(game.id).subscribe(fullGame => {
+      this.selectedGame = fullGame;
+      this.newEventFromService.changeSelectedGame(fullGame);
+      this.imageLoaded = true;
+    });
+
+  }
+
+  getFullGame(gameId: number): Observable<FullGame> {
+    return this.apiService.getFullGame(gameId).pipe(map((response: FullGame) => {
+      const fullGame = new FullGame(
+        response.game
+      );
+      return fullGame;
+    }));
   }
 
   //Reset search value

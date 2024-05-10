@@ -34,7 +34,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // ------------------------------------------------------------------ EVENT ENDPOINTS ------------------------------------------------------------------
 
     Route::post('/create/event', [EventController::class, 'store']); //create a new event and its requirements
-    Route::get('/event/{id}', [EventController::class, 'show']); //show a specific event wih its requirements
+    Route::get('/event/{id}', [EventController::class, 'show']); //show a specific event with requirements by id
+
+    Route::get('/events/public/{page}', [EventController::class, 'showPublicEvents']); //show all public events
+    Route::get('/events/hidden/{page}', [EventController::class, 'showHiddenEvents']); //show all hidden events of auth user
+    Route::get('/events/my/{page}', [EventController::class, 'showMyEvents']); //show all events of auth user
+    Route::get('/events/friends/{page}', [EventController::class, 'showFriendsEvents']); //show all events of friends of auth user
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -45,6 +50,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/followers/{id}', [FollowerController::class, 'followers']); //show all followers from id user
     Route::get('/following/{id}', [FollowerController::class, 'following']); //show all following from id user
     Route::get('/follow/{id}', [FollowerController::class, 'show']); //show if auth user follow id user
+    Route::get('/friends/{id}', [FollowerController::class, 'friends']); //show all friends of a id user
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 

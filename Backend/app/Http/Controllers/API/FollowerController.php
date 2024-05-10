@@ -199,6 +199,44 @@ class FollowerController extends Controller {
         }
     }
 
+    public function friends($id) {
+        $user = User::find($id);
+        if (!$user) {
+            return $this->jsonResponse(
+                'User not found.',
+                ['self' => url('/api/friends/' . $id)],
+                [],
+                404
+            );
+        }
+    
+        $followers = $user->followers()->get();
+        $following = $user->following()->get();
+        $friends = $followers->intersect($following);
+    
+        $friendsData = $friends->map(function ($friend) {
+            return [
+                'id' => $friend->id,
+                'tag' => $friend->tag,
+                'name' => $friend->name,
+                'full_tag' => $friend->getFullNameAttribute()
+            ];
+        });
+    
+        return $this->jsonResponse(
+            'Friends retrieved successfully! Empty array means no friends found.',
+            [
+                'self' => url('/api/friends/' . $user->id),
+                'user' => url('/api/user/' . $user->id),
+            ],
+            [
+                'friends_count' => $friends->count(),
+                'friends' => $friendsData
+            ]
+        );
+    }
+
+
 
     public function jsonResponse($message, $links, $extraData = [], $status = 200) {
         return response()->json([

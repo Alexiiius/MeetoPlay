@@ -42,7 +42,7 @@ class EventController extends Controller
 
         $event_requirements = EventRequirement::create($request->input('data.event_requirements'));
         $event = Event::create($request->input('data.event'));
-        $event->requirement()->associate($event_requirements);
+        $event->event_requirements()->associate($event_requirements);
         $event->owner()->associate(User::find($request->input('data.event.event_owner_id')));
         $event->save();
         $event_requirements->event()->associate($event);
@@ -63,17 +63,109 @@ class EventController extends Controller
     }
 
     public function show($id) {
-        $event = Event::find($id);
-        $event_requirements = EventRequirement::where('event_id', $id)->first();
-        $event_owner = User::find($event->event_owner_id);
+        
+        $event = Event::with('event_requirements')->find($id);
 
         return response()->json([
             'data' => [
                 'event' => $event,
-                'event_requirements' => $event_requirements,
-                'event_owner' => $event_owner,
             ],
             'meta' => [
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function showPublicEvents($page) {
+        $perPage = 10;
+        $skip = ($page - 1) * $perPage;
+        $events = Event::where('privacy', 'public')
+            ->skip($skip)
+            ->take($perPage)
+            ->get();
+        $total = Event::where('privacy', 'public')->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function showHiddenEvents($page) {
+        $perPage = 10;
+        $skip = ($page - 1) * $perPage;
+        $userId = auth()->id(); // Obtén el ID del usuario autenticado
+        $events = Event::where('privacy', 'hidden')
+               ->where('event_owner_id', $userId)
+               ->skip($skip)
+               ->take($perPage)
+               ->get();
+        $total = Event::where('privacy', 'hidden')
+               ->where('event_owner_id', $userId)
+               ->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function showMyEvents($page) {
+        $perPage = 10;
+        $skip = ($page - 1) * $perPage;
+        $userId = auth()->id();
+        $events = Event::where('event_owner_id', $userId)
+               ->skip($skip)
+               ->take($perPage)
+               ->get();
+        $total = Event::where('event_owner_id', $userId)->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function showFriendsEvents($page) {
+        $perPage = 10;
+        $skip = ($page - 1) * $perPage;
+        $userId = auth()->id();
+        $friends = User::find($userId)->following()->get();
+        $events = Event::whereIn('event_owner_id', $friends->pluck('id'))
+               ->skip($skip)
+               ->take($perPage)
+               ->get();
+        $total = Event::whereIn('event_owner_id', $friends->pluck('id'))->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
                 'timestamp' => now(),
             ],
         ]);

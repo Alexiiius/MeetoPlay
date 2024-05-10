@@ -22,6 +22,6 @@ export class APIService {
   }
 
   getFullGame(gameId: number): Observable<any> {
-    return this.http.get(gamesApiUrl + '/game/' + gameId );
+    return this.http.get(gamesApiUrl + '/game/' + gameId);
   }
 }

@@ -23,7 +23,7 @@ README still under construction...
   - API - BackEnd - Front Structure commited (Base laravel 11 and angular 17 proyects)
     
 - 0.0.2 🗓️ (04/05/2024) 
-  - Backend: Added security feature (personal access token, email verification, unauthorized msgs...)
+  - Backend: Added security and auth features (personal access token, email verification, unauthorized msgs...)
   - Frontend: Added main form to create events with validations using json as database
     
 - 0.1.2 🗓️ (07/05/2024) 

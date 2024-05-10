@@ -44,6 +44,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/unfollow/{id}', [FollowerController::class, 'unfollow']); //auth user unfollow id user
     Route::get('/followers/{id}', [FollowerController::class, 'followers']); //show all followers from id user
     Route::get('/following/{id}', [FollowerController::class, 'following']); //show all following from id user
+    Route::get('/follow/{id}', [FollowerController::class, 'show']); //show if auth user follow id user
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 

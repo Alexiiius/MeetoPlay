@@ -157,6 +157,48 @@ class FollowerController extends Controller {
         }
     }
 
+    public function show(Request $request, $id) {
+        $follower = $request->user();
+        $followed = User::find($id);
+
+        if ($followed) {
+            $follow = Follower::where('user_id', $followed->id)
+                ->where('follower_id', $follower->id)
+                ->first();
+
+            if ($follow) {
+                return $this->jsonResponse(
+                    'User ' .$follower->id . ' is following user ' .$followed->id . '.',
+                    [
+                        'self' => url('/api/follow/' . $followed->id),
+                        'user' => url('/api/user/' . $followed->id),
+                    ],
+                    ['boolean' => true,],
+                    200
+                );
+            } else {
+                return $this->jsonResponse(
+                    'User ' .$follower->id . ' is not following user ' .$followed->id . '.',
+                    [
+                        'self' => url('/api/follow/' . $followed->id),
+                        'user' => url('/api/user/' . $followed->id),
+                    ],
+                    ['boolean' => false,],
+                    200
+                );
+            }
+        } else {
+            return $this->jsonResponse(
+                'User not found.',
+                [
+                    'self' => url('/api/follow/' . $id),
+                ],
+                [],
+                404
+            );
+        }
+    }
+
 
     public function jsonResponse($message, $links, $extraData = [], $status = 200) {
         return response()->json([

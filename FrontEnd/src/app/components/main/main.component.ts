@@ -26,10 +26,9 @@ import { APIService } from '../../services/api.service';
 })
 export class MainComponent implements OnInit {
 
-  constructor(private authService: AuthService, private apiService: APIService) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
     this.authService.getUserData().subscribe();
-    this.apiService.loginAPI();
   }
 }

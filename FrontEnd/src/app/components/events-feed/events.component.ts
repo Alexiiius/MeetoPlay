@@ -12,4 +12,5 @@ import { EventCardComponent } from './event-card/event-card.component';
 })
 export class EventsFeedComponent {
 
+  constructor() { }
 }

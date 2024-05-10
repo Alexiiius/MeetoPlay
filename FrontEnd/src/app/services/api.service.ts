@@ -17,26 +17,6 @@ export class APIService {
   //   return this.http.get<GetGamesResponse>(this.gamesUrl);
   // }
 
-  loginAPI() {
-    const credentials =
-    {
-      email: 'admin@admin.com',
-      password: 'admin'
-    }
-    return this.http.post<any>(gamesApiUrl + '/login', credentials).pipe(
-      tap(response => {
-        if (response && response.data.access_token) {
-          const token = response.data.access_token.split('|')[1];
-          localStorage.setItem('api_token', token);
-        }
-      }),
-      catchError(error => {
-        console.error('Error:', error);
-        return throwError(error);
-      })
-    );
-  }
-
   getGames(): Observable<Game[]> {
     return this.http.get<Game[]>(gamesApiUrl + '/games');
   }

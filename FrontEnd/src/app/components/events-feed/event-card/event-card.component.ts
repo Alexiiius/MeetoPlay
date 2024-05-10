@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './event-card.component.css'
 })
 export class EventCardComponent {
-  eventEndTime = new Date('2024-05-31T23:59:59'); // Simula la fecha y hora del final del evento
+  eventEndTime = new Date('2024-05-10T01:59:59'); // Simula la fecha y hora del final del evento
   isChecked = false;
 
   countdown = {
@@ -45,4 +45,6 @@ export class EventCardComponent {
       this.countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
     }
   }
+
+
 }

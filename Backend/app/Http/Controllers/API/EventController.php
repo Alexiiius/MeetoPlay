@@ -15,11 +15,7 @@ use App\Models\Event;
 class EventController extends Controller
 {
     
-    public function index($id) {
-        //
-    }
 
-    
     public function store(Request $request) {
         $request->validate([
             'data.event.event_title' => 'required|string',
@@ -40,9 +36,13 @@ class EventController extends Controller
             'data.event_requirements.min_hours_played' => 'nullable|integer',
         ]);
 
+        $data = $request->input('data');
+        $data['event']['event_owner_id'] = $request->user()->id;
+        $request->merge(['data' => $data]);
+
         $event_requirements = EventRequirement::create($request->input('data.event_requirements'));
         $event = Event::create($request->input('data.event'));
-        $event->requirement()->associate($event_requirements);
+        $event->event_requirements()->associate($event_requirements);
         $event->owner()->associate(User::find($request->input('data.event.event_owner_id')));
         $event->save();
         $event_requirements->event()->associate($event);
@@ -59,19 +59,33 @@ class EventController extends Controller
             'meta' => [
                 'timestamp' => now(),
             ],
-        ]);
+        ], 201);
     }
 
     public function show($id) {
-        $event = Event::find($id);
-        $event_requirements = EventRequirement::where('event_id', $id)->first();
-        $event_owner = User::find($event->event_owner_id);
+        
+        $event = Event::with('event_requirements')->find($id);
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+    
+        $user = auth()->user();
+    
+        if ($event->privacy == 'hidden' && $event->event_owner_id != $user->id && $user->is_admin != true) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if ($event->privacy == 'friends') {
+            $friends = $user->friends()->toArray();
+            if (!in_array($event->event_owner_id, $friends) && $event->event_owner_id != $user->id && $user->is_admin != true) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+        }
 
         return response()->json([
             'data' => [
                 'event' => $event,
-                'event_requirements' => $event_requirements,
-                'event_owner' => $event_owner,
             ],
             'meta' => [
                 'timestamp' => now(),
@@ -79,19 +93,189 @@ class EventController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Event $event)
-    {
-        //
+    public function showPublicEvents($page) {
+        $perPage = 10;
+        $skip = ($page - 1) * $perPage;
+        $events = Event::where('privacy', 'public')
+            ->skip($skip)
+            ->take($perPage)
+            ->get();
+        $total = Event::where('privacy', 'public')->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Event $event)
-    {
-        //
+    public function showHiddenEvents($page) {
+        $perPage = 10;
+        $skip = ($page - 1) * $perPage;
+        $userId = auth()->id(); // Obtén el ID del usuario autenticado
+        $events = Event::where('privacy', 'hidden')
+               ->where('event_owner_id', $userId)
+               ->skip($skip)
+               ->take($perPage)
+               ->get();
+        $total = Event::where('privacy', 'hidden')
+               ->where('event_owner_id', $userId)
+               ->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function showMyEvents($page) {
+        $perPage = 10;
+        $skip = ($page - 1) * $perPage;
+        $userId = auth()->id();
+        $events = Event::where('event_owner_id', $userId)
+               ->skip($skip)
+               ->take($perPage)
+               ->get();
+        $total = Event::where('event_owner_id', $userId)->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function showFriendsEvents($page) {
+        $perPage = 10;
+        $skip = ($page - 1) * $perPage;
+        $userId = auth()->id();
+        $friends = User::find($userId)->friends();
+        $events = Event::whereIn('event_owner_id', $friends)
+                ->where('privacy', '!=', 'hidden')
+                ->skip($skip)
+                ->take($perPage)
+                ->get();
+        $total = Event::whereIn('event_owner_id', $friends)
+            ->where('privacy', '!=', 'hidden')
+            ->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function update(Request $request, Event $event) {
+        $event = Event::find($request->id);
+        $user = auth()->user();
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+        if ($event->event_owner_id != $user->id && $user->is_admin != true) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'data.event.event_title' => 'required|string',
+            'data.event.game_id' => 'required|integer',
+            'data.event.game_name' => 'required|string',
+            'data.event.game_mode' => 'required|string',
+            'data.event.game_pic' => 'required|url',
+            'data.event.platform' => 'required|string',
+            'data.event.event_owner_id' => 'required|integer',
+            'data.event.date_time_begin' => 'required|date',
+            'data.event.date_time_end' => 'required|date',
+            'data.event.privacy' => 'required|string',
+            'data.event_requirements.max_rank' => 'nullable|string',
+            'data.event_requirements.min_rank' => 'nullable|string',
+            'data.event_requirements.max_level' => 'nullable|integer',
+            'data.event_requirements.min_level' => 'nullable|integer',
+            'data.event_requirements.max_hours_played' => 'nullable|integer',
+            'data.event_requirements.min_hours_played' => 'nullable|integer',
+        ]);
+
+        $data = $request->input('data');
+        $data['event']['event_owner_id'] = $request->user()->id;
+        $request->merge(['data' => $data]);
+
+        // Update the event
+        $event->update($request->input('data.event'));
+        $requirement = $event->event_requirements;
+        $requirement->update($request->input('data.event_requirements'));
+
+        $event->save();
+        $requirement->save();
+
+        return response()->json([
+            'data' => [
+                'message' => 'Event updated successfully!',
+                'Links' => [
+                    'self' => url('/api/event/' . $event->id),
+                ],
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], 200);
+
+    }
+
+
+    public function destroy(Request $request) {
+        
+        $event = Event::find($request->id);
+        $user = auth()->user();
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+        if ($event->event_owner_id != $user->id && $user->is_admin != true) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $event->delete();
+        return response()->json([
+            'data' => [
+                'message' => 'Event deleted successfully!',
+                'Links' => [
+                    'self' => url('/api/event/' . $event->id),
+                ],
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], 200);
+
+
+
     }
 }

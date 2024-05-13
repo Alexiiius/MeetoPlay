@@ -31,9 +31,10 @@ class Event extends Model {
         return $this->belongsTo(User::class, 'event_owner_id');
     }
 
-    public function requirement() {
+    public function event_requirements() {
         return $this->belongsTo(EventRequirement::class, 'event_requirement_id');
     }
+
 
     
 }

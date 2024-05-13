@@ -5,6 +5,8 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
 use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 //manage group and global middleware here.
 //to add at top or botton of 'web' middleware stack use prepend or append
@@ -30,22 +32,43 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-       //
        $exceptions->render(function (AuthenticationException $e) {
-        return response()->json([
-            'data' => [
-                'message' => 'Unauthorized access',
-                'errors' => $e->getMessage(),
-                'Links' => [
-                    'self' => url('/api/register'),
-                    'login' => url('/api/login'),
-                    'logout' => url('/api/logout'),
+            return response()->json([
+                'data' => [
+                    'message' => 'Unauthorized access',
+                    'errors' => $e->getMessage(),
+                    'Links' => [
+                        'self' => url('/api/register'),
+                        'login' => url('/api/login'),
+                        'logout' => url('/api/logout'),
+                    ],
                 ],
-            ],
-            'meta' => [
-                'timestamp' => now(),
-            ],
-        ], 401);
-    });
+                'meta' => [
+                    'timestamp' => now(),
+                ],
+            ], 401);
+        });
+        $exceptions->render(function (MethodNotAllowedHttpException $e) {
+            return response()->json([
+                'data' => [
+                    'message' => 'Method not allowed',
+                    'errors' => $e->getMessage(),
+                ],
+                'meta' => [
+                    'timestamp' => now(),
+                ],
+            ], 405);
+        });
+        $exceptions->render(function (NotFoundHttpException $e) {
+            return response()->json([
+                'data' => [
+                    'message' => '404 Not found',
+                    'errors' => $e->getMessage(),
+                ],
+                'meta' => [
+                    'timestamp' => now(),
+                ],
+            ], 404);
+        });
       
     })->create();

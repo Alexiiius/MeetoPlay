@@ -14,6 +14,17 @@ class FollowerController extends Controller {
         $follower = $request->user();
         $followed = User::find($id);
 
+        if ($follower->id == $id) {
+            return $this->jsonResponse(
+                'User cannot follow itself.',
+                [
+                    'self' => url('/api/follow/' . $id),
+                ],
+                [],
+                400
+            );
+        }
+
         if ($followed) {
             $follow = Follower::where('user_id', $followed->id)
                 ->where('follower_id', $follower->id)

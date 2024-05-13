@@ -1,5 +1,5 @@
 <div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-200">
-  <input type="checkbox" [(ngModel)]="isChecked"/>
+  <input type="checkbox" [(ngModel)]="isChecked" />
   <div class="collapse-title text-xl flex items-center justify-between">
     <div class="flex items-center">
       <img class="w-14 h-auto mr-3"
@@ -19,95 +19,124 @@
     </div>
   </div>
   <div class="collapse-content">
-    <div class="w-full h-full flex justify-between py-3">
-      <div class="flex flex-col gap-6">
-        <div class="flex flex-col gap-2 font-light">
-          <span>Comienza el *fecha* a las *hora*</span>
-          <span>Finaliza el *fecha* a las *hora*</span>
+    <div class="w-full h-full grid grid-cols-4 grid-rows-2 py-3 gap-3">
+      <!-- Participantes -->
+      <div class="flex col-span-2">
+        <div class="flex flex-col gap-2">
         </div>
-        <div tabindex="0" class="collapse collapse-plus bg-base-200">
-          <div class="collapse-title text-lg font-medium">
-            Requisitos de incripción
+        <div class="flex text-lg font-medium">
+          <div>
+            <span class="mr-2">Participantes</span>
+            <span class="font-mono">8/10</span>
+
+            <div class="avatar-group -space-x-5 rtl:space-x-reverse">
+              <div class="avatar border-1 border-base-200">
+                <div class="w-10">
+                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
+              </div>
+              <div class="avatar border-1 border-base-200">
+                <div class="w-10">
+                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
+              </div>
+              <div class="avatar border-1 border-base-200">
+                <div class="w-10">
+                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
+              </div>
+              <div class="avatar border-1 border-base-200">
+                <div class="w-10">
+                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
+              </div>
+              <div class="avatar border-1 border-base-200">
+                <div class="w-10">
+                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
+              </div>
+              <div class="avatar border-1 border-base-200 placeholder">
+                <div class="w-10 bg-neutral text-neutral-content">
+                  <span>+2</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="collapse-content">
-            <div class="flex flex-col gap-2">
+        </div>
+        <div class="dropdown md:dropdown-end dropdown-hover 2xl:dropdown-right">
+          <div tabindex="0" role="button" class="btn btn-circle btn-ghost btn-xs text-info">
+            <svg tabindex="0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              class="w-4 h-4 stroke-current">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div tabindex="0" class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-[220px] text-left">
+            <div tabindex="0" class="card-body font-light flex">
+              <h2 class="card-title">Amigos</h2>
+                <div class="flex flex-wrap gap-1 max-w-full">
+                  <span><a href="#" class="link">Amigo1</a></span>
+                  <span><a href="#" class="link">Amigo2</a></span>
+                  <span><a href="#" class="link">Amigo3</a></span>
+                  <span><a href="#" class="link">Amigo4</a></span>
+
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Fin Participantes -->
+
+      <!-- Fecha y hora -->
+      <div class="flex flex-col gap-2 font-light col-span-2">
+        <span>Comienza el *fecha* a las *hora*</span>
+        <span>Finaliza el *fecha* a las *hora*</span>
+      </div>
+      <!-- Fin fecha y hora -->
+
+      <!-- Requisitos -->
+      <div class="text-left flex items-end">
+        Me puedo unir?
+        <div class="dropdown dropdown-right dropdown-end dropdown-hover">
+          <div tabindex="0" role="button" class="btn btn-circle btn-ghost btn-xs text-info">
+            <svg tabindex="0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              class="w-4 h-4 stroke-current">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div tabindex="0" class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-72 text-left">
+            <div tabindex="0" class="card-body">
+              <h2 class="card-title">Requisitos de inscripción</h2>
               @for (number of [1, 2, 3, 4]; track $index) {
               <span>Requisito: <span class="font-light">xxxxx</span></span>
               }
             </div>
           </div>
         </div>
-
       </div>
-      <div class="flex flex-col gap-6">
-        <div class="flex flex-col gap-2">
-          <div tabindex="0" class="collapse bg-base-200 collapse-plus mt-[-15px]">
-            <div class="collapse-title text-lg font-medium">
-              <span class="mr-2">Participantes</span>
-              <span class="font-mono">8/10</span>
-
-              <div class="avatar-group -space-x-5 rtl:space-x-reverse">
-                <div class="avatar border-1 border-base-200">
-                  <div class="w-10">
-                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                  </div>
-                </div>
-                <div class="avatar border-1 border-base-200">
-                  <div class="w-10">
-                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                  </div>
-                </div>
-                <div class="avatar border-1 border-base-200">
-                  <div class="w-10">
-                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                  </div>
-                </div>
-                <div class="avatar border-1 border-base-200">
-                  <div class="w-10">
-                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                  </div>
-                </div>
-                <div class="avatar border-1 border-base-200">
-                  <div class="w-10">
-                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                  </div>
-                </div>
-                <div class="avatar border-1 border-base-200 placeholder">
-                  <div class="w-10 bg-neutral text-neutral-content">
-                    <span>+2</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="collapse-content">
-              <div class="font-light w-full">
-                <a href="#" class="link">Amigo1 </a>
-                <a href="#" class="link">Amigo2 </a>
-                <a href="#" class="link">Amigo3 </a>
-                <a href="#" class="link">Amigo4</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="h-full flex flex-col justify-end items-center gap-3">
+      <!-- Fin Requisitos -->
+      <div class="hidden 2xl:block"></div>
+      <!-- Botones + contador -->
+      <div class="h-full flex flex-col justify-end items-end gap-3 col-span-3 2xl:col-span-2">
         <div class="flex gap-2">
           <span class="text-md font-light">El plazo de inscripción acaba en</span>
-
           <span class="countdown font-mono text-xl font-normal flex" [ngClass]="{'hidden': !isChecked}">
             <span [style.--value]="countdown.days"></span>d
             <span [style.--value]="countdown.hours"></span>h
             <span [style.--value]="countdown.minutes"></span>m
             <span [style.--value]="countdown.seconds"></span>s
           </span>
-
         </div>
-        <div class="flex gap-3">
-          <button class="text-base font-normal font-Kanit btn btn-outline btn-secondary w-28">Chat</button>
-          <button class="text-base font-normal font-Kanit btn btn-outline btn-error w-28">Abandonar</button>
-          <input type="checkbox" aria-label="Unirse" class="text-base font-normal font-Kanit btn btn-success w-28 btn-outline" />
+
+        <div class="flex 2xl:w-full 2xl:justify-end space-x-3">
+          <button class="text-base font-normal font-Kanit btn btn-outline btn-secondary w-28 2xl:flex-grow">Chat</button>
+          <button class="text-base font-normal font-Kanit btn btn-outline btn-error w-28 2xl:flex-grow">Abandonar</button>
+          <input type="checkbox" aria-label="Unirse"
+            class="text-base font-normal font-Kanit btn btn-success w-28 btn-outline 2xl:flex-grow" />
         </div>
       </div>
+      <!-- Fin Botones + contador -->
     </div>
   </div>
 </div>

@@ -24,6 +24,6 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'FrontEnd';
+  title = 'MeetoPlay';
 
 }

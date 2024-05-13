@@ -223,7 +223,11 @@ class FollowerController extends Controller {
     
         $followers = $user->followers()->get();
         $following = $user->following()->get();
-        $friends = $followers->intersect($following);
+        $friends = User::whereHas('followers', function ($query) use ($user) {
+            $query->where('follower_id', $user->id);
+        })->whereHas('following', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
     
         $friendsData = $friends->map(function ($friend) {
             return [

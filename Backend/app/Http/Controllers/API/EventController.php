@@ -40,6 +40,10 @@ class EventController extends Controller
             'data.event_requirements.min_hours_played' => 'nullable|integer',
         ]);
 
+        $data = $request->input('data');
+        $data['event']['event_owner_id'] = $request->user()->id;
+        $request->merge(['data' => $data]);
+
         $event_requirements = EventRequirement::create($request->input('data.event_requirements'));
         $event = Event::create($request->input('data.event'));
         $event->event_requirements()->associate($event_requirements);
@@ -151,12 +155,15 @@ class EventController extends Controller
         $perPage = 10;
         $skip = ($page - 1) * $perPage;
         $userId = auth()->id();
-        $friends = User::find($userId)->following()->get();
-        $events = Event::whereIn('event_owner_id', $friends->pluck('id'))
-               ->skip($skip)
-               ->take($perPage)
-               ->get();
-        $total = Event::whereIn('event_owner_id', $friends->pluck('id'))->count();
+        $friends = User::find($userId)->friends();
+        $events = Event::whereIn('event_owner_id', $friends)
+                ->where('privacy', '!=', 'hidden')
+                ->skip($skip)
+                ->take($perPage)
+                ->get();
+        $total = Event::whereIn('event_owner_id', $friends)
+            ->where('privacy', '!=', 'hidden')
+            ->count();
     
         return response()->json([
             'data' => [

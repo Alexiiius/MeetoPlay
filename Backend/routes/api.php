@@ -36,16 +36,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/create/event', [EventController::class, 'store']); //create a new event and its requirements
 
 
-    Route::get('/event/{id}', [EventController::class, 'show']); //show a specific event with requirements by id
-    //filtrar que solo se puedan ver si tienes acceso
-
+    Route::get('/event/{id}', [EventController::class, 'show']); //show a specific event with requirements by id only if the user has permission to see it
     Route::get('/events/public/{page}', [EventController::class, 'showPublicEvents']); //show all public events
-
     Route::get('/events/hidden/{page}', [EventController::class, 'showHiddenEvents']); //show all hidden events of auth user
     Route::get('/events/my/{page}', [EventController::class, 'showMyEvents']); //show all events of auth user
-
-    
     Route::get('/events/friends/{page}', [EventController::class, 'showFriendsEvents']); //show all events of friends of auth user
+
+    Route::delete('/event/{id}', [EventController::class, 'destroy']); //delete a specific event by id only if the user has permission to delete it
     
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------

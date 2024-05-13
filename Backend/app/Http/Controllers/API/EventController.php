@@ -15,11 +15,7 @@ use App\Models\Event;
 class EventController extends Controller
 {
     
-    public function index($id) {
-        //
-    }
 
-    
     public function store(Request $request) {
         $request->validate([
             'data.event.event_title' => 'required|string',
@@ -63,12 +59,29 @@ class EventController extends Controller
             'meta' => [
                 'timestamp' => now(),
             ],
-        ]);
+        ], 201);
     }
 
     public function show($id) {
         
         $event = Event::with('event_requirements')->find($id);
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+    
+        $user = auth()->user();
+    
+        if ($event->privacy == 'hidden' && $event->event_owner_id != $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if ($event->privacy == 'friends') {
+            $friends = $user->friends()->toArray();
+            if (!in_array($event->event_owner_id, $friends)) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+        }
 
         return response()->json([
             'data' => [
@@ -186,11 +199,24 @@ class EventController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Event $event)
-    {
-        //
+
+    public function destroy(Request $request) {
+        
+        $event = Event::find($request->id);
+        $user = auth()->user();
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+        if ($event->event_owner_id != $user->id || $user->id_admin != true) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $event->delete();
+        return response()->json(null, 204);
+
+
+
     }
 }

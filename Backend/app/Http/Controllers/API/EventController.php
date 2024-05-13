@@ -191,12 +191,61 @@ class EventController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Event $event)
-    {
-        //
+    public function update(Request $request, Event $event) {
+        $event = Event::find($request->id);
+        $user = auth()->user();
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+        if ($event->event_owner_id != $user->id && $user->is_admin != true) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'data.event.event_title' => 'required|string',
+            'data.event.game_id' => 'required|integer',
+            'data.event.game_name' => 'required|string',
+            'data.event.game_mode' => 'required|string',
+            'data.event.game_pic' => 'required|url',
+            'data.event.platform' => 'required|string',
+            'data.event.event_owner_id' => 'required|integer',
+            'data.event.date_time_begin' => 'required|date',
+            'data.event.date_time_end' => 'required|date',
+            'data.event.privacy' => 'required|string',
+            'data.event_requirements.max_rank' => 'nullable|string',
+            'data.event_requirements.min_rank' => 'nullable|string',
+            'data.event_requirements.max_level' => 'nullable|integer',
+            'data.event_requirements.min_level' => 'nullable|integer',
+            'data.event_requirements.max_hours_played' => 'nullable|integer',
+            'data.event_requirements.min_hours_played' => 'nullable|integer',
+        ]);
+
+        $data = $request->input('data');
+        $data['event']['event_owner_id'] = $request->user()->id;
+        $request->merge(['data' => $data]);
+
+        // Update the event
+        $event->update($request->input('data.event'));
+        $requirement = $event->event_requirements;
+        $requirement->update($request->input('data.event_requirements'));
+
+        $event->save();
+        $requirement->save();
+
+        return response()->json([
+            'data' => [
+                'message' => 'Event updated successfully!',
+                'Links' => [
+                    'self' => url('/api/event/' . $event->id),
+                ],
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], 200);
+
     }
 
 

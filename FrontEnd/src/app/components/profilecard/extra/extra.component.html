@@ -1,21 +1,36 @@
 <div class="grid grid-cols-1">
   <div class="bg-secondary p-3 rounded-t-lg h-12">
-    <div class="avatar placeholder">
-      <div class="bg-neutral text-neutral-content rounded-full border-4 border-base-200 w-20">
-        <span>UN</span>
+    <!-- Avatar -->
+    <!-- Avatar -->
+    <a [routerLink]="['/main/profile']">
+      <div class="avatar placeholder">
+        <div class="bg-neutral text-neutral-content rounded-full border-4 border-base-200 w-20 relative group">
+          <span>UN</span>
+          <div
+            class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-opacity duration-300">
+            <span
+              class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs font-semibold">VER
+              PERFIL</span>
+          </div>
+        </div>
       </div>
-    </div>
+    </a>
   </div>
+
+  <!-- Status -->
   <span class="font-light text-sm flex items-center mt-1 mb-4">
-    <div class="rounded-full bg-success w-3 h-3 inline-block ml-24 mr-1"></div>
+    <div class="rounded-full bg-success w-2.5 h-2.5 inline-block ml-24 mr-1"></div>
     <span>Status</span>
   </span>
 
+  <!-- Contenedor -->
   <div class="indicator w-full">
+    <!-- Indicador copiado -->
     <span
       class="indicator-item indicator-center badge badge-primary opacity-0 transition-opacity duration-500 ease-in-out"
       [ngClass]="{'opacity-100': copied, 'duration-2000': fadeOut}">Copiado!</span>
-    <div class="bg-base-100 m-3 p-3 rounded-lg flex w-full">
+    <!-- Username + copyIcon -->
+    <div class="bg-base-100 m-3 p-3 rounded-lg flex w-full flex-col">
       <div class="flex justify-between w-full group cursor-pointer" (click)="copyToClipboard()">
         <span>FullUsername#0000</span>
         <div class="group-hover:block hidden">
@@ -24,6 +39,24 @@
               d="M355-240q-27.64 0-47.32-19.68T288-307v-480q0-27.64 19.68-47.32T355-854h384q27.64 0 47.32 19.68T806-787v480q0 27.64-19.68 47.32T739-240H355Zm0-67h384v-480H355v480ZM221-106q-27.64 0-47.32-19.68T154-173v-513.5q0-13.8 9.79-23.65 9.79-9.85 23.5-9.85t23.71 9.85q10 9.85 10 23.65V-173h417.5q13.8 0 23.65 9.79 9.85 9.79 9.85 23.5T662.15-116q-9.85 10-23.65 10H221Zm134-201v-480 480Z" />
           </svg>
         </div>
+      </div>
+      <div class="divider divider-neutral my-1"></div>
+      <!-- Status change -->
+      <div class="dropdown dropdown-right">
+        <div tabindex="0" role="button" class="flex justify-between btn btn-ghost min-h-8 h-8 pl-2 pr-0">
+          <span class="font-light text-sm flex items-center">
+            <div class="rounded-full bg-success w-2.5 h-2.5 inline-block mr-1"></div>
+            <span>Status</span>
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <path
+              d="M504-480 348-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L404-268q-11 11-28 11t-28-11q-11-11-11-28t11-28l156-156Z" />
+          </svg>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52">
+          <li><a>Item 1</a></li>
+          <li><a>Item 2</a></li>
+        </ul>
       </div>
     </div>
   </div>

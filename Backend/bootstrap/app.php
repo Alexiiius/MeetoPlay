@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 //manage group and global middleware here.
 //to add at top or botton of 'web' middleware stack use prepend or append
@@ -57,6 +58,17 @@ return Application::configure(basePath: dirname(__DIR__))
                     'timestamp' => now(),
                 ],
             ], 405);
+        });
+        $exceptions->render(function (NotFoundHttpException $e) {
+            return response()->json([
+                'data' => [
+                    'message' => '404 Not found',
+                    'errors' => $e->getMessage(),
+                ],
+                'meta' => [
+                    'timestamp' => now(),
+                ],
+            ], 404);
         });
       
     })->create();

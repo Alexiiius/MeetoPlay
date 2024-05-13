@@ -4,7 +4,7 @@ import { NewEventFormComponent } from './components/new-event-form/new-event-for
 import { WhatFormComponent } from './components/new-event-form/what-form/what-form.component';
 import { WhenFormComponent } from './components/new-event-form/when-form/when-form.component';
 import { WhoFormComponent } from './components/new-event-form/who-form/who-form.component';
-import { EventsComponent } from './components/events/events.component';
+import { EventsFeedComponent } from './components/events-feed/events.component';
 import { LoginRegisterComponent } from './components/login-register/login-register.component';
 import { MainComponent } from './components/main/main.component';
 import { authGuard, loggedGuard } from './auth.guard';
@@ -12,7 +12,7 @@ import { authGuard, loggedGuard } from './auth.guard';
 export const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full'},
   { path: 'main', component: MainComponent, canActivate: [authGuard], children: [
-    { path: '', component: EventsComponent },
+    { path: '', component: EventsFeedComponent },
     {
       path: 'newEvent',
       component: NewEventFormComponent,

@@ -1,10 +1,10 @@
 import { NewEventFormService } from '../../../../services/new-event-form.service';
 import { Platform } from '../../../../models/platform';
-import { Game } from '../../../../models/game';
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 ;
 import { CommonModule } from '@angular/common';
+import { FullGame } from '../../../../models/fullgame';
 
 @Component({
   selector: 'app-select-platform',
@@ -25,7 +25,7 @@ import { CommonModule } from '@angular/common';
 export class SelectPlatformComponent implements OnInit, ControlValueAccessor {
 
   options: Platform[] = [];
-  selectedGame: Game | null;
+  selectedGame: FullGame | null;
 
   @Input() isInvalid: boolean | undefined ;
 
@@ -56,7 +56,7 @@ export class SelectPlatformComponent implements OnInit, ControlValueAccessor {
   ngOnInit(): void {
       this.newEventFormService.selectedGame$.subscribe(game => {
         this.selectedGame = game;
-        this.options = game ? game.platforms: [{id: 0, name: 'No game selected'}];
+        this.options = this.selectedGame ? this.selectedGame.game.platforms: [];
         this.value = null;
         this.onChange(null);
       });

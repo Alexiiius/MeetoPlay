@@ -42,6 +42,7 @@ export class NewEventFormComponent implements OnInit {
         }
       }
     });
+
   }
 
   // Método para obtener la animación de la ruta actual

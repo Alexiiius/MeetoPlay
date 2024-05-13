@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormatedNewEvent } from '../interfaces/formated-new-event';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { backAPIUrl } from '../config';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,21 +11,44 @@ export class EventsService {
 
   YOUR_TOKEN = 'YOUR_TOKEN'
   private backAPIUrl = backAPIUrl;
-  constructor(private http: HttpClient) { }
+
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   postNewEvent(newEvent: any) {
     let formatedNewEvent = this.formatNewEvent(newEvent);
     console.log('Creating new event: ');
     console.log(formatedNewEvent);
 
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + this.YOUR_TOKEN
-    });
-
-    return this.http.post(this.backAPIUrl + '/create/event', formatedNewEvent, { headers: headers });
+    return this.http.post(this.backAPIUrl + '/create/event', formatedNewEvent);
   }
 
+  getPublicEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/public');
+  }
+
+  getFriendsEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/friends');
+  }
+
+  getFollowingEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/following');
+  }
+
+  getHiddenEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/hidden');
+  }
+
+  getMyEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/my');
+  }
+
+
   formatNewEvent(newEvent: any): FormatedNewEvent {
+
+    const userId = this.authService.userData.value?.id;
+    if (userId === undefined) {
+      throw new Error('User data is not available');
+    }
 
     let formatedNewEvent = {
       data: {
@@ -34,8 +58,8 @@ export class EventsService {
           game_name: newEvent.whatForm.game.name,
           game_mode: newEvent.whatForm.gameMode.name,
           game_pic: newEvent.whatForm.game.image,
-          platform: newEvent.whatForm.platform.name,
-          event_owner_id: 1, //TODO: Cambiar por el id del usuario logueado
+          platform: newEvent.whatForm.platform.platform,
+          event_owner_id: this.authService.userData.value?.id || 0,
           date_time_begin: newEvent.whenForm.eventBegin,
           date_time_end: newEvent.whenForm.eventEnd,
           date_time_inscription_begin: newEvent.toggleInscription ? newEvent.whenForm.inscriptionBegin : null,

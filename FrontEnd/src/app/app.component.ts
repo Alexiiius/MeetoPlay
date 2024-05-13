@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatsComponent } from './components/chats/chats.component';
-import { EventsComponent } from './components/events/events.component';
+import { EventsFeedComponent } from './components/events-feed/events.component';
 import { FiltersComponent } from './components/filters/filters.component';
 import { ProfilecardComponent } from './components/profilecard/profilecard.component';
 import { NewEventFormComponent } from './components/new-event-form/new-event-form.component';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ import { NewEventFormComponent } from './components/new-event-form/new-event-for
   imports: [
     RouterOutlet,
     ChatsComponent,
-    EventsComponent,
+    EventsFeedComponent,
     FiltersComponent,
     ProfilecardComponent,
     NewEventFormComponent,
@@ -23,6 +24,6 @@ import { NewEventFormComponent } from './components/new-event-form/new-event-for
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'FrontEnd';
+  title = 'MeetoPlay';
 
 }

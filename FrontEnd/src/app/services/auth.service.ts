@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { backAPIUrl } from '../config';
 import { Router } from '@angular/router';
 import { LoginResponse, RegisterResponse } from '../interfaces/back-end-api-response';
+import { UserData } from '../interfaces/user-data';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,8 @@ export class AuthService {
   private backAPIUrl = backAPIUrl;
 
   public isAuth = new BehaviorSubject<boolean>(false);
+
+  public userData = new BehaviorSubject<UserData | null>(null);
 
   constructor(private http: HttpClient, private router: Router) {
     this.autoLogin();
@@ -43,21 +46,6 @@ export class AuthService {
     );
   }
 
-  // login(user: any): Observable<any> {
-  //   const formatedUser = {
-  //     email: user.email,
-  //     password: user.password
-  //   }
-
-  //   return this.http.post(this.backAPIUrl + '/login', formatedUser).pipe(
-  //     tap(() => { // Update the value of isLoggedIn
-  //       console.log('User logged in')
-  //       this.isAuth.next(true);
-  //       this.router.navigate(['/main']);
-  //     })
-  //   );
-  // }
-
   register(credentials: any): Observable<any> {
     return this.http.post<RegisterResponse>(this.backAPIUrl + '/register', credentials).pipe(
       map(response => {
@@ -79,40 +67,51 @@ export class AuthService {
     );
   }
 
-  // register(user: any): Observable<any> {
+  storeToken(token: string, rememberMe: boolean): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (rememberMe) {
+        localStorage.setItem('access_token', token);
+      } else {
+        sessionStorage.setItem('access_token', token);
+      }
+      resolve();
+    });
+  }
 
-  //   const formatedUser = {
-  //     name: user.username,
-  //     email: user.email,
-  //     password: user.password,
-  //     password_confirmation: user.password_confirmation
-  //   }
+  storeUserData(userData: UserData): Promise<void> {
+    return new Promise((resolve, reject) => {
+      sessionStorage.setItem('user_data', JSON.stringify(userData));
+      resolve();
+    });
+  }
 
-  //   console.log(formatedUser);
+  retrieveUserData(): UserData | null {
+    const userData = sessionStorage.getItem('user_data');
+    return userData ? JSON.parse(userData) : null;
+  }
 
-  //   return this.http.post(this.backAPIUrl + '/register', formatedUser).pipe(
-  //     tap(() => { // Update the value of isLoggedIn
-  //       console.log('User registered')
-  //       this.isAuth.next(true);
-  //       this.router.navigate(['/main']);
-  //     })
-  //   );
-  // }
-
-  storeToken(token: string, rememberMe: boolean) {
-    if (rememberMe) {
-      localStorage.setItem('access_token', token);
+  getUserData(): Observable<UserData> {
+    const storedUserData = this.retrieveUserData();
+    if (storedUserData) {
+      this.userData.next(storedUserData);
+      return of(storedUserData);
     } else {
-      sessionStorage.setItem('access_token', token);
+      return this.http.get<UserData>(this.backAPIUrl + '/user').pipe(
+        tap(userData => {
+          this.userData.next(userData);
+          this.storeUserData(userData);
+          console.log('User data fetched');
+        })
+      );
     }
   }
 
   logout() {
     return this.http.post(this.backAPIUrl + '/logout', '').subscribe(
       response => {
-        console.log(response);
         localStorage.removeItem('access_token');
         sessionStorage.removeItem('access_token');
+        sessionStorage.removeItem('user_data');
         this.isAuth.next(false);
         this.router.navigate(['/login']);
       },

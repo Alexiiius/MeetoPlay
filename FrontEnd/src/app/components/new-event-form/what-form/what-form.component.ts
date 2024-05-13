@@ -6,8 +6,10 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { APIService } from '../../../services/api.service';
 import { NewEventFormService } from '../../../services/new-event-form.service';
-import { Game } from '../../../models/game';
 import { Router } from '@angular/router';
+import { concatMap, tap } from 'rxjs';
+import { Game } from '../../../models/game';
+import { FullGame } from '../../../models/fullgame';
 
 @Component({
   selector: 'app-what-form',
@@ -32,18 +34,17 @@ export class WhatFormComponent implements OnInit {
   ) { }
 
   games: Game[] = [];
-  selectedGame: Game | null;
+  selectedGame: FullGame | null;
 
   ngOnInit(): void {
-    // Get games from API
-    this.apiService.getGames().subscribe((data) => {
-      this.games = data.games.map(game =>
-        new Game(game.id, game.name, game.image, game.account_level_name, game.nickname_name, game.description, game.platforms, game.game_modes));
-    });
-
-    // Subscribe to selected game
-    this.newEventFromService.selectedGame$.subscribe(game => {
+    this.apiService.getGames().pipe(
+      tap((response: Game[]) => {
+        this.games = response;
+      }),
+      concatMap(() => this.newEventFromService.selectedGame$)
+    ).subscribe(game => {
       this.selectedGame = game;
+
       // Update game control validators
       const platformControl = this.whatForm.get('platform');
       if (platformControl) {
@@ -83,7 +84,7 @@ export class WhatFormComponent implements OnInit {
       if (!selectedPlatform) {
         return { 'platformNotSelected': { value: control.value } };
       }
-      const isPlatformSelected = this.selectedGame?.platforms.some(platform => platform.id === selectedPlatform.id);
+      const isPlatformSelected = this.selectedGame?.game.platforms.some(platform => platform.id === selectedPlatform.id);
       return isPlatformSelected ? null : { 'platformNotSelected': { value: control.value } };
     };
   }
@@ -94,7 +95,7 @@ export class WhatFormComponent implements OnInit {
       if (!selectedGameMode) {
         return { 'gameModeNotSelected': { value: control.value } };
       }
-      const isGameModeSelected = this.selectedGame?.game_modes.some(gameMode => gameMode.id === selectedGameMode.id);
+      const isGameModeSelected = this.selectedGame?.game.gamemodes.some(gameMode => gameMode.id === selectedGameMode.id);
       return isGameModeSelected ? null : { 'gameModeNotSelected': { value: control.value } };
     };
   }

@@ -1,0 +1,30 @@
+<div class="grid grid-cols-1">
+  <div class="bg-secondary p-3 rounded-t-lg h-12">
+    <div class="avatar placeholder">
+      <div class="bg-neutral text-neutral-content rounded-full border-4 border-base-200 w-20">
+        <span>UN</span>
+      </div>
+    </div>
+  </div>
+  <span class="font-light text-sm flex items-center mt-1 mb-4">
+    <div class="rounded-full bg-success w-3 h-3 inline-block ml-24 mr-1"></div>
+    <span>Status</span>
+  </span>
+
+  <div class="indicator w-full">
+    <span
+      class="indicator-item indicator-center badge badge-primary opacity-0 transition-opacity duration-500 ease-in-out"
+      [ngClass]="{'opacity-100': copied, 'duration-2000': fadeOut}">Copiado!</span>
+    <div class="bg-base-100 m-3 p-3 rounded-lg flex w-full">
+      <div class="flex justify-between w-full group cursor-pointer" (click)="copyToClipboard()">
+        <span>FullUsername#0000</span>
+        <div class="group-hover:block hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e5e7eb">
+            <path
+              d="M355-240q-27.64 0-47.32-19.68T288-307v-480q0-27.64 19.68-47.32T355-854h384q27.64 0 47.32 19.68T806-787v480q0 27.64-19.68 47.32T739-240H355Zm0-67h384v-480H355v480ZM221-106q-27.64 0-47.32-19.68T154-173v-513.5q0-13.8 9.79-23.65 9.79-9.85 23.5-9.85t23.71 9.85q10 9.85 10 23.65V-173h417.5q13.8 0 23.65 9.79 9.85 9.79 9.85 23.5T662.15-116q-9.85 10-23.65 10H221Zm134-201v-480 480Z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

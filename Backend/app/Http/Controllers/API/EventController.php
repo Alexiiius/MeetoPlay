@@ -72,13 +72,13 @@ class EventController extends Controller
     
         $user = auth()->user();
     
-        if ($event->privacy == 'hidden' && $event->event_owner_id != $user->id) {
+        if ($event->privacy == 'hidden' && $event->event_owner_id != $user->id && $user->is_admin != true) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         if ($event->privacy == 'friends') {
             $friends = $user->friends()->toArray();
-            if (!in_array($event->event_owner_id, $friends)) {
+            if (!in_array($event->event_owner_id, $friends) && $event->event_owner_id != $user->id && $user->is_admin != true) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
         }
@@ -209,12 +209,22 @@ class EventController extends Controller
             return response()->json(['error' => 'Event not found'], 404);
         }
 
-        if ($event->event_owner_id != $user->id || $user->id_admin != true) {
+        if ($event->event_owner_id != $user->id && $user->is_admin != true) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         $event->delete();
-        return response()->json(null, 204);
+        return response()->json([
+            'data' => [
+                'message' => 'Event deleted successfully!',
+                'Links' => [
+                    'self' => url('/api/event/' . $event->id),
+                ],
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], 200);
 
 
 

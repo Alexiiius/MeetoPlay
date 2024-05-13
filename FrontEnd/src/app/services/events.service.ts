@@ -22,6 +22,27 @@ export class EventsService {
     return this.http.post(this.backAPIUrl + '/create/event', formatedNewEvent);
   }
 
+  getPublicEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/public');
+  }
+
+  getFriendsEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/friends');
+  }
+
+  getFollowingEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/following');
+  }
+
+  getHiddenEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/hidden');
+  }
+
+  getMyEvents() {
+    return this.http.get<any[]>(this.backAPIUrl + '/events/my');
+  }
+
+
   formatNewEvent(newEvent: any): FormatedNewEvent {
 
     const userId = this.authService.userData.value?.id;

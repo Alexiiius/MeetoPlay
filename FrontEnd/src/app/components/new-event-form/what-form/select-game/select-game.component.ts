@@ -57,6 +57,7 @@ export class SelectGameComponent implements ControlValueAccessor {
     this.onChange(value);
     this.isGameSelected = false;
     this.newEventFromService.changeSelectedGame(null);
+    this.imageLoaded = false;
   }
 
   //Reactiveform
@@ -115,5 +116,6 @@ export class SelectGameComponent implements ControlValueAccessor {
     this.isGameSelected = false;
     this.onChange();
     this.newEventFromService.changeSelectedGame(this.selectedGame);
+    this.imageLoaded = false;
   }
 }

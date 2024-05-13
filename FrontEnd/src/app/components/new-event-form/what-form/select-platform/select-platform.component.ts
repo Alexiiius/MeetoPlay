@@ -57,7 +57,6 @@ export class SelectPlatformComponent implements OnInit, ControlValueAccessor {
       this.newEventFormService.selectedGame$.subscribe(game => {
         this.selectedGame = game;
         this.options = this.selectedGame ? this.selectedGame.game.platforms: [];
-        console.log('options ', this.options);
         this.value = null;
         this.onChange(null);
       });

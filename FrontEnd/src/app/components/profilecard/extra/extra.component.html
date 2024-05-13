@@ -42,8 +42,8 @@
       </div>
       <div class="divider divider-neutral my-1"></div>
       <!-- Status change -->
-      <div class="dropdown dropdown-right">
-        <div tabindex="0" role="button" class="flex justify-between btn btn-ghost min-h-8 h-8 pl-2 pr-0">
+      <div class="relative group inline-block w-full">
+        <button class="flex justify-between btn btn-ghost min-h-8 h-8 pl-2 pr-0 w-full" (click)="toggleChangeStatus()">
           <span class="font-light text-sm flex items-center">
             <div class="rounded-full bg-success w-2.5 h-2.5 inline-block mr-1"></div>
             <span>Status</span>
@@ -52,12 +52,39 @@
             <path
               d="M504-480 348-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L404-268q-11 11-28 11t-28-11q-11-11-11-28t11-28l156-156Z" />
           </svg>
+        </button>
+        @if (showChangeStatus) {
+        <div class="absolute left-full bottom-[-21px] rounded-lg p-3 z-50 bg-base-200 border border-secondary ml-8 w-36 grid grid-col-1 gap-y-1">
+          <div class="w-full hover:bg-accent/10 p-1 px-3 rounded-lg cursor-pointer">
+            <span class="font-light text-sm flex items-center">
+              <div class="rounded-full bg-success w-2.5 h-2.5 inline-block mr-1"></div>
+              <span>En linea</span>
+            </span>
+          </div>
+          <hr class="my-1"/>
+          <div class="w-full hover:bg-accent/10 p-1 px-2 rounded-lg cursor-pointer">
+            <span class="font-light text-sm flex items-center">
+              <div class="rounded-full bg-warning w-2.5 h-2.5 inline-block mr-1"></div>
+              <span>Ausente</span>
+            </span>
+          </div>
+          <div class="w-full hover:bg-accent/10 p-1 px-2 rounded-lg cursor-pointer">
+            <span class="font-light text-sm flex items-center">
+              <div class="rounded-full bg-error w-2.5 h-2.5 inline-block mr-1"></div>
+              <span>Ocupado</span>
+            </span>
+          </div>
+          <div class="w-full hover:bg-accent/10 p-1 px-2 rounded-lg cursor-pointer">
+            <span class="font-light text-sm flex items-center">
+              <div class="rounded-full bg-neutral/50 w-2.5 h-2.5 inline-block mr-1"></div>
+              <span>Invisible</span>
+            </span>
+          </div>
         </div>
-        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52">
-          <li><a>Item 1</a></li>
-          <li><a>Item 2</a></li>
-        </ul>
+        }
       </div>
+
+
     </div>
   </div>
 </div>

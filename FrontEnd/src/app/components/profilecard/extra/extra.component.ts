@@ -16,6 +16,7 @@ export class ExtraComponent {
 
   copied = false;
   fadeOut = false;
+  showChangeStatus = false;
 
   copyToClipboard(): void {
     const textToCopy = 'FullUsername#1234';
@@ -31,5 +32,9 @@ export class ExtraComponent {
     }).catch(err => {
       console.error('No se pudo copiar el texto: ', err);
     });
+  }
+
+  toggleChangeStatus(): void {
+    this.showChangeStatus = !this.showChangeStatus;
   }
 }

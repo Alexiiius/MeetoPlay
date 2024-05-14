@@ -131,6 +131,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
     }
 
+    public function events() {
+        return $this->belongsToMany(Event::class, 'event_users', 'user_id', 'event_id');
+    }
+
     public function friends() {
         $followers = $this->followers()->get();
         $following = $this->following()->get();

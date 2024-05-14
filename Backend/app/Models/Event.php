@@ -35,6 +35,10 @@ class Event extends Model {
         return $this->belongsTo(EventRequirement::class, 'event_requirement_id');
     }
 
+    public function participants() {
+        return $this->belongsToMany(User::class, 'event_users', 'event_id', 'user_id');
+    }
+
 
     
 }

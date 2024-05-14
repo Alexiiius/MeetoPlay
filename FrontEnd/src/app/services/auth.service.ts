@@ -80,6 +80,7 @@ export class AuthService {
 
   storeUserData(userData: UserData): Promise<void> {
     return new Promise((resolve, reject) => {
+      userData.status = 'Online';
       sessionStorage.setItem('user_data', JSON.stringify(userData));
       resolve();
     });
@@ -106,18 +107,19 @@ export class AuthService {
     }
   }
 
-  logout() {
-    return this.http.post(this.backAPIUrl + '/logout', '').subscribe(
-      response => {
+  logout(): Observable<any> {
+    return this.http.post(this.backAPIUrl + '/logout', '').pipe(
+      tap(() => {
+        this.isAuth.next(false);
+        this.router.navigate(['/login']);
         localStorage.removeItem('access_token');
         sessionStorage.removeItem('access_token');
         sessionStorage.removeItem('user_data');
-        this.isAuth.next(false);
-        this.router.navigate(['/login']);
-      },
-      error => {
+      }),
+      catchError(error => {
         console.log(error);
-      }
+        return throwError(error);
+      })
     );
   }
 }

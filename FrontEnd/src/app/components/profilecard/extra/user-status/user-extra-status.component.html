@@ -1,0 +1,9 @@
+<span class="font-light text-sm">
+  <div class="rounded-full w-2.5 h-2.5 inline-block mr-1" [ngClass]="{
+        'bg-success': userStatus === 'Online',
+        'bg-error': userStatus === 'DND',
+        'bg-warning': userStatus === 'AFK',
+        'bg-neutral/50': userStatus === 'Hidden' || userStatus === 'Offline'
+      }">
+  </div>{{userStatus}}
+</span>

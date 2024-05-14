@@ -5,6 +5,11 @@ module.exports = {
     "./src/**/*.{html,ts}",
 
   ],
+  variants: {
+    extend: {
+      display: ['group-hover'],
+    },
+  },
   theme: {
     fontFamily: {
       'Kanit': ['Kanit'],

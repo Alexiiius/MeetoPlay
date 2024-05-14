@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { EventCardComponent } from './event-card/event-card.component';
 import { EventsService } from '../../services/events.service';
 import { Event } from '../../models/event';
 import { EventRequirments } from '../../models/eventRequirments';
+import { NavBarComponent } from './nav-bar/nav-bar.component';
 
 @Component({
   selector: 'app-events',
   standalone: true,
   imports: [
-    EventCardComponent
+    EventCardComponent,
+    NavBarComponent
   ],
   templateUrl: './events.component.html',
   styleUrl: './events.component.css'

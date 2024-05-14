@@ -1,7 +1,15 @@
 <div class="w-full h-full rounded-lg space-y-6 flex flex-col justify-start overflow-y-scroll scrollbar-hidde">
   <app-nav-bar></app-nav-bar>
-  @for (event of publicEvents; track $index) {
+  @for (event of displayedEvents; track $index) {
     <app-event-card [event]="event"/>
   }
-
+  @if (hasMoreEvents) {
+    <button class="btn btn-block btn-ghost font-normal" (click)="loadMoreEvents()">
+      @if (isLoading) {
+        <span class="loading loading-infinity loading-lg text-primary"></span>
+      } @else {
+        <div class="divider divider-primary w-full">Cargar más eventos</div>
+      }
+    </button>
+  }
 </div>

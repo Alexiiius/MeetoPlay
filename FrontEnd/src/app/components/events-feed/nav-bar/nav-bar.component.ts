@@ -1,4 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { EventFeedService } from '../../../services/event-feed.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -14,6 +15,12 @@ export class NavBarComponent {
   ngOnInit() {
     this.addKeyboardShortcut();
   }
+
+  constructor(private eventFeedService: EventFeedService) { }
+
+onSelectChange(event: any) {
+  this.eventFeedService.changeGroup(event.target.value);
+}
 
   addKeyboardShortcut() {
     document.addEventListener('keydown', (event) => {

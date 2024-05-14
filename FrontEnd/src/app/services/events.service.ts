@@ -50,6 +50,8 @@ export class EventsService {
       throw new Error('User data is not available');
     }
 
+    console.log('Entra aqui')
+
     let formatedNewEvent = {
       data: {
         event: {
@@ -62,8 +64,8 @@ export class EventsService {
           event_owner_id: this.authService.userData.value?.id || 0,
           date_time_begin: newEvent.whenForm.eventBegin,
           date_time_end: newEvent.whenForm.eventEnd,
-          date_time_inscription_begin: newEvent.toggleInscription ? newEvent.whenForm.inscriptionBegin : null,
-          date_time_inscription_end: newEvent.toggleInscription ? newEvent.whenForm.inscriptionEnd : null,
+          date_time_inscription_begin: newEvent.whenForm.inscriptionToggle ? newEvent.whenForm.inscriptionBegin : null,
+          date_time_inscription_end: newEvent.whenForm.inscriptionToggle ? newEvent.whenForm.inscriptionEnd : null,
           max_participants: newEvent.whoForm.maxParticipants ? newEvent.whoForm.maxParticipants : 0,
           privacy: newEvent.whoForm.privacy,
         },

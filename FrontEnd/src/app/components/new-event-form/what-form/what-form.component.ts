@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { SelectGameComponent } from './select-game/select-game.component';
 import { SelectPlatformComponent } from './select-platform/select-platform.component';
 import { SelectGamemodeComponent } from './select-gamemode/select-gamemode.component';
@@ -30,7 +30,7 @@ export class WhatFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apiService: APIService,
     private newEventFromService: NewEventFormService,
-    private router: Router
+    private router: Router,
   ) { }
 
   games: Game[] = [];

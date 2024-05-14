@@ -1,61 +1,128 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { EventCardComponent } from './event-card/event-card.component';
 import { EventsService } from '../../services/events.service';
 import { Event } from '../../models/event';
 import { EventRequirments } from '../../models/eventRequirments';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { EventFeedService } from '../../services/event-feed.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-events',
   standalone: true,
   imports: [
     EventCardComponent,
-    NavBarComponent
+    NavBarComponent,
+    CommonModule
   ],
   templateUrl: './events.component.html',
   styleUrl: './events.component.css'
 })
 export class EventsFeedComponent implements OnInit {
 
-  publicEvents: Event[];
-  friendsEvents: Event[];
-  followingEvents: Event[];
-  hiddenEvents: Event[];
-  myEvents: Event[];
+  @ViewChild('scrollContainer') scrollContainer: ElementRef;
 
-  constructor(private eventService: EventsService) { }
+  displayedEvents: Event[] = [];
+
+  publicEvents: Event[] = [];
+  friendsEvents: Event[] = [];
+  followingEvents: Event[] = [];
+
+  publicPage = 1;
+  publicTotalPages = 1;
+  friendsPage = 1;
+  friendsTotalPages = 1;
+  followingPage = 1;
+  followingTotalPages = 1;
+
+  isLoading = false;
+  hasMoreEvents = true;
+
+  constructor(private eventService: EventsService, private eventFeedService: EventFeedService) { }
 
   ngOnInit() {
-    this.getPublicEvents(1);
-    this.getFriendsEvents(1);
-    // this.getFollowingEvents(1);
+    this.getPublicEvents(this.publicPage);
+    this.getFriendsEvents(this.friendsPage);
+    //this.getFriendsEvents(this.followingPage);
 
-    console.log('EventsFeedComponent initialized')
+    this.eventFeedService.currentGroup.subscribe(group => {
+      switch(group) {
+        case 'Public':
+          this.displayedEvents = this.publicEvents;
+          break;
+        case 'Friends':
+          this.displayedEvents = this.friendsEvents;
+          break;
+        case 'Follows':
+          //this.displayedEvents = this.followingEvents;
+          break;
+        default:
+          console.error(`Unexpected group: ${group}`);
+      }
+    });
+  }
+
+  loadMoreEvents() {
+    this.isLoading = true;
+    this.eventFeedService.currentGroup.subscribe(group => {
+      switch(group) {
+        case 'Public':
+          if (this.publicPage < this.publicTotalPages) {
+            this.getPublicEvents(++this.publicPage);
+          } else {
+            this.isLoading = false;
+          }
+          break;
+        case 'Friends':
+          if (this.friendsPage < this.friendsTotalPages) {
+            this.getFriendsEvents(++this.friendsPage);
+          } else {
+            this.isLoading = false;
+          }
+          break;
+        case 'Follows':
+          if (this.followingPage < this.followingTotalPages) {
+            this.getFollowingEvents(++this.followingPage);
+          } else {
+            this.isLoading = false;
+          }
+          break;
+        default:
+          console.error(`Unexpected group: ${group}`);
+      }
+      this.isLoading = false;
+    });
   }
 
   getPublicEvents(page: number) {
     this.eventService.getPublicEvents(page).subscribe((response: any) => {
-      this.publicEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      this.publicEvents = [...this.publicEvents, ...newEvents];
+      this.publicTotalPages = response.meta.total_pages;
+      this.displayedEvents = this.publicEvents;
       console.log('Public events: ', this.publicEvents);
     });
   }
 
   getFriendsEvents(page: number) {
     this.eventService.getFriendsEvents(page).subscribe((response: any) => {
-      this.friendsEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      this.friendsEvents = [...this.friendsEvents, ...newEvents];
+      this.friendsTotalPages = response.meta.total_pages;
       console.log('Friends events: ', this.friendsEvents);
     });
   }
 
   getFollowingEvents(page: number) {
     this.eventService.getFollowingEvents(page).subscribe((response: any) => {
-      this.followingEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      this.followingEvents = [...this.followingEvents, ...newEvents];
+      this.followingTotalPages = response.meta.total_pages;
       console.log('Following events: ', this.followingEvents);
     });
   }
 
   transformToEvent(apiResponse: any): Event {
-
     const eventRequirments = new EventRequirments(
       apiResponse.event_requirements.max_rank,
       apiResponse.event_requirements.min_rank,

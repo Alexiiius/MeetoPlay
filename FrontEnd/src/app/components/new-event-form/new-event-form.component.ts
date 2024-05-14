@@ -40,6 +40,7 @@ export class NewEventFormComponent implements OnInit {
           this.newEventFormJSON = JSON.parse(storedForm);
           this.submitNewEventForm();
         }
+        sessionStorage.removeItem('newEventForm');
       }
     });
 

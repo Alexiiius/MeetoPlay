@@ -47,10 +47,10 @@
           </label>
         </div>
       </div>
-      <select class="select select-ghost join-item">
-        <option selected >Public</option>
-        <option>Follows</option>
-        <option>Friends</option>
+      <select class="select select-ghost join-item" (change)="onSelectChange($event)">
+        <option value="Public" selected>Public</option>
+        <option value="Follows">Follows</option>
+        <option value="Friends">Friends</option>
       </select>
     </div>
   </div>

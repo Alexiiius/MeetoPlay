@@ -21,4 +21,6 @@ export class FiltersComponent {
     console.log('Login out')
     this.authService.logout()
   }
+
+
 }

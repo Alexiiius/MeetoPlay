@@ -1,11 +1,10 @@
 <div class="grid grid-cols-1">
-  <div class="bg-secondary p-3 rounded-t-lg h-12">
-    <!-- Avatar -->
+  <div class="bg-secondary p-3 rounded-t-lg h-16">
     <!-- Avatar -->
     <a [routerLink]="['/main/profile']">
       <div class="avatar placeholder">
         <div class="bg-neutral text-neutral-content rounded-full border-4 border-base-200 w-20 relative group">
-          <span>UN</span>
+          <img src="{{user.avatar}}" alt="userAvatar">
           <div
             class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-opacity duration-300">
             <span
@@ -18,10 +17,7 @@
   </div>
 
   <!-- Status -->
-  <span class="font-light text-sm flex items-center mt-1 mb-4">
-    <div class="rounded-full bg-success w-2.5 h-2.5 inline-block ml-24 mr-1"></div>
-    <span>Status</span>
-  </span>
+  <app-extra-user-status class="ml-[90px] mr-1 mt-0.5"></app-extra-user-status>
 
   <!-- Contenedor -->
   <div class="indicator w-full">
@@ -32,7 +28,7 @@
     <!-- Username + copyIcon -->
     <div class="bg-base-100 m-3 p-3 rounded-lg flex w-full flex-col">
       <div class="flex justify-between w-full group cursor-pointer" (click)="copyToClipboard()">
-        <span>FullUsername#0000</span>
+        <span class="mx-1">{{user.name}}#{{user.tag}}</span>
         <div class="group-hover:block hidden">
           <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e5e7eb">
             <path
@@ -43,38 +39,35 @@
       <div class="divider divider-neutral my-1"></div>
       <!-- Status change -->
       <div class="relative group inline-block w-full">
-        <button class="flex justify-between btn btn-ghost min-h-8 h-8 pl-2 pr-0 w-full" (click)="toggleChangeStatus()">
-          <span class="font-light text-sm flex items-center">
-            <div class="rounded-full bg-success w-2.5 h-2.5 inline-block mr-1"></div>
-            <span>Status</span>
-          </span>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+        <button class="flex justify-between btn btn-ghost min-h-8 h-8 2xl:pl-2 2xl:pr-0 pl-0 pr-2 w-full" (click)="toggleChangeStatus()">
+          <app-extra-user-status></app-extra-user-status>
+          <svg class="order-first 2xl:order-last transform rotate-180 2xl:rotate-0" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
             <path
               d="M504-480 348-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L404-268q-11 11-28 11t-28-11q-11-11-11-28t11-28l156-156Z" />
           </svg>
         </button>
         @if (showChangeStatus) {
-        <div class="absolute left-full bottom-[-21px] rounded-lg p-3 z-50 bg-base-200 border border-secondary ml-8 w-36 grid grid-col-1 gap-y-1">
-          <div class="w-full hover:bg-accent/10 p-1 px-3 rounded-lg cursor-pointer">
+        <div class="absolute 2xl:left-full right-full bottom-[-21px] rounded-lg p-3 z-50 bg-base-200 border border-secondary 2xl:ml-8 mr-8 w-36 grid grid-col-1 gap-y-1">
+          <div class="w-full hover:bg-accent/10 p-1 px-3 rounded-lg cursor-pointer" (click)="changeUserStatus('Online')">
             <span class="font-light text-sm flex items-center">
               <div class="rounded-full bg-success w-2.5 h-2.5 inline-block mr-1"></div>
               <span>En linea</span>
             </span>
           </div>
           <hr class="my-1"/>
-          <div class="w-full hover:bg-accent/10 p-1 px-2 rounded-lg cursor-pointer">
+          <div class="w-full hover:bg-accent/10 p-1 px-2 rounded-lg cursor-pointer" (click)="changeUserStatus('AFK')">
             <span class="font-light text-sm flex items-center">
               <div class="rounded-full bg-warning w-2.5 h-2.5 inline-block mr-1"></div>
               <span>Ausente</span>
             </span>
           </div>
-          <div class="w-full hover:bg-accent/10 p-1 px-2 rounded-lg cursor-pointer">
+          <div class="w-full hover:bg-accent/10 p-1 px-2 rounded-lg cursor-pointer" (click)="changeUserStatus('DND')">
             <span class="font-light text-sm flex items-center">
               <div class="rounded-full bg-error w-2.5 h-2.5 inline-block mr-1"></div>
-              <span>Ocupado</span>
+              <span>No molestar</span>
             </span>
           </div>
-          <div class="w-full hover:bg-accent/10 p-1 px-2 rounded-lg cursor-pointer">
+          <div class="w-full hover:bg-accent/10 p-1 px-2 rounded-lg cursor-pointer" (click)="changeUserStatus('Hidden')">
             <span class="font-light text-sm flex items-center">
               <div class="rounded-full bg-neutral/50 w-2.5 h-2.5 inline-block mr-1"></div>
               <span>Invisible</span>

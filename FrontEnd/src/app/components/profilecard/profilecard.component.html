@@ -1,20 +1,18 @@
-<div class="w-full h-full flex space-x-3 justify-between">
+<div class="w-full h-full flex space-x-2 justify-between">
 
-  <div class="dropdown dropdown-top dropdown-open">
+  <div class="dropdown dropdown-top">
     <div tabindex="0" role="button">
       <!-- Avatar -->
       <div class="flex items-center space-x-3">
-        <div class="avatar placeholder">
-          <div class="bg-neutral text-neutral-content rounded-full w-12">
-            <span>UN</span>
+        <div class="avatar">
+          <div class="w-12 rounded-full">
+            <img src="{{user.avatar}}" />
           </div>
         </div>
         <!-- Username + Status -->
         <div class="flex flex-col">
-          <span>Username</span>
-          <span class="font-light text-xs">
-            <div class="rounded-full bg-success w-2 h-2 inline-block mr-1"></div>Status
-          </span>
+          <span class="w-20 2xl:w-56 overflow-hidden text-ellipsis">{{user.name}}</span>
+          <app-user-status></app-user-status>
         </div>
       </div>
     </div>
@@ -25,7 +23,7 @@
 
 
   <!-- Home BTN -->
-  <div class="inline-block space-x-3">
+  <div class="inline-block space-x-0 2xl:space-x-3">
     <button class="btn btn-ghost btn-square" [routerLinkActiveOptions]="{exact: true}" [routerLink]="['/main']"
       #rla="routerLinkActive" routerLinkActive="router-link-active">
       <label class="swap">
@@ -42,6 +40,7 @@
         </svg>
       </label>
     </button>
+
     <app-settings></app-settings>
   </div>
 </div>

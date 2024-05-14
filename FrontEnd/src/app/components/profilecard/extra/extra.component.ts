@@ -1,25 +1,37 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { UserData } from '../../../interfaces/user-data';
+import { UserExtraStatusComponent } from './user-status/user-extra-status.component';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-extra',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink
+    RouterLink,
+    UserExtraStatusComponent
   ],
   templateUrl: './extra.component.html',
   styleUrl: './extra.component.css'
 })
 export class ExtraComponent {
 
+  constructor(private userService: UserService) { }
+
   copied = false;
   fadeOut = false;
   showChangeStatus = false;
+  user: UserData = this.userService.getUserData();
+  userStatus: String = this.user?.status;
+
+  ngOnInit(): void {
+    this.userStatus = this.user?.status;
+  }
 
   copyToClipboard(): void {
-    const textToCopy = 'FullUsername#1234';
+    const textToCopy = `${this.user.name}\#${this.user.tag}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
       this.copied = true;
       setTimeout(() => {
@@ -36,5 +48,10 @@ export class ExtraComponent {
 
   toggleChangeStatus(): void {
     this.showChangeStatus = !this.showChangeStatus;
+  }
+
+  changeUserStatus(newStatus: string) {
+    this.userService.changeUserStatus(newStatus);
+    this.toggleChangeStatus();
   }
 }

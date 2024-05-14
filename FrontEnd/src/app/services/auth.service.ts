@@ -80,6 +80,7 @@ export class AuthService {
 
   storeUserData(userData: UserData): Promise<void> {
     return new Promise((resolve, reject) => {
+      userData.status = 'Online';
       sessionStorage.setItem('user_data', JSON.stringify(userData));
       resolve();
     });

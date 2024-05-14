@@ -12,7 +12,7 @@ class UserController extends Controller
     
     //return all users id, name and email
     public function index() {
-        $users = User::select('id', 'name', 'email')->get();
+        $users = User::select('id', 'name', 'email', 'tag')->get();
         return $users;
     }
 

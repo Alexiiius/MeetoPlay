@@ -3,10 +3,10 @@
   <div class="collapse-title text-xl flex items-center justify-between">
     <div class="flex items-center">
       <img class="w-14 h-auto mr-3"
-        src="https://meetoplay-api-assets-bucket.s3.amazonaws.com/gameLogos/League_of_Legends.png" alt="gameLogo">
+        src="{{event.game_pic}}" alt="gameLogo">
       <div class="flex flex-col">
-        <span class="text-2xl">Event title</span>
-        <span class="text-base font-light">Game - Gamemode - Plataforma</span>
+        <span class="text-2xl text-nowrap text-ellipsis w-64 2xl:w-96 overflow-hidden">{{event.event_title}}</span>
+        <span class="text-base font-light">{{event.game_name}} - {{event.game_mode}} - {{event.platform}}</span>
       </div>
     </div>
     <div class="flex items-center">

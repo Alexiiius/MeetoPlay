@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Event } from '../../../models/event';
 
 @Component({
   selector: 'app-event-card',
@@ -15,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 export class EventCardComponent {
   eventEndTime = new Date('2024-06-31T23:59:59'); // Simula la fecha y hora del final del evento
   isChecked = false;
+  @Input() event: Event;
 
   countdown = {
     days: 0,

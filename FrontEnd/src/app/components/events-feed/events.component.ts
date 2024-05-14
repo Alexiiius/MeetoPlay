@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EventCardComponent } from './event-card/event-card.component';
 import { EventsService } from '../../services/events.service';
 import { Event } from '../../models/event';
@@ -15,7 +15,7 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
   templateUrl: './events.component.html',
   styleUrl: './events.component.css'
 })
-export class EventsFeedComponent {
+export class EventsFeedComponent implements OnInit {
 
   publicEvents: Event[];
   friendsEvents: Event[];
@@ -25,33 +25,32 @@ export class EventsFeedComponent {
 
   constructor(private eventService: EventsService) { }
 
+  ngOnInit() {
+    this.getPublicEvents(1);
+    this.getFriendsEvents(1);
+    // this.getFollowingEvents(1);
+
+    console.log('EventsFeedComponent initialized')
+  }
+
   getPublicEvents(page: number) {
-    this.eventService.getPublicEvents(page).subscribe((events: any[]) => {
-      this.publicEvents = events.map(event => this.transformToEvent(event));
+    this.eventService.getPublicEvents(page).subscribe((response: any) => {
+      this.publicEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      console.log('Public events: ', this.publicEvents);
     });
   }
 
   getFriendsEvents(page: number) {
-    this.eventService.getFriendsEvents(page).subscribe((events: any[]) => {
-      this.friendsEvents = events.map(event => this.transformToEvent(event));
+    this.eventService.getFriendsEvents(page).subscribe((response: any) => {
+      this.friendsEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      console.log('Friends events: ', this.friendsEvents);
     });
   }
 
   getFollowingEvents(page: number) {
-    this.eventService.getFollowingEvents(page).subscribe((events: any[]) => {
-      this.followingEvents = events.map(event => this.transformToEvent(event));
-    });
-  }
-
-  getHiddenEvents(page: number) {
-    this.eventService.getHiddenEvents(page).subscribe((events: any[]) => {
-      this.hiddenEvents = events.map(event => this.transformToEvent(event));
-    });
-  }
-
-  getMyEvents(page: number) {
-    this.eventService.getMyEvents(page).subscribe((events: any[]) => {
-      this.myEvents = events.map(event => this.transformToEvent(event));
+    this.eventService.getFollowingEvents(page).subscribe((response: any) => {
+      this.followingEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      console.log('Following events: ', this.followingEvents);
     });
   }
 

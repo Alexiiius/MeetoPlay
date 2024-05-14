@@ -1,7 +1,7 @@
-<div class="w-full h-full rounded-lg gap-y-6 grid grid-cols-1 overflow-y-scroll scrollbar-hidde">
+<div class="w-full h-full rounded-lg space-y-6 flex flex-col justify-start overflow-y-scroll scrollbar-hidde">
   <app-nav-bar></app-nav-bar>
-  @for (number of '.constructor(10)'.split(''); track $index) {
-    <app-event-card/>
+  @for (event of publicEvents; track $index) {
+    <app-event-card [event]="event"/>
   }
 
 </div>

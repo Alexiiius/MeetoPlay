@@ -291,7 +291,103 @@ class EventController extends Controller
             ],
         ], 200);
 
-
-
     }
+
+    public function addParticipant(Request $request) {
+
+        $event = Event::find($request->id);
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+        if (!$this->canUserSeeThisEvent($event, auth()->user() ) ) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $event->insertParticipant($request->user_id);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    
+        return response()->json([
+            'data' => [
+                'message' => 'Participant added successfully!',
+                'Links' => [
+                    'self' => url('/api/event/join/' . $event->id),
+                    'event' => url('/api/event/' . $event->id),
+                ],
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], 200);
+    }
+
+    public function removeParticipant(Request $request) {
+
+        $event = Event::find($request->id);
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+        if (!$this->canUserSeeThisEvent($event, auth()->user() ) ) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $event->removeParticipant($request->user_id);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    
+        return response()->json([
+            'data' => [
+                'message' => 'Participant removed successfully!',
+                'Links' => [
+                    'self' => url('/api/event/leave/' . $event->id),
+                    'event' => url('/api/event/' . $event->id),
+                ],
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], 200);
+    }
+
+    public function canUserSeeThisEvent(Event $event, User $user) {
+
+        if ($event->privacy == 'hidden' && $event->event_owner_id != $user->id && $user->is_admin != true) {
+            return false;
+        }
+
+        if ($event->privacy == 'friends') {
+            $friends = $user->friends()->toArray();
+            if (!in_array($event->event_owner_id, $friends) && $event->event_owner_id != $user->id && $user->is_admin != true) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function test(Request $request) {
+        $user = auth()->user();
+        $event = Event::find($request->id);
+        return response()->json([
+            'data' => [
+                'can_see' => $this->canUserSeeThisEvent($event, $user),
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+
+
+
+
 }

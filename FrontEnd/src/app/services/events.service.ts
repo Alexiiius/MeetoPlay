@@ -22,24 +22,24 @@ export class EventsService {
     return this.http.post(this.backAPIUrl + '/create/event', formatedNewEvent);
   }
 
-  getPublicEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/public');
+  getPublicEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/public/${page}`);
   }
 
-  getFriendsEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/friends');
+  getFriendsEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/friends/${page}`);
   }
 
-  getFollowingEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/following');
+  getFollowingEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/following/${page}`);
   }
 
-  getHiddenEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/hidden');
+  getHiddenEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/hidden/${page}`);
   }
 
-  getMyEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/my');
+  getMyEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/my/${page}`);
   }
 
 

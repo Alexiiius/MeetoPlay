@@ -13,7 +13,7 @@ import { EventRequirments } from '../../models/eventRequirments';
   templateUrl: './events.component.html',
   styleUrl: './events.component.css'
 })
-export class EventsFeedComponent{
+export class EventsFeedComponent {
 
   publicEvents: Event[];
   friendsEvents: Event[];
@@ -23,32 +23,32 @@ export class EventsFeedComponent{
 
   constructor(private eventService: EventsService) { }
 
-  getPublicEvents() {
-    this.eventService.getPublicEvents().subscribe((events: any[]) => {
+  getPublicEvents(page: number) {
+    this.eventService.getPublicEvents(page).subscribe((events: any[]) => {
       this.publicEvents = events.map(event => this.transformToEvent(event));
     });
   }
 
-  getFriendsEvents() {
-    this.eventService.getFriendsEvents().subscribe((events: any[]) => {
+  getFriendsEvents(page: number) {
+    this.eventService.getFriendsEvents(page).subscribe((events: any[]) => {
       this.friendsEvents = events.map(event => this.transformToEvent(event));
     });
   }
 
-  getFollowingEvents() {
-    this.eventService.getFollowingEvents().subscribe((events: any[]) => {
+  getFollowingEvents(page: number) {
+    this.eventService.getFollowingEvents(page).subscribe((events: any[]) => {
       this.followingEvents = events.map(event => this.transformToEvent(event));
     });
   }
 
-  getHiddenEvents() {
-    this.eventService.getHiddenEvents().subscribe((events: any[]) => {
+  getHiddenEvents(page: number) {
+    this.eventService.getHiddenEvents(page).subscribe((events: any[]) => {
       this.hiddenEvents = events.map(event => this.transformToEvent(event));
     });
   }
 
-  getMyEvents() {
-    this.eventService.getMyEvents().subscribe((events: any[]) => {
+  getMyEvents(page: number) {
+    this.eventService.getMyEvents(page).subscribe((events: any[]) => {
       this.myEvents = events.map(event => this.transformToEvent(event));
     });
   }

@@ -96,7 +96,11 @@ class EventController extends Controller
     public function showPublicEvents($page) {
         $perPage = 10;
         $skip = ($page - 1) * $perPage;
-        $events = Event::where('privacy', 'public')
+        $events = Event::with('event_requirements')
+            ->with(['participants' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            } ])
+            ->where('privacy', 'public')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -118,8 +122,12 @@ class EventController extends Controller
     public function showHiddenEvents($page) {
         $perPage = 10;
         $skip = ($page - 1) * $perPage;
-        $userId = auth()->id(); // Obtén el ID del usuario autenticado
-        $events = Event::where('privacy', 'hidden')
+        $userId = auth()->id();
+        $events = Event::with('event_requirements')
+                ->with(['participants' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
+                ->where('privacy', 'hidden')
                ->where('event_owner_id', $userId)
                ->skip($skip)
                ->take($perPage)
@@ -145,7 +153,11 @@ class EventController extends Controller
         $perPage = 10;
         $skip = ($page - 1) * $perPage;
         $userId = auth()->id();
-        $events = Event::where('event_owner_id', $userId)
+        $events = Event::with('event_requirements')
+                ->with(['participants' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
+                ->where('event_owner_id', $userId)
                ->skip($skip)
                ->take($perPage)
                ->get();
@@ -171,6 +183,10 @@ class EventController extends Controller
         $friends = User::find($userId)->friends();
         $events = Event::whereIn('event_owner_id', $friends)
                 ->where('privacy', '!=', 'hidden')
+                ->with('event_requirements')
+                ->with(['participants' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
                 ->skip($skip)
                 ->take($perPage)
                 ->get();

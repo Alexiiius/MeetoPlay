@@ -2,18 +2,19 @@
   <input type="checkbox" [(ngModel)]="isChecked" />
   <div class="collapse-title text-xl flex items-center justify-between">
     <div class="flex items-center">
-      <img class="w-14 h-auto mr-3"
-        src="https://meetoplay-api-assets-bucket.s3.amazonaws.com/gameLogos/League_of_Legends.png" alt="gameLogo">
+      <img class="w-14 h-auto mr-3" src="{{event.game_pic}}" alt="gameLogo">
       <div class="flex flex-col">
-        <span class="text-2xl">Event title</span>
-        <span class="text-base font-light">Game - Gamemode - Plataforma</span>
+        <span class="text-2xl text-nowrap text-ellipsis w-64 2xl:w-96 overflow-hidden">{{event.event_title}}</span>
+        <span class="text-base font-light">{{event.game_name}} - {{event.game_mode}} - {{event.platform}}</span>
       </div>
     </div>
     <div class="flex items-center">
-      <span class="text-lg font-light">Creado por <span class="font-normal">Username</span></span>
+      <span class="text-lg font-light">Creado por <span class="font-normal">{{event.event_owner_id}}</span></span>
+      <!-- TODO: event_owner.name -->
       <div class="avatar">
-        <div class="w-14 ml-3 rounded-full">
+        <div class="w-12 ml-3 rounded-full">
           <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+          <!-- TODO: event_owner.avatar -->
         </div>
       </div>
     </div>
@@ -26,7 +27,7 @@
         </div>
         <div class="flex text-lg font-medium">
           <div>
-            <span class="mr-2">Participantes</span>
+            <span class="mr-2">Participantes</span> <!-- TODO: participants -->
             <span class="font-mono">8/10</span>
 
             <div class="avatar-group -space-x-5 rtl:space-x-reverse">
@@ -71,16 +72,17 @@
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
-          <div tabindex="0" class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-[220px] text-left">
+          <div tabindex="0"
+            class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-[220px] text-left">
             <div tabindex="0" class="card-body font-light flex">
               <h2 class="card-title">Amigos</h2>
-                <div class="flex flex-wrap gap-1 max-w-full">
-                  <span><a href="#" class="link">Amigo1</a></span>
-                  <span><a href="#" class="link">Amigo2</a></span>
-                  <span><a href="#" class="link">Amigo3</a></span>
-                  <span><a href="#" class="link">Amigo4</a></span>
+              <div class="flex flex-wrap gap-1 max-w-full">
+                <span><a href="#" class="link">Amigo1</a></span>
+                <span><a href="#" class="link">Amigo2</a></span>
+                <span><a href="#" class="link">Amigo3</a></span>
+                <span><a href="#" class="link">Amigo4</a></span>
 
-                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -88,9 +90,11 @@
       <!-- Fin Participantes -->
 
       <!-- Fecha y hora -->
-      <div class="flex flex-col gap-2 font-light col-span-2">
-        <span>Comienza el *fecha* a las *hora*</span>
-        <span>Finaliza el *fecha* a las *hora*</span>
+      <div class="flex flex-col gap-2 font-light col-span-2 w-full">
+        <span class="w-full text-justify">Empieza el <span class="font-medium">{{formattedDateBegin}}</span> a las
+          <span class="font-medium">{{formattedTimeBegin}}</span></span>
+        <span class="w-full text-justify">Acaba el <span class="font-medium">{{formattedDateEnd}}</span> a las <span
+            class="font-medium">{{formattedTimeEnd}}</span></span>
       </div>
       <!-- Fin fecha y hora -->
 
@@ -108,9 +112,23 @@
           <div tabindex="0" class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-72 text-left">
             <div tabindex="0" class="card-body">
               <h2 class="card-title">Requisitos de inscripción</h2>
-              @for (number of [1, 2, 3, 4]; track $index) {
-              <span>Requisito: <span class="font-light">xxxxx</span></span>
+              @if (noRequirments()) {
+                <span class="font-light">No hay requisitos!! Unete ya!! ➡️</span>
+              } @else {
+              <span *ngIf="event.event_requirements.min_rank">Rango mínimo: <span class="font-light">{{
+                  event.event_requirements.min_rank }}</span></span>
+              <span *ngIf="event.event_requirements.max_rank">Rango máximo: <span class="font-light">{{
+                  event.event_requirements.max_rank }}</span></span>
+              <span *ngIf="event.event_requirements.min_level">Nivel mínimo: <span class="font-light">{{
+                  event.event_requirements.min_level }}</span></span>
+              <span *ngIf="event.event_requirements.max_level">Nivel máximo: <span class="font-light">{{
+                  event.event_requirements.max_level }}</span></span>
+              <span *ngIf="event.event_requirements.min_hours_played">Horas jugadas mínimas: <span class="font-light">{{
+                  event.event_requirements.min_hours_played }}</span></span>
+              <span *ngIf="event.event_requirements.max_hours_played">Horas jugadas máximas: <span class="font-light">{{
+                  event.event_requirements.max_hours_played }}</span></span>
               }
+
             </div>
           </div>
         </div>
@@ -119,19 +137,22 @@
       <div class="hidden 2xl:block"></div>
       <!-- Botones + contador -->
       <div class="h-full flex flex-col justify-end items-end gap-3 col-span-3 2xl:col-span-2">
-        <div class="flex gap-2">
-          <span class="text-md font-light">El plazo de inscripción acaba en</span>
-          <span class="countdown font-mono text-xl font-normal flex" [ngClass]="{'hidden': !isChecked}">
-            <span [style.--value]="countdown.days"></span>d
-            <span [style.--value]="countdown.hours"></span>h
-            <span [style.--value]="countdown.minutes"></span>m
-            <span [style.--value]="countdown.seconds"></span>s
-          </span>
-        </div>
-
+        @if (isEventInsciptionOpen()) {
+          <div class="flex gap-2">
+            <span class="text-md font-light">El plazo de inscripción acaba en</span>
+            <span class="countdown font-mono text-xl font-normal flex" [ngClass]="{'hidden': !isChecked}">
+              <span [style.--value]="countdown.days"></span>d
+              <span [style.--value]="countdown.hours"></span>h
+              <span [style.--value]="countdown.minutes"></span>m
+              <span [style.--value]="countdown.seconds"></span>s
+            </span>
+          </div>
+        }
         <div class="flex 2xl:w-full 2xl:justify-end space-x-3">
-          <button class="text-base font-normal font-Kanit btn btn-outline btn-secondary w-28 2xl:flex-grow">Chat</button>
-          <button class="text-base font-normal font-Kanit btn btn-outline btn-error w-28 2xl:flex-grow">Abandonar</button>
+          <button
+            class="text-base font-normal font-Kanit btn btn-outline btn-secondary w-28 2xl:flex-grow">Chat</button>
+          <button
+            class="text-base font-normal font-Kanit btn btn-outline btn-error w-28 2xl:flex-grow">Abandonar</button>
           <input type="checkbox" aria-label="Unirse"
             class="text-base font-normal font-Kanit btn btn-success w-28 btn-outline 2xl:flex-grow" />
         </div>

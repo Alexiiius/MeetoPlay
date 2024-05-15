@@ -22,24 +22,24 @@ export class EventsService {
     return this.http.post(this.backAPIUrl + '/create/event', formatedNewEvent);
   }
 
-  getPublicEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/public');
+  getPublicEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/public/${page}`);
   }
 
-  getFriendsEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/friends');
+  getFriendsEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/friends/${page}`);
   }
 
-  getFollowingEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/following');
+  getFollowingEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/following/${page}`);
   }
 
-  getHiddenEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/hidden');
+  getHiddenEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/hidden/${page}`);
   }
 
-  getMyEvents() {
-    return this.http.get<any[]>(this.backAPIUrl + '/events/my');
+  getMyEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/my/${page}`);
   }
 
 
@@ -49,6 +49,8 @@ export class EventsService {
     if (userId === undefined) {
       throw new Error('User data is not available');
     }
+
+    console.log('Entra aqui')
 
     let formatedNewEvent = {
       data: {
@@ -62,8 +64,8 @@ export class EventsService {
           event_owner_id: this.authService.userData.value?.id || 0,
           date_time_begin: newEvent.whenForm.eventBegin,
           date_time_end: newEvent.whenForm.eventEnd,
-          date_time_inscription_begin: newEvent.toggleInscription ? newEvent.whenForm.inscriptionBegin : null,
-          date_time_inscription_end: newEvent.toggleInscription ? newEvent.whenForm.inscriptionEnd : null,
+          date_time_inscription_begin: newEvent.whenForm.inscriptionToggle ? newEvent.whenForm.inscriptionBegin : null,
+          date_time_inscription_end: newEvent.whenForm.inscriptionToggle ? newEvent.whenForm.inscriptionEnd : null,
           max_participants: newEvent.whoForm.maxParticipants ? newEvent.whoForm.maxParticipants : 0,
           privacy: newEvent.whoForm.privacy,
         },

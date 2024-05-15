@@ -5,6 +5,8 @@ import { backAPIUrl } from '../config';
 import { Router } from '@angular/router';
 import { LoginResponse, RegisterResponse } from '../interfaces/back-end-api-response';
 import { UserData } from '../interfaces/user-data';
+import { UserService } from './user.service';
+import { UserReduced } from '../interfaces/user-reduced';
 
 @Injectable({
   providedIn: 'root'
@@ -80,8 +82,13 @@ export class AuthService {
 
   storeUserData(userData: UserData): Promise<void> {
     return new Promise((resolve, reject) => {
-      userData.status = 'Online';
-      sessionStorage.setItem('user_data', JSON.stringify(userData));
+      let storedData: UserReduced = {
+        name: userData.name,
+        tag: userData.tag,
+        avatar: userData.avatar,
+        status: 'Online'
+      };
+      sessionStorage.setItem('user_data', JSON.stringify(storedData));
       resolve();
     });
   }

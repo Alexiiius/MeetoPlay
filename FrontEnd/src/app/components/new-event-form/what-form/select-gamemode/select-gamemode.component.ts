@@ -75,8 +75,6 @@ export class SelectGamemodeComponent implements OnInit {
         this.filterGameModes();
       });
 
-    console.log(this.selectedGame)
-
     // Suscribirse a los cambios en el valor de 'ranked'
     this.whatForm.get('ranked')?.valueChanges.subscribe(value => {
       this.ranked = value;

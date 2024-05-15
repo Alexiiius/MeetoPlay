@@ -2,11 +2,16 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { UserData } from '../../interfaces/user-data';
+import { CommonModule } from '@angular/common';
+import { GameStatsComponent } from './game-stats/game-stats.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule,
+    GameStatsComponent
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -17,6 +22,7 @@ export class ProfileComponent {
 
   constructor(private route: ActivatedRoute, private userService: UserService) { }
 
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.userService.getUserById(params['id']).subscribe(user => {
@@ -25,4 +31,9 @@ export class ProfileComponent {
       });
     });
   }
+
+  isOverflow(element: any) {
+    console.log(element.scrollWidth > element.clientWidth);
+    return element.scrollWidth > element.clientWidth;
+}
 }

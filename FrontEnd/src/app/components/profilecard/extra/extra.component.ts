@@ -1,37 +1,46 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserData } from '../../../interfaces/user-data';
-import { UserExtraStatusComponent } from './user-status/user-extra-status.component';
 import { UserService } from '../../../services/user.service';
+import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { UserStatusComponent } from '../../user-status/user-status.component';
 
 @Component({
   selector: 'app-extra',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
-    UserExtraStatusComponent
+    UserStatusComponent,
+    RouterLink
   ],
   templateUrl: './extra.component.html',
-  styleUrl: './extra.component.css'
+  styleUrls: ['./extra.component.css']
 })
-export class ExtraComponent {
+export class ExtraComponent implements OnInit, OnDestroy {
 
   constructor(private userService: UserService) { }
 
   copied = false;
   fadeOut = false;
   showChangeStatus = false;
-  user: UserData = this.userService.getUserData();
-  userStatus: String = this.user?.status;
+  user: UserData | null = null;
+  userStatus: String | null = null;
+  private userSubscription: Subscription;
 
   ngOnInit(): void {
-    this.userStatus = this.user?.status;
+    this.userSubscription = this.userService.currentUser.subscribe(user => {
+      this.user = user;
+      this.userStatus = user?.status || null;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.userSubscription.unsubscribe();
   }
 
   copyToClipboard(): void {
-    const textToCopy = `${this.user.name}\#${this.user.tag}`;
+    const textToCopy = `${this.user?.name}\#${this.user?.tag}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
       this.copied = true;
       setTimeout(() => {
@@ -52,6 +61,7 @@ export class ExtraComponent {
 
   changeUserStatus(newStatus: string) {
     this.userService.changeUserStatus(newStatus);
+    this.userStatus = newStatus;
     this.toggleChangeStatus();
   }
 }

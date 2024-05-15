@@ -36,7 +36,7 @@ export class EventsFeedComponent implements OnInit {
   followingTotalPages = 1;
 
   isLoading = false;
-  hasMoreEvents = true;
+  hasMoreEvents = false;
 
   constructor(private eventService: EventsService, private eventFeedService: EventFeedService) { }
 
@@ -49,11 +49,14 @@ export class EventsFeedComponent implements OnInit {
       switch(group) {
         case 'Public':
           this.displayedEvents = this.publicEvents;
+          this.hasMoreEvents = this.publicPage < this.publicTotalPages;
           break;
         case 'Friends':
           this.displayedEvents = this.friendsEvents;
+          this.hasMoreEvents = this.friendsPage < this.friendsTotalPages;
           break;
         case 'Follows':
+          this.hasMoreEvents = this.followingPage < this.followingTotalPages;
           //this.displayedEvents = this.followingEvents;
           break;
         default:
@@ -63,62 +66,79 @@ export class EventsFeedComponent implements OnInit {
   }
 
   loadMoreEvents() {
-    this.isLoading = true;
     this.eventFeedService.currentGroup.subscribe(group => {
       switch(group) {
         case 'Public':
           if (this.publicPage < this.publicTotalPages) {
             this.getPublicEvents(++this.publicPage);
-          } else {
-            this.isLoading = false;
           }
           break;
         case 'Friends':
           if (this.friendsPage < this.friendsTotalPages) {
             this.getFriendsEvents(++this.friendsPage);
-          } else {
-            this.isLoading = false;
           }
           break;
         case 'Follows':
           if (this.followingPage < this.followingTotalPages) {
             this.getFollowingEvents(++this.followingPage);
-          } else {
-            this.isLoading = false;
           }
           break;
         default:
           console.error(`Unexpected group: ${group}`);
       }
-      this.isLoading = false;
     });
   }
 
   getPublicEvents(page: number) {
+    this.isLoading = true;
+
     this.eventService.getPublicEvents(page).subscribe((response: any) => {
       const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
       this.publicEvents = [...this.publicEvents, ...newEvents];
       this.publicTotalPages = response.meta.total_pages;
+      this.hasMoreEvents = this.publicPage < this.publicTotalPages;
+
       this.displayedEvents = this.publicEvents;
+
+      this.isLoading = false;
       console.log('Public events: ', this.publicEvents);
+    }, error => {
+      console.error('Error fetching public events: ', error)
+      this.isLoading = false;
     });
   }
 
   getFriendsEvents(page: number) {
+    this.isLoading = true;
+
     this.eventService.getFriendsEvents(page).subscribe((response: any) => {
       const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
       this.friendsEvents = [...this.friendsEvents, ...newEvents];
       this.friendsTotalPages = response.meta.total_pages;
+      this.hasMoreEvents = this.publicPage < this.publicTotalPages;
+
+      this.isLoading = false;
       console.log('Friends events: ', this.friendsEvents);
+    }, error => {
+      console.error('Error fetching friends events: ', error)
+      this.isLoading = false;
     });
   }
 
   getFollowingEvents(page: number) {
+    this.isLoading = true;
+
     this.eventService.getFollowingEvents(page).subscribe((response: any) => {
       const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
       this.followingEvents = [...this.followingEvents, ...newEvents];
       this.followingTotalPages = response.meta.total_pages;
+      this.hasMoreEvents = this.publicPage < this.publicTotalPages;
+
+      this.isLoading = false;
       console.log('Following events: ', this.followingEvents);
+    }, error => {
+      console.error('Error fetching following events: ', error)
+      this.isLoading = false;
     });
   }
 

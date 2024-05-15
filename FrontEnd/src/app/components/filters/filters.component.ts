@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-filters',
@@ -13,7 +13,7 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class FiltersComponent {
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService) {
 
   }
 
@@ -22,5 +22,8 @@ export class FiltersComponent {
     this.authService.logout()
   }
 
+  click () {
+    console.log('Click')
+  }
 
 }

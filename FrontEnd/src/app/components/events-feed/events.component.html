@@ -1,15 +1,22 @@
 <div class="w-full h-full rounded-lg space-y-6 flex flex-col justify-start overflow-y-scroll scrollbar-hidde">
   <app-nav-bar></app-nav-bar>
+
+  @if (isLoading) {
+    <div *ngFor="let i of [].constructor(10)" class="skeleton bg-primary/10 w-full h-[88px] min-h-[88px] border border-base-300"></div>
+  }
+
   @for (event of displayedEvents; track $index) {
-    <app-event-card [event]="event"/>
+  <app-event-card [event]="event" />
   }
   @if (hasMoreEvents) {
-    <button class="btn btn-block btn-ghost font-normal" (click)="loadMoreEvents()">
+  <button class="btn btn-block btn-ghost font-normal" (click)="loadMoreEvents()">
+    <div class="divider divider-primary w-full">
       @if (isLoading) {
-        <span class="loading loading-infinity loading-lg text-primary"></span>
+        <span class="loading loading-infinity text-primary w-20"></span>
       } @else {
-        <div class="divider divider-primary w-full">Cargar más eventos</div>
+        <span class="text-primary">Load more</span>
       }
-    </button>
+    </div>
+  </button>
   }
 </div>

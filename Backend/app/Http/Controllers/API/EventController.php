@@ -97,6 +97,9 @@ class EventController extends Controller
         $perPage = 10;
         $skip = ($page - 1) * $perPage;
         $events = Event::with('event_requirements')
+            ->with(['owner' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            } ])
             ->with(['participants' => function ($query) {
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             } ])
@@ -124,6 +127,9 @@ class EventController extends Controller
         $skip = ($page - 1) * $perPage;
         $userId = auth()->id();
         $events = Event::with('event_requirements')
+                ->with(['owner' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
                 ->with(['participants' => function ($query) {
                     $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
                 } ])
@@ -154,6 +160,9 @@ class EventController extends Controller
         $skip = ($page - 1) * $perPage;
         $userId = auth()->id();
         $events = Event::with('event_requirements')
+                ->with(['owner' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
                 ->with(['participants' => function ($query) {
                     $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
                 } ])
@@ -182,6 +191,9 @@ class EventController extends Controller
         $userId = auth()->id();
         $friends = User::find($userId)->friends();
         $events = Event::whereIn('event_owner_id', $friends)
+                ->with(['owner' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
                 ->where('privacy', '!=', 'hidden')
                 ->with('event_requirements')
                 ->with(['participants' => function ($query) {

@@ -9,7 +9,6 @@ import { AuthService } from './auth.service';
 })
 export class EventsService {
 
-  YOUR_TOKEN = 'YOUR_TOKEN'
   private backAPIUrl = backAPIUrl;
 
   constructor(private http: HttpClient, private authService: AuthService) { }

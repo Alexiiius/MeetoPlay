@@ -3,8 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { UserData } from '../../interfaces/user-data';
 import { CommonModule } from '@angular/common';
-import { GameStatsComponent } from './game-stats/game-stats.component';
+
 import { SocialsComponent } from './socials/socials.component';
+import { GameStatCardComponent } from './game-stat-card/game-stat-card.component';
 
 
 @Component({
@@ -12,8 +13,8 @@ import { SocialsComponent } from './socials/socials.component';
   standalone: true,
   imports: [
     CommonModule,
-    GameStatsComponent,
-    SocialsComponent
+    SocialsComponent,
+    GameStatCardComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'

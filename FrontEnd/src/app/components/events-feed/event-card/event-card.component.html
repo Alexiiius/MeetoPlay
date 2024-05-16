@@ -1,4 +1,4 @@
-<div tabindex="0" class="collapse collapse-arrow bg-base-200 shadow-lg">
+<div tabindex="0" class="collapse collapse-arrow bg-base-100 shadow-lg">
   <input type="checkbox" [(ngModel)]="isChecked" />
   <div class="collapse-title text-xl flex items-center justify-between">
     <div class="flex items-center">
@@ -21,17 +21,13 @@
   </div>
   <div class="collapse-content">
 
-    <button class="btn" onclick="my_modal_1.showModal()">open modal</button>
-    <dialog id="my_modal_1" class="modal">
+    <!-- You can open the modal using ID.showModal() method -->
+    <button (click)="openDialog()" class="btn">Open modal</button>
+    <dialog #moreEventInfo class="modal">
       <div class="modal-box">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeDialog()">✕</button>
         <h3 class="font-bold text-lg">Hello!</h3>
-        <p class="py-4">Press ESC key or click the button below to close</p>
-        <div class="modal-action">
-          <form method="dialog">
-            <!-- if there is a button in form, it will close the modal -->
-            <button class="btn">Close</button>
-          </form>
-        </div>
+        <p class="py-4">Press ESC key or click on ✕ button to close</p>
       </div>
     </dialog>
   </div>

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Event } from '../../../models/event';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-event-card',
@@ -19,6 +19,7 @@ export class EventCardComponent implements OnInit {
   isChecked = false;
 
   @Input() event: Event;
+  @ViewChild('moreEventInfo') modalDialog!: ElementRef<HTMLDialogElement>;
 
   eventInscriptionEndTime: Date;
   formattedDateBegin: string;
@@ -78,5 +79,13 @@ export class EventCardComponent implements OnInit {
   isEventInsciptionOpen() {
     const now = new Date();
     return now < this.eventInscriptionEndTime;
+  }
+
+  openDialog() {
+    this.modalDialog.nativeElement.showModal();
+  }
+
+  closeDialog() {
+    this.modalDialog.nativeElement.close();
   }
 }

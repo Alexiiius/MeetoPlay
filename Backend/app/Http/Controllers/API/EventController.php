@@ -64,7 +64,14 @@ class EventController extends Controller
 
     public function show($id) {
         
-        $event = Event::with('event_requirements')->find($id);
+        $event = Event::with('event_requirements')
+            ->with(['owner' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            } ])
+            ->with(['participants' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            } ])
+            ->find($id);
 
         if (!$event) {
             return response()->json(['error' => 'Event not found'], 404);
@@ -97,6 +104,9 @@ class EventController extends Controller
         $perPage = 10;
         $skip = ($page - 1) * $perPage;
         $events = Event::with('event_requirements')
+            ->with(['owner' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            } ])
             ->with(['participants' => function ($query) {
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             } ])
@@ -124,6 +134,9 @@ class EventController extends Controller
         $skip = ($page - 1) * $perPage;
         $userId = auth()->id();
         $events = Event::with('event_requirements')
+                ->with(['owner' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
                 ->with(['participants' => function ($query) {
                     $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
                 } ])
@@ -154,6 +167,9 @@ class EventController extends Controller
         $skip = ($page - 1) * $perPage;
         $userId = auth()->id();
         $events = Event::with('event_requirements')
+                ->with(['owner' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
                 ->with(['participants' => function ($query) {
                     $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
                 } ])
@@ -182,6 +198,9 @@ class EventController extends Controller
         $userId = auth()->id();
         $friends = User::find($userId)->friends();
         $events = Event::whereIn('event_owner_id', $friends)
+                ->with(['owner' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
                 ->where('privacy', '!=', 'hidden')
                 ->with('event_requirements')
                 ->with(['participants' => function ($query) {
@@ -200,6 +219,40 @@ class EventController extends Controller
             ],
             'meta' => [
                 'current_page' => $page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function showFollowersEvents(Request $request){
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+        $userId = auth()->id();
+        $followers = User::find($userId)->followers()->pluck('users.id');
+        $events = Event::whereIn('event_owner_id', $followers)
+                ->with(['owner' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
+                ->where('privacy', 'public')
+                ->with('event_requirements')
+                ->with(['participants' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
+                ->skip($skip)
+                ->take($perPage)
+                ->get();
+        $total = Event::whereIn('event_owner_id', $followers)
+            ->where('privacy', 'public')
+            ->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $request->page,
                 'total_pages' => ceil($total / $perPage),
                 'total_events' => $total,
                 'timestamp' => now(),
@@ -291,7 +344,103 @@ class EventController extends Controller
             ],
         ], 200);
 
-
-
     }
+
+    public function addParticipant(Request $request) {
+
+        $event = Event::find($request->id);
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+        if (!$this->canUserSeeThisEvent($event, auth()->user() ) ) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $event->insertParticipant( auth()->id() );
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    
+        return response()->json([
+            'data' => [
+                'message' => 'Participant added successfully!',
+                'Links' => [
+                    'self' => url('/api/event/join/' . $event->id),
+                    'event' => url('/api/event/' . $event->id),
+                ],
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], 200);
+    }
+
+    public function removeParticipant(Request $request) {
+
+        $event = Event::find($request->id);
+
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+
+        if (!$this->canUserSeeThisEvent($event, auth()->user() ) ) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $event->removeParticipant( auth()->id() );
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    
+        return response()->json([
+            'data' => [
+                'message' => 'Participant removed successfully!',
+                'Links' => [
+                    'self' => url('/api/event/leave/' . $event->id),
+                    'event' => url('/api/event/' . $event->id),
+                ],
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], 200);
+    }
+
+    public function canUserSeeThisEvent(Event $event, User $user) {
+
+        if ($event->privacy == 'hidden' && $event->event_owner_id != $user->id && $user->is_admin != true) {
+            return false;
+        }
+
+        if ($event->privacy == 'friends') {
+            $friends = $user->friends()->toArray();
+            if (!in_array($event->event_owner_id, $friends) && $event->event_owner_id != $user->id && $user->is_admin != true) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function test(Request $request) {
+        $user = auth()->user();
+        $event = Event::find($request->id);
+        return response()->json([
+            'data' => [
+                'can_see' => $this->canUserSeeThisEvent($event, $user),
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+
+
+
+
 }

@@ -1,28 +1,32 @@
-<div #scrollContainer class="w-full h-full rounded-lg space-y-6 flex flex-col justify-start overflow-y-scroll scrollbar-hidde">
+<div class="w-full h-full max-h-full flex flex-col">
   <app-nav-bar [isLoading]="isLoading"></app-nav-bar>
+  <div #scrollContainer id="scrollContainer" class=" p-4 mt-6 w-full h-full rounded-lg space-y-6 flex flex-col justify-start overflow-y-scroll scrollbar-hidde bg-gradient-to-r from-primary to-secondary">
 
-  @if (isLoading) {
-    <div *ngFor="let i of [].constructor(10)" class="skeleton bg-primary/10 w-full h-[88px] min-h-[88px] border border-base-300"></div>
-  }
 
-  @for (event of displayedEvents; track $index) {
-  <app-event-card [event]="event" />
-  }
-  <div class="flex space-x-1">
-
-    @if (!isLoading && moreEventsLoaded) {
-      <button (click)="smoothScrollToTop()" class="scroll-to-top btn btn-ghost" [ngClass]="hasMoreEvents ? 'w-1/2' : 'w-full'"> <i class='bx-tada bx bxs-hand-up text-secondary'></i> Subir</button>
+    @if (isLoading) {
+      <div *ngFor="let i of [].constructor(10)" class="skeleton bg-neutral/25 w-full h-[88px] min-h-[88px] shadow-lg"></div>
     }
-    @if (hasMoreEvents) {
-    <button class="btn btn-ghost font-normal" (click)="loadMoreEvents()" [ngClass]="!isLoading && moreEventsLoaded ? 'w-1/2' : 'w-full'">
-        @if (isLoading) {
-          <span class="loading loading-infinity text-primary w-10"></span>
-        } @else {
-          <span><i class='bx-tada bx bxs-hand-down text-primary'></i> Load more</span>
-        }
-    </button>
+
+    @for (event of displayedEvents; track $index) {
+    <app-event-card [event]="event" />
     }
+    <div class="flex space-x-1">
+
+      @if (!isLoading && moreEventsLoaded) {
+        <button (click)="smoothScrollToTop()" class="scroll-to-top btn font-normal" [ngClass]="hasMoreEvents ? 'w-1/2' : 'w-full'">Subir <i class='bx-tada bx bxs-hand-up text-secondary ml-2'></i></button>
+      }
+      @if (hasMoreEvents) {
+      <button class="btn font-normal " (click)="loadMoreEvents()" [ngClass]="!isLoading && moreEventsLoaded ? 'w-1/2' : 'w-full'">
+          @if (isLoading) {
+            <span class="loading loading-infinity text-primary w-10"></span>
+          } @else {
+            <span>Load more <i class='bx-tada bx bxs-hand-down text-primary ml-2'></i></span>
+          }
+      </button>
+      }
+    </div>
+
+
   </div>
-  <!-- events.component.html -->
-
 </div>
+

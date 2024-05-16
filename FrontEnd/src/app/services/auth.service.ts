@@ -83,6 +83,7 @@ export class AuthService {
   storeUserData(userData: UserData): Promise<void> {
     return new Promise((resolve, reject) => {
       let storedData: UserReduced = {
+        id: userData.id,
         name: userData.name,
         tag: userData.tag,
         avatar: userData.avatar,

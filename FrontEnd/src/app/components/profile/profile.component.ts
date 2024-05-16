@@ -4,13 +4,16 @@ import { UserService } from '../../services/user.service';
 import { UserData } from '../../interfaces/user-data';
 import { CommonModule } from '@angular/common';
 import { GameStatsComponent } from './game-stats/game-stats.component';
+import { SocialsComponent } from './socials/socials.component';
+
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
     CommonModule,
-    GameStatsComponent
+    GameStatsComponent,
+    SocialsComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
@@ -33,7 +36,6 @@ export class ProfileComponent {
   }
 
   isOverflow(element: any) {
-    console.log(element.scrollWidth > element.clientWidth);
     return element.scrollWidth > element.clientWidth;
 }
 }

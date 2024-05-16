@@ -45,6 +45,7 @@ class Event extends Model {
         }
     
         $this->participants()->attach($user_id);
+        $this->save();
     }
     
     public function removeParticipant($user_id) {

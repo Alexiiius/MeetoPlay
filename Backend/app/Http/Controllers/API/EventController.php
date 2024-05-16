@@ -64,7 +64,14 @@ class EventController extends Controller
 
     public function show($id) {
         
-        $event = Event::with('event_requirements')->find($id);
+        $event = Event::with('event_requirements')
+            ->with(['owner' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            } ])
+            ->with(['participants' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            } ])
+            ->find($id);
 
         if (!$event) {
             return response()->json(['error' => 'Event not found'], 404);
@@ -318,7 +325,7 @@ class EventController extends Controller
         }
 
         try {
-            $event->insertParticipant($request->user_id);
+            $event->insertParticipant( auth()->id() );
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -350,7 +357,7 @@ class EventController extends Controller
         }
 
         try {
-            $event->removeParticipant($request->user_id);
+            $event->removeParticipant( auth()->id() );
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }

@@ -37,16 +37,17 @@ export class EventsFeedComponent implements OnInit {
 
   isLoading = false;
   hasMoreEvents = false;
+  moreEventsLoaded = false;
 
   constructor(private eventService: EventsService, private eventFeedService: EventFeedService) { }
 
   ngOnInit() {
     this.getPublicEvents(this.publicPage);
     this.getFriendsEvents(this.friendsPage);
-    //this.getFriendsEvents(this.followingPage);
+    this.getFollowingEvents(this.followingPage);
 
     this.eventFeedService.currentGroup.subscribe(group => {
-      switch(group) {
+      switch (group) {
         case 'Public':
           this.displayedEvents = this.publicEvents;
           this.hasMoreEvents = this.publicPage < this.publicTotalPages;
@@ -57,7 +58,7 @@ export class EventsFeedComponent implements OnInit {
           break;
         case 'Follows':
           this.hasMoreEvents = this.followingPage < this.followingTotalPages;
-          //this.displayedEvents = this.followingEvents;
+          this.displayedEvents = this.followingEvents;
           break;
         default:
           console.error(`Unexpected group: ${group}`);
@@ -65,22 +66,56 @@ export class EventsFeedComponent implements OnInit {
     });
   }
 
+  //Animación de scroll
+  startPosition: number;
+  elapsedTime: number;
+  duration: number = 500; // Duración del desplazamiento
+
+  easeInOutCubic(t: number): number {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  smoothScrollToTop() {
+    this.startPosition = this.scrollContainer.nativeElement.scrollTop;
+    this.elapsedTime = 0;
+
+    const animation = (timestamp: number) => {
+      if (!this.elapsedTime) {
+        this.elapsedTime = timestamp;
+      }
+
+      const time = timestamp - this.elapsedTime;
+      const t = time / this.duration;
+
+      if (t < 1) {
+        requestAnimationFrame(animation);
+      }
+
+      this.scrollContainer.nativeElement.scrollTop = this.startPosition * (1 - this.easeInOutCubic(t));
+    }
+
+    requestAnimationFrame(animation);
+  }
+
   loadMoreEvents() {
     this.eventFeedService.currentGroup.subscribe(group => {
-      switch(group) {
+      switch (group) {
         case 'Public':
           if (this.publicPage < this.publicTotalPages) {
             this.getPublicEvents(++this.publicPage);
+            this.moreEventsLoaded = true;
           }
           break;
         case 'Friends':
           if (this.friendsPage < this.friendsTotalPages) {
             this.getFriendsEvents(++this.friendsPage);
+            this.moreEventsLoaded = true;
           }
           break;
         case 'Follows':
           if (this.followingPage < this.followingTotalPages) {
             this.getFollowingEvents(++this.followingPage);
+            this.moreEventsLoaded = true;
           }
           break;
         default:

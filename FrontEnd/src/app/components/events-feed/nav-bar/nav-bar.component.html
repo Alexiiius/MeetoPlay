@@ -41,13 +41,13 @@
                 d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
                 clip-rule="evenodd" />
             </svg>
-            <input type="text" class="grow" placeholder="Search..." #searchEventInput/>
+            <input type="text" class="grow" placeholder="Search..." #searchEventInput [disabled]="isLoading"/>
             <kbd class="kbd kbd-sm">Ctrl</kbd>
             <kbd class="kbd kbd-sm">K</kbd>
           </label>
         </div>
       </div>
-      <select class="select select-ghost join-item" (change)="onSelectChange($event)">
+      <select class="select select-ghost join-item" (change)="onSelectChange($event)" [disabled]="isLoading">
         <option value="Public" selected>Public</option>
         <option value="Follows">Follows</option>
         <option value="Friends">Friends</option>

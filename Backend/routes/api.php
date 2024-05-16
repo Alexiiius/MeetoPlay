@@ -41,6 +41,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/events/hidden/{page}', [EventController::class, 'showHiddenEvents']); //show all hidden events of auth user
     Route::get('/events/my/{page}', [EventController::class, 'showMyEvents']); //show all events of auth user
     Route::get('/events/friends/{page}', [EventController::class, 'showFriendsEvents']); //show all events of friends of auth user
+    Route::get('events/followers/{page}', [EventController::class, 'showFollowersEvents']); //show all public events of followers of auth user
     
     Route::delete('/event/{id}', [EventController::class, 'destroy']); //delete a specific event by id only if the user has permission to delete it
     Route::put('/event/{id}', [EventController::class, 'update']); //update a specific event by id only if the user has permission to update it

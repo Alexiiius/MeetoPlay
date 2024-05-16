@@ -226,6 +226,40 @@ class EventController extends Controller
         ]);
     }
 
+    public function showFollowersEvents(Request $request){
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+        $userId = auth()->id();
+        $followers = User::find($userId)->followers()->pluck('users.id');
+        $events = Event::whereIn('event_owner_id', $followers)
+                ->with(['owner' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
+                ->where('privacy', 'public')
+                ->with('event_requirements')
+                ->with(['participants' => function ($query) {
+                    $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+                } ])
+                ->skip($skip)
+                ->take($perPage)
+                ->get();
+        $total = Event::whereIn('event_owner_id', $followers)
+            ->where('privacy', 'public')
+            ->count();
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $request->page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
     public function update(Request $request, Event $event) {
         $event = Event::find($request->id);
         $user = auth()->user();

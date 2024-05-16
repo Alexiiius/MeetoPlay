@@ -22,7 +22,7 @@ class EventUserFactory extends Factory
         do {
             $event_id = DB::table('events')->inRandomOrder()->first()->id;
             $user_id = DB::table('users')->inRandomOrder()->first()->id;
-        } while (DB::table('event_users')->where('event_id', $event_id)->where('user_id', $user_id)->exists());
+        } while (DB::table('event_users')->where('event_id', $event_id)->where('user_id', $user_id)->exists() == false);
     
         return [
             'event_id' => $event_id,

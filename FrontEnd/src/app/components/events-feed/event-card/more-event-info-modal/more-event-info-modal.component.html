@@ -1,0 +1,218 @@
+<!-- You can open the modal using ID.showModal() method -->
+<button (click)="openDialog()" class="btn btn-info font-normal text-base"><i class='bx bx-plus bx-sm'></i>Info</button>
+<dialog #moreEventInfo class="modal">
+  <div
+    class="modal-box bg-base-100 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 border-2 border-primary w-11/12 max-w-3xl max-h-3xl h-[520px] scrollbar-hidde">
+    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeDialog()">✕</button>
+
+    <div role="tablist" class="tabs tabs-bordered">
+      <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="Info del evento" checked />
+      <div role="tabpanel" class="tab-content pt-4">
+        <div class="flex items-center mb-2">
+          <img class="w-12 h-auto mr-3"
+            src="https://meetoplay-api-assets-bucket.s3.amazonaws.com/gameLogos/League_of_Legends.png" alt="gameLogo">
+          <h3 class="font-medium text-lg">Tardecita de lol</h3>
+          <div class="flex flex-grow justify-end gap-2">
+            <button *ngIf="isJoined" class="btn btn-error w-1/6 font-medium" (click)="toggleJoin()">Abandonar</button>
+            <input type="checkbox" [(ngModel)]="isJoined" [attr.aria-label]="isJoined ? 'Unido' : 'Unirse'"
+              class="btn btn-success w-1/6 font-medium" [disabled]="isJoined" />
+          </div>
+        </div>
+        <div class="flex">
+          <dl class="flex-1 p-3 border-r border-neutral">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Juego</dt>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bxs-joystick'></i><span>League of legends</span></dd>
+          </dl>
+          <dl class="flex-1 p-3 border-r border-neutral">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Modo de juego</dt>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-map-alt'></i><span>Aram</span></dd>
+          </dl>
+          <dl class="flex-1 p-3">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Plataforma</dt>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-laptop'></i><span>PC</span></dd>
+          </dl>
+        </div>
+        <div class="flex">
+          <dl class="flex-1 p-3 border-r border-neutral">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Fecha</dt>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-calendar'></i> <span>2021-09-30</span></dd>
+          </dl>
+          <dl class="flex-1 p-3 border-r border-neutral">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Hora</dt>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-time-five'></i> <span>20:00</span></dd>
+          </dl>
+          <dl class="flex-1 p-3">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Duración</dt>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-timer'></i> <span>2 horas</span></dd>
+          </dl>
+        </div>
+
+        <h3 class="font-medium text-lg mt-4 mb-2">Requisitos de inscripción</h3>
+        <div class="flex">
+          <dl class="flex-1 p-3 border-r border-neutral">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Requisito 1</dt>
+            <dd class="text-gray-300 p-2">Descripción del requisito 1</dd>
+          </dl>
+          <dl class="flex-1 p-3 border-r border-neutral">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Requisito 2</dt>
+            <dd class="text-gray-300 p-2">Descripción del requisito 2</dd>
+          </dl>
+          <dl class="flex-1 p-3">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Requisito 3</dt>
+            <dd class="text-gray-300 p-2">Descripción del requisito 3</dd>
+          </dl>
+        </div>
+      </div>
+      <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="Participantes" />
+      <div role="tabpanel" class="tab-content pt-4">
+        <div class="grid grid-cols-3 gap-3 font-medium">
+          <div class="col-span-full text-xl">Amigos</div>
+          <hr class="col-span-full">
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+
+          <div class="col-span-full text-xl mt-3">Seguidos</div>
+          <hr class="col-span-full">
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+
+          <div class="col-span-full text-xl mt-3">Otros participantes</div>
+          <hr class="col-span-full">
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              </div>
+            </div>
+            <span>Username</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>

@@ -54,7 +54,7 @@ module.exports = {
 
           "base-content": "#e5e5e5",
 
-          "info": "#3b82f6",
+          "info": "#5a97fa",
 
           "info-content": "#171717",
 

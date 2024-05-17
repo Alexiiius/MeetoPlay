@@ -3,13 +3,15 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Event } from '../../../models/event';
 import { format } from 'date-fns';
+import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
 
 @Component({
   selector: 'app-event-card',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    MoreEventInfoModalComponent
   ],
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.css'
@@ -26,7 +28,6 @@ export class EventCardComponent implements OnInit {
   formattedTimeBegin: string;
   formattedDateEnd: string;
   formattedTimeEnd: string;
-
 
   ngOnInit() {
     this.formattedDateBegin = format(this.event.date_time_begin, 'dd/MM/yyyy');

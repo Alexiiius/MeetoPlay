@@ -6,6 +6,8 @@ import { EventRequirments } from '../../models/eventRequirments';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { EventFeedService } from '../../services/event-feed.service';
 import { CommonModule } from '@angular/common';
+import { Owner } from '../../models/owner';
+import { UserReduced } from '../../interfaces/user-reduced';
 
 @Component({
   selector: 'app-events',
@@ -186,7 +188,22 @@ export class EventsFeedComponent implements OnInit {
       apiResponse.event_requirements.max_hours_played,
       apiResponse.event_requirements.min_hours_played
     );
-    return new Event(
+
+    const owner = new Owner(
+      apiResponse.owner.id,
+      apiResponse.owner.tag,
+      apiResponse.owner.name,
+      apiResponse.owner.avatar
+    );
+
+    const participants = apiResponse.participants.map((participant: any) => {
+      return {
+        id: participant.id,
+        tag: participant.tag,
+        avatar: participant.avatar
+      } as UserReduced;
+
+    }); return new Event(
       apiResponse.id,
       apiResponse.event_title,
       apiResponse.game_id,
@@ -201,7 +218,9 @@ export class EventsFeedComponent implements OnInit {
       apiResponse.date_time_inscription_end,
       apiResponse.max_participants,
       apiResponse.privacy,
-      eventRequirments
+      eventRequirments,
+      owner,
+      participants
     );
   }
 }

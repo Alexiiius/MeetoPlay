@@ -2,70 +2,102 @@
 <button (click)="openDialog()" class="btn btn-info font-normal text-base"><i class='bx bx-plus bx-sm'></i>Info</button>
 <dialog #moreEventInfo class="modal">
   <div
-    class="modal-box bg-base-100 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 border-2 border-primary w-11/12 max-w-3xl max-h-3xl h-[520px] scrollbar-hidde">
+    class="modal-box bg-base-100 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 border-2 border-primary w-11/12 max-w-3xl max-h-3xl h-[600px] scrollbar-hidde">
     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeDialog()">✕</button>
 
     <div role="tablist" class="tabs tabs-bordered">
-      <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="Info del evento" checked />
+
+      <input type="radio" name="{{event.id}}_tabs" role="tab" class="tab" aria-label="Info del evento" checked />
       <div role="tabpanel" class="tab-content pt-4">
         <div class="flex items-center mb-2">
-          <img class="w-12 h-auto mr-3"
-            src="https://meetoplay-api-assets-bucket.s3.amazonaws.com/gameLogos/League_of_Legends.png" alt="gameLogo">
-          <h3 class="font-medium text-lg">Tardecita de lol</h3>
-          <div class="flex flex-grow justify-end gap-2">
-            <button *ngIf="isJoined" class="btn btn-error w-1/6 font-medium" (click)="toggleJoin()">Abandonar</button>
+          <img class="w-12 h-auto mr-3" src="{{event.game_pic}}" alt="gameLogo">
+          <h3 class="font-medium text-lg">{{event.event_title}}</h3>
+          <div class="flex flex-grow justify-end items-center gap-2">
+            <button *ngIf="isJoined" class="btn btn-error w-24 font-medium" (click)="toggleJoin()">Abandonar</button>
             <input type="checkbox" [(ngModel)]="isJoined" [attr.aria-label]="isJoined ? 'Unido' : 'Unirse'"
-              class="btn btn-success w-1/6 font-medium" [disabled]="isJoined" />
+              class="btn btn-success w-24 font-medium" [disabled]="isJoined" />
           </div>
         </div>
         <div class="flex">
           <dl class="flex-1 p-3 border-r border-neutral">
             <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Juego</dt>
-            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bxs-joystick'></i><span>League of legends</span></dd>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i
+                class='bx bxs-joystick'></i><span>{{event.game_name}}</span></dd>
           </dl>
           <dl class="flex-1 p-3 border-r border-neutral">
             <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Modo de juego</dt>
-            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-map-alt'></i><span>Aram</span></dd>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i
+                class='bx bx-map-alt'></i><span>{{event.game_mode}}</span></dd>
           </dl>
           <dl class="flex-1 p-3">
             <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Plataforma</dt>
-            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-laptop'></i><span>PC</span></dd>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i
+                class='bx bx-laptop'></i><span>{{event.platform}}</span></dd>
           </dl>
         </div>
         <div class="flex">
           <dl class="flex-1 p-3 border-r border-neutral">
             <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Fecha</dt>
-            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-calendar'></i> <span>2021-09-30</span></dd>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-calendar'></i>
+              <span>{{formattedDateBegin}}</span>
+            </dd>
           </dl>
           <dl class="flex-1 p-3 border-r border-neutral">
             <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Hora</dt>
-            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-time-five'></i> <span>20:00</span></dd>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-time-five'></i>
+              <span>{{formattedTimeBegin}}</span>
+            </dd>
           </dl>
           <dl class="flex-1 p-3">
             <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Duración</dt>
-            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-timer'></i> <span>2 horas</span></dd>
+            <dd class="text-gray-300 p-2 flex items-center gap-x-1"><i class='bx bx-timer'></i>
+              <span>{{eventDuration}}</span>
+            </dd>
           </dl>
         </div>
 
         <h3 class="font-medium text-lg mt-4 mb-2">Requisitos de inscripción</h3>
         <div class="flex">
-          <dl class="flex-1 p-3 border-r border-neutral">
-            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Requisito 1</dt>
-            <dd class="text-gray-300 p-2">Descripción del requisito 1</dd>
+          @if (noRequirments()) {
+          <span class="font-light">No hay requisitos!! Unete ya!! ➡️</span>
+          } @else {
+          <dl *ngIf="event.event_requirements.max_rank" class="flex-1 p-3 border-r border-neutral">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Rango</dt>
+            <dd class="text-gray-300 p-2">Min: {{event.event_requirements.min_rank}}</dd>
+            <dd class="text-gray-300 p-2">Max: {{event.event_requirements.max_rank}}</dd>
           </dl>
-          <dl class="flex-1 p-3 border-r border-neutral">
-            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Requisito 2</dt>
-            <dd class="text-gray-300 p-2">Descripción del requisito 2</dd>
+          <dl *ngIf="event.event_requirements.max_level" class="flex-1 p-3 border-r border-neutral">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Nivel</dt>
+            <dd class="text-gray-300 p-2">Min: {{event.event_requirements.min_level}}</dd>
+            <dd class="text-gray-300 p-2">Max: {{event.event_requirements.max_level}}</dd>
           </dl>
-          <dl class="flex-1 p-3">
-            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Requisito 3</dt>
-            <dd class="text-gray-300 p-2">Descripción del requisito 3</dd>
+          <dl *ngIf="event.event_requirements.max_hours_played" class="flex-1 p-3">
+            <dt class="font-medium text-white bg-secondary/30 p-2 rounded">Horas jugadas</dt>
+            <dd class="text-gray-300 p-2">Min: {{event.event_requirements.min_hours_played}}</dd>
+            <dd class="text-gray-300 p-2">Max: {{event.event_requirements.max_hours_played}}</dd>
           </dl>
+            }
         </div>
       </div>
-      <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="Participantes" />
+
+      <input type="radio" name="{{event.id}}_tabs" role="tab" class="tab" aria-label="Participantes" />
       <div role="tabpanel" class="tab-content pt-4">
         <div class="grid grid-cols-3 gap-3 font-medium">
+          <div class="col-span-full">
+            <div class="w-full flex justify-between items-center text-lg font-normal mb-1">
+              <span>Plaza disponibles: <span class="font-medium mr-2">5/10</span></span>
+              <div class="flex gap-3 items-center">
+                <span>Creador del evento: <span class="font-medium">{{event.owner.name}}</span></span>
+                <div class="avatar">
+                  <div class="w-12 rounded-full">
+                    <img src="{{event.owner.avatar}}" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
           <div class="col-span-full text-xl">Amigos</div>
           <hr class="col-span-full">
           <div class="flex gap-x-3 items-center">

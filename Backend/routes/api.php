@@ -14,6 +14,7 @@ use App\Http\Controllers\API\FollowerController;
 Route::post('/register', [AuthController::class, 'register']); //register a new user using name, email password and password_confirmation
 Route::post('/login', [AuthController::class, 'login']); //login a user using email and password return a token to authenticate in the private routes
 
+
 // Private routes for users
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -41,7 +42,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/events/hidden/{page}', [EventController::class, 'showHiddenEvents']); //show all hidden events of auth user
     Route::get('/events/my/{page}', [EventController::class, 'showMyEvents']); //show all events of auth user
     Route::get('/events/friends/{page}', [EventController::class, 'showFriendsEvents']); //show all events of friends of auth user
-    Route::get('events/following/{page}', [EventController::class, 'showFollowingEvents']); //show all public and followers events of the users that auth user is following
+    Route::get('/events/following/{page}', [EventController::class, 'showFollowingEvents']); //show all public and followers events of the users that auth user is following
+    Route::get('/events/participating/{page}', [EventController::class, 'showParticipatingEvents']); //show all events that auth user is participating
 
     Route::delete('/event/{id}', [EventController::class, 'destroy']); //delete a specific event by id only if the user has permission to delete it
     Route::put('/event/{id}', [EventController::class, 'update']); //update a specific event by id only if the user has permission to update it
@@ -65,6 +67,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
+    Route::get('/check-token', function () {
+        return response()->json(['message' => 'Token is valid'], 200); //return 200 if the token provided is valid (because dani asked for this shitty endpoint)
+    });
+
 
 });
 
@@ -79,3 +85,10 @@ Route::middleware(['auth:sanctum' , 'admin'])->group(function () {
 Route::get('health-check', function () {
     return response()->json([ 'status' => 'OK', 'timestamp' => Carbon::now() ]);
 });
+
+//Pepazo endpoint for fun
+Route::get('pepazo', function () {
+    return response()->json([ 'pepazo' => 'pepazo' ]);
+});
+
+

@@ -267,6 +267,38 @@ class EventController extends Controller
         ]);
     }
 
+    //eventos en los que participo
+    public function showParticipatingEvents(Request $request)
+    {
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+        $userId = auth()->id();
+        $events = User::find($userId)->events()
+            ->with('event_requirements')
+            ->with(['owner' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            }])
+            ->with(['participants' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            }])
+            ->skip($skip)
+            ->take($perPage)
+            ->get();
+        $total = User::find($userId)->events()->count();
+
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $request->page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
     public function update(Request $request, Event $event)
     {
         $event = Event::find($request->id);
@@ -419,12 +451,19 @@ class EventController extends Controller
         ], 200);
     }
 
-    //TODO: refactoriza cabron
+    
     public function canUserSeeThisEvent(Event $event, User $user)
     {
 
         if ($event->privacy == 'hidden' && $event->event_owner_id != $user->id && $user->is_admin != true) {
             return false;
+        }
+
+        if ($event->privacy == 'followers') {
+            $following = $user->followingArray()->toArray();
+            if (!in_array($event->event_owner_id, $following) && $event->event_owner_id != $user->id && $user->is_admin != true) {
+                return false;
+            }
         }
 
         if ($event->privacy == 'friends') {

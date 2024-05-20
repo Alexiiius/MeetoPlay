@@ -8,6 +8,10 @@ import { EventFeedService } from '../../services/event-feed.service';
 import { CommonModule } from '@angular/common';
 import { Owner } from '../../models/owner';
 import { UserReduced } from '../../interfaces/user-reduced';
+import { SocialUser } from '../../interfaces/social-user';
+import { UserService } from '../../services/user.service';
+import { FollowedUsersResponse } from '../../interfaces/followed-user-response';
+import { FriendsResponse } from '../../interfaces/friends-response';
 
 @Component({
   selector: 'app-events',
@@ -41,12 +45,20 @@ export class EventsFeedComponent implements OnInit {
   hasMoreEvents = false;
   moreEventsLoaded = false;
 
-  constructor(private eventService: EventsService, private eventFeedService: EventFeedService) { }
+  followedUsers: SocialUser[];
+  friends: SocialUser[];
+
+  constructor(
+    private eventService: EventsService,
+    private eventFeedService: EventFeedService,
+    private userService: UserService) { }
 
   ngOnInit() {
     this.getPublicEvents(this.publicPage);
     this.getFriendsEvents(this.friendsPage);
     this.getFollowingEvents(this.followingPage);
+    this.getFollowedUsers();
+    this.getFriends();
 
     this.eventFeedService.currentGroup.subscribe(group => {
       switch (group) {
@@ -66,6 +78,34 @@ export class EventsFeedComponent implements OnInit {
           console.error(`Unexpected group: ${group}`);
       }
     });
+  }
+
+  getFollowedUsers(): void {
+    this.userService.getFollowedUsers().subscribe(
+      (response: FollowedUsersResponse) => {
+        this.followedUsers = response.data.following;
+        this.userService.updateFollowedUsers(this.followedUsers);
+
+        console.log('Followed users: ', this.followedUsers);
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    );
+  }
+
+  getFriends(): void {
+    this.userService.getFriends().subscribe(
+      (response: FriendsResponse) => {
+        this.friends = response.data.friends;
+        this.userService.updateFriends(this.friends);
+
+        console.log('Friends: ', this.friends);
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    );
   }
 
   //Animación de scroll
@@ -199,8 +239,10 @@ export class EventsFeedComponent implements OnInit {
     const participants = apiResponse.participants.map((participant: any) => {
       return {
         id: participant.id,
+        name: participant.name,
         tag: participant.tag,
-        avatar: participant.avatar
+        avatar: participant.avatar,
+        status: participant.status
       } as UserReduced;
 
     }); return new Event(

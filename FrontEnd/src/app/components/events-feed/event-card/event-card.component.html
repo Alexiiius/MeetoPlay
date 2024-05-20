@@ -21,43 +21,37 @@
   <div class="collapse-content">
     <div class="flex justify-between">
 
-      <!-- <div class="flex flex-col gap-2 font-light col-span-2 w-full">
-        <span class="w-full text-justify">Comienzo<i class='bx bx-calendar'></i> <span
-            class="font-medium">{{formattedDateBegin}}</span> <i class='bx bx-time-five'></i>
-          <span class="font-medium">{{formattedTimeBegin}}</span></span>
-        <span class="w-full text-justify">Fin<i class='bx bx-calendar'></i> <span
-            class="font-medium">{{formattedDateEnd}}</span> <i class='bx bx-time-five'></i> <span
-            class="font-medium">{{formattedTimeEnd}}</span></span>
-      </div> -->
-
       <div class="grid grid-cols-[min-content_auto_auto] gap-2 font-light col-span-2 w-fit">
         <span>Empieza</span>
-        <div>
+        <div class="flex items-center">
           <i class='bx bx-calendar mr-1'></i>
-          <span>{{formattedDateBegin}}</span>
+          <span class="font-mono text-lg">{{formattedDateBegin}}</span>
         </div>
-        <div>
+        <div class="flex items-center">
           <i class='bx bx-time-five mr-1'></i>
-          <span>{{formattedTimeBegin}}</span>
+          <span class="font-mono text-lg">{{formattedTimeBegin}}</span>
         </div>
         <span>Termina</span>
-        <div>
+        <div class="flex items-center">
           <i class='bx bx-calendar mr-1'></i>
-          <span>{{formattedDateEnd}}</span>
+          <span class="font-mono text-lg">{{formattedDateEnd}}</span>
         </div>
-        <div>
+        <div class="flex items-center">
           <i class='bx bx-time-five mr-1'></i>
-          <span>{{formattedTimeEnd}}</span>
+          <span class="font-mono text-lg">{{formattedTimeEnd}}</span>
         </div>
       </div>
 
-      <app-more-event-info-modal class="w-32 flex items-end justify-end"
-        [event]="event"
-        [eventInscriptionEndTime]="eventInscriptionEndTime"
-        [formattedDateBegin]="formattedDateBegin"
-        [formattedTimeBegin]="formattedTimeBegin"
-        [formattedDateEnd]="formattedDateEnd"
-        [formattedTimeEnd]="formattedTimeEnd" />
+      <div class="flex items-end justify-end">
+        <app-more-event-info-modal
+          (isJoinedChange)="isJoinedChange($event)"
+          [event]="event"
+          [eventInscriptionEndTime]="eventInscriptionEndTime"
+          [formattedDateBegin]="formattedDateBegin"
+          [formattedTimeBegin]="formattedTimeBegin"
+          [formattedDateEnd]="formattedDateEnd"
+          [formattedTimeEnd]="formattedTimeEnd" />
+      </div>
     </div>
   </div>
 </div>

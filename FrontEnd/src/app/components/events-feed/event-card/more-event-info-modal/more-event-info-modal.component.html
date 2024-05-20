@@ -1,21 +1,43 @@
-<!-- You can open the modal using ID.showModal() method -->
-<button (click)="openDialog()" class="btn btn-info font-normal text-base"><i class='bx bx-plus bx-sm'></i>Info</button>
+<button (click)="openDialog()" class="btn btn-info font-normal text-base w-24"><span class="text-xl font-mono font-bold">+</span> Info</button>
 <dialog #moreEventInfo class="modal">
   <div
     class="modal-box bg-base-100 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-40 border-2 border-primary w-11/12 max-w-3xl max-h-3xl h-[600px] scrollbar-hidde">
     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeDialog()">✕</button>
 
-    <div role="tablist" class="tabs tabs-bordered">
+    <div role="tablist" class="tabs tabs-bordered w-full">
 
       <input type="radio" name="{{event.id}}_tabs" role="tab" class="tab" aria-label="Info del evento" checked />
       <div role="tabpanel" class="tab-content pt-4">
         <div class="flex items-center mb-2">
           <img class="w-12 h-auto mr-3" src="{{event.game_pic}}" alt="gameLogo">
           <h3 class="font-medium text-lg">{{event.event_title}}</h3>
-          <div class="flex flex-grow justify-end items-center gap-2">
-            <button *ngIf="isJoined" class="btn btn-error w-24 font-medium" (click)="toggleJoin()">Abandonar</button>
+          <div class="flex flex-grow justify-end items-center gap-2 mr-3">
+            @if (isParticipantsLoading) {
+            <div class="w-24 font-medium"><span class="loading loading-spinner text-accent"></span>
+            </div>
+            } @else {
+              @if (isJoined) {
+                <button class="btn btn-error w-24 font-normal" (click)="leaveEvent()" [disabled]="join_LeaveLoading">
+                  @if (join_LeaveLoading) {
+                    <span class="loading loading-spinner text-secondary"></span>
+                  } @else {
+                    Abandonar
+                  }
+                </button>
+              } @else {
+                <button class="btn btn-success w-24 font-normal" (click)="joinEvent()" [disabled]="join_LeaveLoading">
+                  @if (join_LeaveLoading) {
+                    <span class="loading loading-spinner text-secondary"></span>
+                  } @else {
+                    Unirse
+                  }
+                </button>
+              }
+
+            <!-- <button *ngIf="isJoined" class="btn btn-error w-24 font-medium" (click)="leaveEvent()">Abandonar</button>
             <input type="checkbox" [(ngModel)]="isJoined" [attr.aria-label]="isJoined ? 'Unido' : 'Unirse'"
-              class="btn btn-success w-24 font-medium" [disabled]="isJoined" />
+              class="btn btn-success w-24 font-medium" [disabled]="isJoined" (click)="joinEvent()" /> -->
+            }
           </div>
         </div>
         <div class="flex">
@@ -76,7 +98,7 @@
             <dd class="text-gray-300 p-2">Min: {{event.event_requirements.min_hours_played}}</dd>
             <dd class="text-gray-300 p-2">Max: {{event.event_requirements.max_hours_played}}</dd>
           </dl>
-            }
+          }
         </div>
       </div>
 
@@ -85,7 +107,8 @@
         <div class="grid grid-cols-3 gap-3 font-medium">
           <div class="col-span-full">
             <div class="w-full flex justify-between items-center text-lg font-normal mb-1">
-              <span>Plaza disponibles: <span class="font-medium mr-2">5/10</span></span>
+              <span>Plaza disponibles: <span
+                  class="font-semibold mr-2 font-mono">{{eventSlots}}/{{event.max_participants}}</span></span>
               <div class="flex gap-3 items-center">
                 <span>Creador del evento: <span class="font-medium">{{event.owner.name}}</span></span>
                 <div class="avatar">
@@ -97,154 +120,75 @@
             </div>
           </div>
 
+          @if (isParticipantsLoading) {
+          <div class="flex items-end">Cargando participantes <span class="loading loading-dots loading-xs"></span></div>
+          } @else {
 
+          @if (friendParticipants.length == 0 && followedParticipants.length == 0 && otherParticipants.length == 0) {
+          <div class="col-span-full font-normal text-xl">No hay participantes todavía 😅</div>
+          } @else {
+          @if (friendParticipants.length > 0) {
           <div class="col-span-full text-xl">Amigos</div>
           <hr class="col-span-full">
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
 
+          @for (friend of friendParticipants; track $index) {
+          <div class="flex gap-x-3 items-center">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="{{friend.avatar}}" />
+              </div>
+            </div>
+            <span class="font-normal">{{friend.name}}</span>
+          </div>
+          }
+          }
+
+          @if (followedParticipants.length > 0) {
           <div class="col-span-full text-xl mt-3">Seguidos</div>
           <hr class="col-span-full">
+          @for (followedUser of followedParticipants; track $index) {
           <div class="flex gap-x-3 items-center">
             <div class="avatar">
               <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                <img src="{{followedUser.avatar}}" />
               </div>
             </div>
-            <span>Username</span>
+            <span class="font-normal">{{followedUser.name}}</span>
           </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
+          }
+          }
 
-          <div class="col-span-full text-xl mt-3">Otros participantes</div>
+          @if (otherParticipants.length > 0) {
+          <div class="col-span-full text-xl mt-3">Participantes desconocidos</div>
           <hr class="col-span-full">
+          @for (others of otherParticipants; track $index) {
           <div class="flex gap-x-3 items-center">
             <div class="avatar">
               <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                <img src="{{others.avatar}}" />
               </div>
             </div>
-            <span>Username</span>
+            <span class="font-normal">{{others.name}}</span>
           </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-          <div class="flex gap-x-3 items-center">
-            <div class="avatar">
-              <div class="w-10 rounded-full">
-                <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-            </div>
-            <span>Username</span>
-          </div>
-
+          }
+          }
+          }
+          }
         </div>
+
       </div>
+
+      @if (isEventInsciptionOpen()) {
+      <div class="flex gap-1 items-center justify-end pointer-events-none absolute right-9 top-[30px]">
+        <span class="text-md font-light">El plazo de inscripción acaba en</span>
+        <span class="countdown font-mono text-lg font-normal flex items-center">
+          <span [style.--value]="countdown.days"></span>d
+          <span [style.--value]="countdown.hours"></span>h
+          <span [style.--value]="countdown.minutes"></span>m
+          <span [style.--value]="countdown.seconds"></span>s
+        </span>
+      </div>
+      }
     </div>
   </div>
 </dialog>

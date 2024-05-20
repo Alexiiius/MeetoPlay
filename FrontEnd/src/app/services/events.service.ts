@@ -43,6 +43,13 @@ export class EventsService {
     return this.http.get<any[]>(`${this.backAPIUrl}/events/my/${page}`);
   }
 
+  joinEvent(eventId: number) {
+    return this.http.post(`${this.backAPIUrl}/event/${eventId}/join`, {});
+  }
+
+  leaveEvent(eventId: number) {
+    return this.http.post(`${this.backAPIUrl}/event/${eventId}/leave`, {});
+  }
 
   async formatNewEvent(newEvent: any): Promise<FormatedNewEvent> {
     let user = await this.userService.currentUser.pipe(first()).toPromise();

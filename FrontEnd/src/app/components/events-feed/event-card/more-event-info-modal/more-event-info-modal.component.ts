@@ -1,9 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Event } from '../../../../models/event';
 import { UserService } from '../../../../services/user.service';
 import { UserReduced } from '../../../../interfaces/user-reduced';
+import { SocialUser } from '../../../../interfaces/social-user';
+import { EventsService } from '../../../../services/events.service';
+import { filter } from 'rxjs';
+
 
 @Component({
   selector: 'app-more-event-info-modal',
@@ -27,14 +31,121 @@ export class MoreEventInfoModalComponent {
 
   eventDuration: string;
   eventParticipants: UserReduced[]
+  eventSlots: number;
 
-  constructor(private userService: UserService) { }
+  followedUsers: SocialUser[];
+  friends: SocialUser[];
+
+  friendParticipants: UserReduced[] = [];
+  followedParticipants: UserReduced[] = [];
+  otherParticipants: UserReduced[] = [];
+  logedUserParticipating: SocialUser;
+
+  isParticipantsLoading: boolean;
+  join_LeaveLoading:boolean;
+
+  @Output() isJoinedChange = new EventEmitter<boolean>();
+  isJoined: boolean;
+
+  constructor(private userService: UserService, private eventsService: EventsService) {
+    setInterval(() => {
+      this.decrementCountdown();
+    }, 1000);
+  }
 
   ngOnInit() {
     this.calculateEventDuration();
-
     this.eventParticipants = this.event.participants;
-    console.log(this.eventParticipants);
+    this.eventSlots = this.event.max_participants - this.eventParticipants.length;
+    this.filterParticipants();
+  }
+
+  joinEvent() {
+    this.join_LeaveLoading = true;
+    this.eventsService.joinEvent(this.event.id).subscribe(() => {
+      this.toggleJoin();
+      this.eventSlots--;
+      this.join_LeaveLoading = false;
+    });
+  }
+
+  leaveEvent() {
+    this.join_LeaveLoading = true;
+    this.eventsService.leaveEvent(this.event.id).subscribe(() => {
+      this.toggleJoin();
+      this.eventSlots++;
+      this.join_LeaveLoading = false;
+    });
+  }
+
+  checkIfJoined() {
+    this.userService.currentUser.subscribe(user => {
+      this.isJoined = this.eventParticipants.some(participant => participant.id === user?.id);
+      this.isJoinedChange.emit(this.isJoined);
+    });
+  }
+
+  filterParticipants() {
+    this.isParticipantsLoading = true;
+    this.userService.currentUser.subscribe(currentUser => {
+
+      this.userService.followedUsers.subscribe(followedUsers => {
+        this.followedUsers = followedUsers || [];
+
+        this.userService.friends.subscribe(friends => {
+          this.friends = friends || [];
+
+          // Filtrar los participantes del evento
+          this.friendParticipants = this.friends.length > 0 ? this.eventParticipants.filter(participant =>
+            this.friends.some(friend => friend.id === participant.id) && participant.id !== currentUser?.id
+          ) : [];
+
+          this.followedParticipants = this.followedUsers.length > 0 ? this.eventParticipants.filter(participant =>
+            this.followedUsers.some(followedUser => followedUser.id === participant.id) &&
+            !this.friendParticipants.some(friendParticipant => friendParticipant.id === participant.id) &&
+            participant.id !== currentUser?.id
+          ) : [];
+
+          this.otherParticipants = this.eventParticipants.filter(participant =>
+            !this.followedUsers.some(followedUser => followedUser.id === participant.id) &&
+            !this.friends.some(friend => friend.id === participant.id) &&
+            participant.id !== currentUser?.id
+          );
+
+          this.checkIfJoined();
+
+          this.isParticipantsLoading = false;
+        });
+      });
+    });
+  }
+
+  countdown = {
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  };
+
+  decrementCountdown() {
+    const now = new Date();
+    const timeRemaining = this.eventInscriptionEndTime.getTime() - now.getTime();
+
+    if (timeRemaining > 0) {
+      const seconds = Math.floor((timeRemaining / 1000) % 60);
+      const minutes = Math.floor((timeRemaining / 1000 / 60) % 60);
+      const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
+      const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+
+      this.countdown = { days, hours, minutes, seconds };
+    } else {
+      this.countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+  }
+
+  isEventInsciptionOpen() {
+    const now = new Date();
+    return now < this.eventInscriptionEndTime;
   }
 
   calculateEventDuration() {
@@ -45,13 +156,12 @@ export class MoreEventInfoModalComponent {
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-    this.eventDuration = `${days > 0 ? days + 'd ' : ''}${hours > 0 ? hours + 'h ' : ''}${minutes}m`;
+    this.eventDuration = `${days > 0 ? days + 'd ' : ''}${hours > 0 ? hours + 'h ' : ''}${minutes > 0 ? minutes + 'm ' : ''}`;
   }
-
-  isJoined = false;
 
   toggleJoin() {
     this.isJoined = !this.isJoined;
+    this.isJoinedChange.emit(this.isJoined);
   }
 
   openDialog() {

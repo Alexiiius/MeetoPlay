@@ -29,6 +29,8 @@ export class EventCardComponent implements OnInit {
   formattedDateEnd: string;
   formattedTimeEnd: string;
 
+  isJoined: boolean;
+
   ngOnInit() {
     this.formattedDateBegin = format(this.event.date_time_begin, 'dd/MM/yyyy');
     this.formattedTimeBegin = format(this.event.date_time_begin, 'HH:mm');
@@ -38,18 +40,8 @@ export class EventCardComponent implements OnInit {
     this.eventInscriptionEndTime = new Date(this.event.date_time_inscription_end);
   }
 
-  countdown = {
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  };
-
-  constructor() {
-    setInterval(() => {
-      this.decrementCountdown();
-    }, 1000);
-
+  isJoinedChange(isJoined: boolean) {
+    this.isJoined = isJoined;
   }
 
   noRequirments() {
@@ -59,27 +51,6 @@ export class EventCardComponent implements OnInit {
       !this.event.event_requirements.max_level &&
       !this.event.event_requirements.min_hours_played &&
       !this.event.event_requirements.max_hours_played;
-  }
-
-  decrementCountdown() {
-    const now = new Date();
-    const timeRemaining = this.eventInscriptionEndTime.getTime() - now.getTime();
-
-    if (timeRemaining > 0) {
-      const seconds = Math.floor((timeRemaining / 1000) % 60);
-      const minutes = Math.floor((timeRemaining / 1000 / 60) % 60);
-      const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
-      const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-
-      this.countdown = { days, hours, minutes, seconds };
-    } else {
-      this.countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    }
-  }
-
-  isEventInsciptionOpen() {
-    const now = new Date();
-    return now < this.eventInscriptionEndTime;
   }
 
   openDialog() {

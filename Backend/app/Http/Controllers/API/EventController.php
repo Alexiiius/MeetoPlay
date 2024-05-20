@@ -476,17 +476,47 @@ class EventController extends Controller
         return true;
     }
 
-    public function test(Request $request)
-    {
-        $user = auth()->user();
-        $event = Event::find($request->id);
+
+    public function search($search, Request $request) {
+        $query = $request->search;
+
+        if (empty($query) || $query == null ) {
+            return response()->json(['error' => 'No search query'], 400);
+        }
+
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+
+        $events = Event::where('event_title', 'like', "%{$query}%")
+            ->orWhereHas('owner', function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->orWhere('platform', 'like', "%{$query}%")
+            ->orWhere('game_name', 'like', "%{$query}%")
+            ->orWhere('game_mode', 'like', "%{$query}%")
+            ->skip($skip)
+            ->take($perPage)
+            ->get();
+
+        $total = $events->count();
+
+        if ($events->isEmpty()) {
+            return response()->json(['message' => 'No events found'], 200);
+        }
+
         return response()->json([
             'data' => [
-                'can_see' => $this->canUserSeeThisEvent($event, $user),
+                'events' => $events,
             ],
             'meta' => [
+                'current_page' => $request->page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
                 'timestamp' => now(),
             ],
         ]);
     }
+
+
+
 }

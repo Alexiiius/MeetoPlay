@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { UserData } from '../../interfaces/user-data';
 import { CommonModule } from '@angular/common';
 
 import { SocialsComponent } from './socials/socials.component';
-import { GameStatCardComponent } from './game-stat-card/game-stat-card.component';
 
 
 @Component({
@@ -14,7 +13,9 @@ import { GameStatCardComponent } from './game-stat-card/game-stat-card.component
   imports: [
     CommonModule,
     SocialsComponent,
-    GameStatCardComponent
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'

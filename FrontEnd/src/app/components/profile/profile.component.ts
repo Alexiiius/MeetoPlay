@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { UserData } from '../../interfaces/user-data';
@@ -26,7 +26,6 @@ export class ProfileComponent {
   isLoading = true;
 
   constructor(private route: ActivatedRoute, private userService: UserService) { }
-
 
   ngOnInit() {
     this.route.params.subscribe(params => {

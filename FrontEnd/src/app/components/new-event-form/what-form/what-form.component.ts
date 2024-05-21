@@ -1,15 +1,16 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, Input, OnInit, Renderer2 } from '@angular/core';
 import { SelectGameComponent } from './select-game/select-game.component';
 import { SelectPlatformComponent } from './select-platform/select-platform.component';
 import { SelectGamemodeComponent } from './select-gamemode/select-gamemode.component';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { APIService } from '../../../services/api.service';
 import { NewEventFormService } from '../../../services/new-event-form.service';
 import { Router } from '@angular/router';
 import { concatMap, tap } from 'rxjs';
 import { Game } from '../../../models/game';
 import { FullGame } from '../../../models/fullgame';
+import { Event } from '../../../models/event';
 
 @Component({
   selector: 'app-what-form',
@@ -36,7 +37,19 @@ export class WhatFormComponent implements OnInit {
   games: Game[] = [];
   selectedGame: FullGame | null;
 
+  whatForm: FormGroup;
+
+  @Input() event: Event;
+
   ngOnInit(): void {
+    this.whatForm = this.formBuilder.group({
+      ranked: [false],
+      title: [this.event.event_title || '', Validators.required],
+      game: ['', [this.gameSelectedValidator(), Validators.required]],
+      platform: [ '', Validators.required],
+      gameMode: [ '', Validators.required],
+    });
+
     this.apiService.getGames().pipe(
       tap((response: Game[]) => {
         this.games = response;
@@ -59,13 +72,9 @@ export class WhatFormComponent implements OnInit {
     });
   }
 
-  whatForm = this.formBuilder.group({
-    ranked: [false],
-    title: ['', Validators.required],
-    game: ['', [this.gameSelectedValidator(), Validators.required]],
-    platform: ['', Validators.required],
-    gameMode: ['', Validators.required],
-  });
+  isRoute(route: string): boolean {
+    return this.router.url === route;
+  }
 
   gameSelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {

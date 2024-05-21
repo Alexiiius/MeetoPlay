@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { APIService } from '../../../../services/api.service';
 import { FullGame } from '../../../../models/fullgame';
 import { map, Observable } from 'rxjs';
+import { Event } from '../../../../models/event';
 
 
 @Component({
@@ -29,7 +30,10 @@ export class SelectGameComponent implements ControlValueAccessor {
 
   @Input() games: Game[] = [];
   @Input() isInvalid: boolean | undefined;
+  @Input() event: Event;
   @Output() gameSelected = new EventEmitter<Game>();
+
+  //TODO: seguir por aquí, hay que hacer que el juego seleccionado sea el event.game_name
 
   constructor(private newEventFromService: NewEventFormService, private apiService: APIService) { }
 

@@ -1,6 +1,6 @@
 <div class="w-full h-full max-h-full flex flex-col">
   <app-nav-bar [isLoading]="isLoading"></app-nav-bar>
-  <div #scrollContainer id="scrollContainer" class=" shadow-inner p-2 mt-4 w-full h-full rounded-box space-y-4 flex flex-col justify-start overflow-y-scroll scrollbar-hidde bg-gradient-to-r from-primary to-secondary">
+  <div #scrollContainer id="scrollContainer" class="shadow-inner p-2 mt-4 w-full h-full rounded-box space-y-4 flex flex-col justify-start overflow-y-scroll overflow-x-hidden scrollbar-hidde bg-gradient-to-r from-primary to-secondary">
 
     @if (isLoading) {
       <div *ngFor="let i of [].constructor(10)" class="skeleton bg-neutral/25 w-full h-[88px] min-h-[88px] shadow-lg"></div>
@@ -24,6 +24,6 @@
       </button>
       }
     </div>
-
   </div>
+
 </div>

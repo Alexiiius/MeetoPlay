@@ -42,14 +42,34 @@
         </div>
       </div>
 
-      <div class="flex items-end justify-end">
+      <div class="flex items-end justify-end gap-x-3">
+        <div class="flex flex-col gap-1 items-end">
+          @if (isJoined) {
+            <div #participatingBadge class="badge badge-success gap-2" (click)="hideParticipatingBadge()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="inline-block w-4 h-4 stroke-current cursor-pointer">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              Ya participas 🚀
+            </div>
+          }
+          @if (friendsParticipating) {
+            <div #friendsParticipatingBadge class="badge badge-accent gap-2" (click)="hideFriendsParticipatingBadge()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="inline-block w-4 h-4 stroke-current cursor-pointer">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              Amigos participando 🎮
+            </div>
+          }
+        </div>
         <app-more-event-info-modal
           (isJoinedChange)="isJoinedChange($event)"
+          (friendsParticipatingChange)="FriendsParticipatingChange($event)"
           [event]="event"
-          [eventInscriptionEndTime]="eventInscriptionEndTime"
-          [formattedDateBegin]="formattedDateBegin"
-          [formattedTimeBegin]="formattedTimeBegin"
-          [formattedDateEnd]="formattedDateEnd"
+          [eventInscriptionEndTime]="eventInscriptionEndTime" [formattedDateBegin]="formattedDateBegin"
+          [formattedTimeBegin]="formattedTimeBegin" [formattedDateEnd]="formattedDateEnd"
           [formattedTimeEnd]="formattedTimeEnd" />
       </div>
     </div>

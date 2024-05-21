@@ -47,6 +47,9 @@ export class MoreEventInfoModalComponent {
   @Output() isJoinedChange = new EventEmitter<boolean>();
   isJoined: boolean;
 
+  @Output() friendsParticipatingChange = new EventEmitter<boolean>();
+  friendsParticipating: boolean;
+
   constructor(private userService: UserService, private eventsService: EventsService) {
     setInterval(() => {
       this.decrementCountdown();
@@ -115,9 +118,15 @@ export class MoreEventInfoModalComponent {
           this.checkIfJoined();
 
           this.isParticipantsLoading = false;
+          this.checkIfFriendsParticipating();
         });
       });
     });
+  }
+
+  checkIfFriendsParticipating() {
+    this.friendsParticipating = this.friendParticipants.length > 0;
+    this.friendsParticipatingChange.emit(this.friendsParticipating);
   }
 
   countdown = {

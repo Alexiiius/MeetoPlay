@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Event } from '../../../models/event';
 import { format } from 'date-fns';
 import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
+import { NgZone } from '@angular/core';
 
 @Component({
   selector: 'app-event-card',
@@ -30,6 +31,9 @@ export class EventCardComponent implements OnInit {
   formattedTimeEnd: string;
 
   isJoined: boolean;
+  friendsParticipating: boolean;
+
+  constructor(private ngZone: NgZone) {}
 
   ngOnInit() {
     this.formattedDateBegin = format(this.event.date_time_begin, 'dd/MM/yyyy');
@@ -40,8 +44,15 @@ export class EventCardComponent implements OnInit {
     this.eventInscriptionEndTime = new Date(this.event.date_time_inscription_end);
   }
 
-  isJoinedChange(isJoined: boolean) {
-    this.isJoined = isJoined;
+  @ViewChild('participatingBadge') participatingBadge: ElementRef;
+  @ViewChild('friendsParticipatingBadge') friendsParticipatingBadge: ElementRef;
+
+  hideParticipatingBadge() {
+    this.participatingBadge.nativeElement.style.display = 'none';
+  }
+
+  hideFriendsParticipatingBadge() {
+    this.friendsParticipatingBadge.nativeElement.style.display = 'none';
   }
 
   noRequirments() {
@@ -51,6 +62,18 @@ export class EventCardComponent implements OnInit {
       !this.event.event_requirements.max_level &&
       !this.event.event_requirements.min_hours_played &&
       !this.event.event_requirements.max_hours_played;
+  }
+
+  isJoinedChange(isJoined: boolean) {
+    setTimeout(() => {
+      this.isJoined = isJoined;
+    }, 0);
+  }
+
+  FriendsParticipatingChange(friendsParticipating: boolean) {
+    setTimeout(() => {
+      this.friendsParticipating = friendsParticipating;
+    }, 0);
   }
 
   openDialog() {

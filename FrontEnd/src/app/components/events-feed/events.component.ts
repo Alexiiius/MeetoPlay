@@ -12,6 +12,7 @@ import { SocialUser } from '../../interfaces/social-user';
 import { UserService } from '../../services/user.service';
 import { FollowedUsersResponse } from '../../interfaces/followed-user-response';
 import { FriendsResponse } from '../../interfaces/friends-response';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-events',
@@ -61,6 +62,7 @@ export class EventsFeedComponent implements OnInit {
     this.getFriends();
 
     this.eventFeedService.currentGroup.subscribe(group => {
+      this.smoothScrollToTop();
       switch (group) {
         case 'Public':
           this.displayedEvents = this.publicEvents;
@@ -70,7 +72,7 @@ export class EventsFeedComponent implements OnInit {
           this.displayedEvents = this.friendsEvents;
           this.hasMoreEvents = this.friendsPage < this.friendsTotalPages;
           break;
-        case 'Follows':
+        case 'Followed':
           this.hasMoreEvents = this.followingPage < this.followingTotalPages;
           this.displayedEvents = this.followingEvents;
           break;
@@ -86,7 +88,7 @@ export class EventsFeedComponent implements OnInit {
         this.followedUsers = response.data.following;
         this.userService.updateFollowedUsers(this.followedUsers);
 
-        console.log('Followed users: ', this.followedUsers);
+        // console.log('Followed users: ', this.followedUsers);
       },
       error => {
         console.error('Error:', error);
@@ -100,7 +102,7 @@ export class EventsFeedComponent implements OnInit {
         this.friends = response.data.friends;
         this.userService.updateFriends(this.friends);
 
-        console.log('Friends: ', this.friends);
+        // console.log('Friends: ', this.friends);
       },
       error => {
         console.error('Error:', error);
@@ -140,7 +142,7 @@ export class EventsFeedComponent implements OnInit {
   }
 
   loadMoreEvents() {
-    this.eventFeedService.currentGroup.subscribe(group => {
+    this.eventFeedService.currentGroup.pipe(take(1)).subscribe(group => {
       switch (group) {
         case 'Public':
           if (this.publicPage < this.publicTotalPages) {
@@ -154,7 +156,7 @@ export class EventsFeedComponent implements OnInit {
             this.moreEventsLoaded = true;
           }
           break;
-        case 'Follows':
+        case 'Followed':
           if (this.followingPage < this.followingTotalPages) {
             this.getFollowingEvents(++this.followingPage);
             this.moreEventsLoaded = true;
@@ -192,7 +194,9 @@ export class EventsFeedComponent implements OnInit {
       const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
       this.friendsEvents = [...this.friendsEvents, ...newEvents];
       this.friendsTotalPages = response.meta.total_pages;
-      this.hasMoreEvents = this.publicPage < this.publicTotalPages;
+      this.hasMoreEvents = this.friendsPage < this.friendsTotalPages;
+
+      this.displayedEvents = this.friendsEvents;
 
       this.isLoading = false;
       console.log('Friends events: ', this.friendsEvents);
@@ -209,7 +213,9 @@ export class EventsFeedComponent implements OnInit {
       const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
       this.followingEvents = [...this.followingEvents, ...newEvents];
       this.followingTotalPages = response.meta.total_pages;
-      this.hasMoreEvents = this.publicPage < this.publicTotalPages;
+      this.hasMoreEvents = this.followingPage < this.followingTotalPages;
+
+      this.displayedEvents = this.followingEvents;
 
       this.isLoading = false;
       console.log('Following events: ', this.followingEvents);

@@ -52,5 +52,9 @@ export class UserService implements OnInit {
   getFriends(): Observable<any>{
     return this.http.get(`${this.backAPIUrl}/friends/${this.currentUser.value?.id}`);
   }
+
+  getUserById(id: number) {
+    return this.http.get<UserData>(`${this.backAPIUrl}/user/${id}`);
+  }
 }
 

@@ -16,7 +16,7 @@ use App\Models\User;
 class GotMessage implements ShouldBroadcast{
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    private Message $message;
+    public Message $message;
 
     public function __construct(Message $message) {
         $this->message = $message;
@@ -25,7 +25,7 @@ class GotMessage implements ShouldBroadcast{
     public function broadcastOn(): array {
         
         return [
-            new PrivateChannel('App.Models.User.' . $this->message['to_user_id']),
+            new PrivateChannel('user' . $this->message['to_user_id']),
         ];
 
     }

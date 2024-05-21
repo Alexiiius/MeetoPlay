@@ -44,7 +44,7 @@ class MessageController extends Controller {
         ]);
 
         // Dispatch the SendMessage job
-        SendMessage::dispatch($message);
+        // SendMessage::dispatch($message);
 
         // Broadcast the GotMessage event
         event(new GotMessage($message));

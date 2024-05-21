@@ -1,4 +1,6 @@
+import { UserReduced } from "../interfaces/user-reduced";
 import { EventRequirments } from "./eventRequirments";
+import { Owner } from "./owner";
 
 export class Event {
   id: number;
@@ -16,6 +18,8 @@ export class Event {
   max_participants: number;
   privacy: string;
   event_requirements: EventRequirments;
+  owner: Owner;
+  participants: UserReduced[];
 
   constructor(
     id: number,
@@ -32,7 +36,9 @@ export class Event {
     date_time_inscription_end: Date,
     max_participants: number,
     privacy: string,
-    event_requirements: EventRequirments
+    event_requirements: EventRequirments,
+    owner: Owner,
+    participants: UserReduced[]
   ) {
     this.id = id;
     this.event_title = event_title;
@@ -49,5 +55,10 @@ export class Event {
     this.max_participants = max_participants;
     this.privacy = privacy;
     this.event_requirements = event_requirements;
+    this.owner = owner;
+    this.participants = participants;
   }
 }
+
+
+

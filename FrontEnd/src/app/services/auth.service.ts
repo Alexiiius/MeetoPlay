@@ -5,7 +5,6 @@ import { backAPIUrl } from '../config';
 import { Router } from '@angular/router';
 import { LoginResponse, RegisterResponse } from '../interfaces/back-end-api-response';
 import { UserData } from '../interfaces/user-data';
-import { UserService } from './user.service';
 import { UserReduced } from '../interfaces/user-reduced';
 
 @Injectable({
@@ -22,7 +21,7 @@ export class AuthService {
     this.autoLogin();
   }
 
-  autoLogin() {
+  autoLogin() { //TODO: Add a check to see if the token is still valid
     const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
     if (token) {
       this.isAuth.next(true);

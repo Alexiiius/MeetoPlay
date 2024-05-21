@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { EventFeedService } from '../../../services/event-feed.service';
 
 @Component({
@@ -9,6 +9,8 @@ import { EventFeedService } from '../../../services/event-feed.service';
   styleUrl: './nav-bar.component.css'
 })
 export class NavBarComponent {
+
+  @Input() isLoading: boolean;
 
   @ViewChild('searchEventInput') searchInput: ElementRef;
 

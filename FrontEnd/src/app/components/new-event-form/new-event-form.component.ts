@@ -51,8 +51,9 @@ export class NewEventFormComponent implements OnInit {
     return this.contexts.getContext('primary')?.route?.snapshot?.data?.['animation'];
   }
 
-  submitNewEventForm() {
-    this.eventsService.postNewEvent(this.newEventFormJSON).subscribe(
+  async submitNewEventForm() {
+    let observable = await this.eventsService.postNewEvent(this.newEventFormJSON);
+    observable.subscribe(
       response => {
         console.log(response); // Aquí puedes manejar la respuesta del servidor
       },

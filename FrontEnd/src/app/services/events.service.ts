@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { FormatedNewEvent } from '../interfaces/formated-new-event';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { backAPIUrl } from '../config';
 import { AuthService } from './auth.service';
+import { UserService } from './user.service';
+import { first } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +13,10 @@ export class EventsService {
 
   private backAPIUrl = backAPIUrl;
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient, private userService: UserService) { }
 
-  postNewEvent(newEvent: any) {
-    let formatedNewEvent = this.formatNewEvent(newEvent);
+  async postNewEvent(newEvent: any) {
+    let formatedNewEvent = await this.formatNewEvent(newEvent);
     console.log('Creating new event: ');
     console.log(formatedNewEvent);
 
@@ -41,15 +43,18 @@ export class EventsService {
     return this.http.get<any[]>(`${this.backAPIUrl}/events/my/${page}`);
   }
 
+  joinEvent(eventId: number) {
+    return this.http.post(`${this.backAPIUrl}/event/${eventId}/join`, {});
+  }
 
-  formatNewEvent(newEvent: any): FormatedNewEvent {
+  leaveEvent(eventId: number) {
+    return this.http.post(`${this.backAPIUrl}/event/${eventId}/leave`, {});
+  }
 
-    const userId = this.authService.userData.value?.id;
-    if (userId === undefined) {
-      throw new Error('User data is not available');
-    }
-
-    console.log('Entra aqui')
+  async formatNewEvent(newEvent: any): Promise<FormatedNewEvent> {
+    let user = await this.userService.currentUser.pipe(first()).toPromise();
+    console.log(user);
+    let userId = user?.id;
 
     let formatedNewEvent = {
       data: {
@@ -60,7 +65,7 @@ export class EventsService {
           game_mode: newEvent.whatForm.gameMode.name,
           game_pic: newEvent.whatForm.game.image,
           platform: newEvent.whatForm.platform.platform,
-          event_owner_id: this.authService.userData.value?.id || 0,
+          event_owner_id: userId || 0,
           date_time_begin: newEvent.whenForm.eventBegin,
           date_time_end: newEvent.whenForm.eventEnd,
           date_time_inscription_begin: newEvent.whenForm.inscriptionToggle ? newEvent.whenForm.inscriptionBegin : null,

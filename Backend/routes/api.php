@@ -21,10 +21,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']); //logout the user authenticated
     Route::get('/users', [UserController::class, 'index']); //return name, email and id from all users
-    
+
     Route::get('/user/{id}', [UserController::class, 'show']); //all data from specific user
     Route::get('/user', [UserController::class, 'user']); //return all data from the authenticated user
-    
+
     //WIP
     Route::post('/user/{id}', [UserController::class, 'update']);
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
@@ -41,10 +41,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/events/hidden/{page}', [EventController::class, 'showHiddenEvents']); //show all hidden events of auth user
     Route::get('/events/my/{page}', [EventController::class, 'showMyEvents']); //show all events of auth user
     Route::get('/events/friends/{page}', [EventController::class, 'showFriendsEvents']); //show all events of friends of auth user
-    
+    Route::get('events/following/{page}', [EventController::class, 'showFollowingEvents']); //show all public and followers events of the users that auth user is following
+
     Route::delete('/event/{id}', [EventController::class, 'destroy']); //delete a specific event by id only if the user has permission to delete it
     Route::put('/event/{id}', [EventController::class, 'update']); //update a specific event by id only if the user has permission to update it
-    
+
+    Route::post('/event/{id}/join', [EventController::class, 'addParticipant']); //join a specific event by id only if the user has permission to join it
+    Route::post('/event/{id}/leave', [EventController::class, 'removeParticipant']); //leave a specific event by id only if the user has permission to leave it
+
+    Route::get('/event/{id}/see', [EventController::class, 'test']); //test if user can see a specific event by id
+
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 

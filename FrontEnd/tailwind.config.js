@@ -54,21 +54,21 @@ module.exports = {
 
           "base-content": "#e5e5e5",
 
-          "info": "#3b82f6",
+          "info": "#5a97fa",
 
           "info-content": "#171717",
 
-          "success": "#34d399",
+          "success": "#4ade80",
 
           "success-content": "#171717",
 
-          "warning": "#fde047",
+          "warning": "#facc15",
 
           "warning-content": "#171717",
 
-          "error": "#f43f5e",
+          "error": "#e64747",
 
-          "error-content": "#171717",
+          "error-content": "#f3f4f6",
         },
       },
     ],
@@ -77,7 +77,7 @@ module.exports = {
     function ({ addComponents }) {
       const components = {
         '.container': {
-          '@apply dark:bg-neutral-900 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-6 rounded-xl': {},
+          '@apply dark:bg-neutral-900 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-4 rounded-xl': {},
         },
         '.myinput': {
           '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-100 text-neutral-900 p-2 rounded-md w-full h-10 border border-gray-500': {},

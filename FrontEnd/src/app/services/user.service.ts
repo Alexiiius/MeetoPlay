@@ -21,6 +21,7 @@ export class UserService implements OnInit {
   constructor(private authService: AuthService, private http: HttpClient) {
     this.currentUser = new BehaviorSubject<UserData | null>(null);
     this.authService.userData.subscribe(user => this.currentUser.next(user));
+
   }
 
   ngOnInit(): void {

@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Event;
+use App\Models\Message;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -171,6 +174,14 @@ class User extends Authenticatable implements MustVerifyEmail
                 'full_tag' => $following->getFullNameAttribute()
             ];
         });
+    }
+
+    public function sentMessages(): HasMany {
+        return $this->hasMany(Message::class, 'from_user_id');
+    }
+
+    public function receivedMessages(): HasMany {
+        return $this->hasMany(Message::class, 'to_user_id');
     }
 
 }

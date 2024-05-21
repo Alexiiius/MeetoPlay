@@ -1,8 +1,9 @@
 ## Requirements
 
 - PHP >= 8.3
+- Node >= 20
 - Composer
-- MySQL
+- MySQL >= 5.7
 
 ## Installation
 
@@ -27,3 +28,4 @@ TODO
 - [Middleware](https://laravel.com/docs/11.x/middleware)
 - [Unauthorized request JSON response](https://laracasts.com/discuss/channels/laravel/laravel-11-api-unauthorized-requests-redirects-to-login-page?page=1&replyId=930192)
 - [Console Kernel](https://rezakhademix.medium.com/laravel-11-no-http-kernel-no-casts-no-console-kernel-721c62adb6ef)
+- [Laravel Reverb](https://laravel.com/docs/11.x/reverb)

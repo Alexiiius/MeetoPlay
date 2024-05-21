@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\FollowerController;
+use App\Http\Controllers\API\MessageController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']); //register a new user using name, email password and password_confirmation
@@ -64,6 +65,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/following/{id}', [FollowerController::class, 'following']); //show all following from id user
     Route::get('/isfollowing/{id}', [FollowerController::class, 'show']); //show if auth user follow id user
     Route::get('/friends/{id}', [FollowerController::class, 'friends']); //show all friends of a id user
+
+    // -----------------------------------------------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------- CHATS ENDPOINTS ------------------------------------------------------------------
+
+    Route::post('/message/send', [MessageController::class, 'sendMessage']); //send a message to a user
+    Route::get('/message/get/{id}', [MessageController::class, 'getMessages']); //get all messages between auth user and id user
+
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 

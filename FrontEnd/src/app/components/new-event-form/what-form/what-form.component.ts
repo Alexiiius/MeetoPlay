@@ -7,7 +7,7 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validator
 import { APIService } from '../../../services/api.service';
 import { NewEventFormService } from '../../../services/new-event-form.service';
 import { Router } from '@angular/router';
-import { concatMap, tap } from 'rxjs';
+import { concatMap, filter, map, tap } from 'rxjs';
 import { Game } from '../../../models/game';
 import { FullGame } from '../../../models/fullgame';
 import { Event } from '../../../models/event';
@@ -30,7 +30,7 @@ export class WhatFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private apiService: APIService,
-    private newEventFromService: NewEventFormService,
+    private newEventFormService: NewEventFormService,
     private router: Router,
   ) { }
 
@@ -41,20 +41,54 @@ export class WhatFormComponent implements OnInit {
 
   @Input() event: Event;
 
+  // ngOnInit(): void {
+  //   this.whatForm = this.formBuilder.group({
+  //     ranked: [false],
+  //     title: [this.event.event_title || '', Validators.required],
+  //     game: ['', [this.gameSelectedValidator(), Validators.required]],
+  //     platform: [ '', Validators.required],
+  //     gameMode: [ '', Validators.required],
+  //   });
+
+  //   this.apiService.getGames().pipe(
+  //     tap((response: Game[]) => {
+  //       this.games = response;
+  //     }),
+  //     concatMap(() => this.newEventFromService.selectedGame$)
+  //   ).subscribe(game => {
+  //     this.selectedGame = game;
+
+  //     // Update game control validators
+  //     const platformControl = this.whatForm.get('platform');
+  //     if (platformControl) {
+  //       platformControl.setValidators([this.platformSelectedValidator(), Validators.required]);
+  //       platformControl.updateValueAndValidity();
+  //     }
+  //     const gameModeControl = this.whatForm.get('gameMode');
+  //     if (gameModeControl) {
+  //       gameModeControl.setValidators([this.gameModeSelectedValidator(), Validators.required]);
+  //       gameModeControl.updateValueAndValidity();
+  //     }
+  //   });
+  // }
+
   ngOnInit(): void {
     this.whatForm = this.formBuilder.group({
       ranked: [false],
-      title: [this.event.event_title || '', Validators.required],
-      game: ['', [this.gameSelectedValidator(), Validators.required]],
-      platform: [ '', Validators.required],
-      gameMode: [ '', Validators.required],
+      title: [this.event ? this.event.event_title : '', { validators: Validators.required, updateOn: 'change' }],
+      game: ['', { validators: [this.gameSelectedValidator(), Validators.required], updateOn: 'change' }],
+      platform: [ null, { validators: Validators.required, updateOn: 'change' }],
+      gameMode: [ null, { validators: Validators.required, updateOn: 'change' }],
     });
 
     this.apiService.getGames().pipe(
       tap((response: Game[]) => {
         this.games = response;
       }),
-      concatMap(() => this.newEventFromService.selectedGame$)
+      concatMap(() => this.newEventFormService.selectedGame$.pipe(
+        filter(({ componentId }) => this.event ? componentId === this.event.id : componentId === 0),
+        map(({ game }) => game)
+      ))
     ).subscribe(game => {
       this.selectedGame = game;
 
@@ -70,6 +104,10 @@ export class WhatFormComponent implements OnInit {
         gameModeControl.updateValueAndValidity();
       }
     });
+
+    if (this.selectedGame) {
+      this.newEventFormService.changeSelectedGame(this.event.id, this.selectedGame);
+    }
   }
 
   isRoute(route: string): boolean {
@@ -90,10 +128,11 @@ export class WhatFormComponent implements OnInit {
   platformSelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const selectedPlatform = control.value;
+      console.log(selectedPlatform);
       if (!selectedPlatform) {
         return { 'platformNotSelected': { value: control.value } };
       }
-      const isPlatformSelected = this.selectedGame?.game.platforms.some(platform => platform.id === selectedPlatform.id);
+      const isPlatformSelected = this.selectedGame?.game.platforms.some(platform => platform.id === selectedPlatform);
       return isPlatformSelected ? null : { 'platformNotSelected': { value: control.value } };
     };
   }
@@ -101,6 +140,7 @@ export class WhatFormComponent implements OnInit {
   gameModeSelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const selectedGameMode = control.value;
+      console.log(selectedGameMode);
       if (!selectedGameMode) {
         return { 'gameModeNotSelected': { value: control.value } };
       }

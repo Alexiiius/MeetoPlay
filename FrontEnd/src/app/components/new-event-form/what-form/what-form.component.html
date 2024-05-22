@@ -24,10 +24,10 @@
     </label>
   </div>
 
-  <app-select-gamemode formControlName="gameMode" [ranked]="whatForm.get('ranked')?.value || false"
+  <app-select-gamemode formControlName="gameMode" [ranked]="whatForm.get('ranked')?.value || false" [event]="event"
     [isInvalid]="whatForm.get('gameMode')?.invalid && whatForm.get('gameMode')?.touched" [whatForm]="whatForm"/>
 
-  <app-select-platform formControlName="platform"
+  <app-select-platform formControlName="platform" [event]="event"
     [isInvalid]="whatForm.get('platform')?.invalid && whatForm.get('platform')?.touched" />
 
   <div class="col-span-full"></div>

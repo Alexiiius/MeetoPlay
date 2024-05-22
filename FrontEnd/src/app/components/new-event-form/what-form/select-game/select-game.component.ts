@@ -1,6 +1,6 @@
 import { NewEventFormService } from '../../../../services/new-event-form.service';
 import { Game } from '../../../../models/game';
-import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { APIService } from '../../../../services/api.service';
@@ -26,16 +26,14 @@ import { Event } from '../../../../models/event';
     }
   ]
 })
-export class SelectGameComponent implements ControlValueAccessor {
+export class SelectGameComponent implements ControlValueAccessor, OnInit {
 
-  @Input() games: Game[] = [];
+  // @Input() games: Game[] = [];
   @Input() isInvalid: boolean | undefined;
   @Input() event: Event;
   @Output() gameSelected = new EventEmitter<Game>();
 
-  //TODO: seguir por aquí, hay que hacer que el juego seleccionado sea el event.game_name
-
-  constructor(private newEventFromService: NewEventFormService, private apiService: APIService) { }
+  constructor(private newEventFormService: NewEventFormService, private apiService: APIService) { }
 
   //Reactiveform
   value: any;
@@ -49,6 +47,33 @@ export class SelectGameComponent implements ControlValueAccessor {
   isFocused = false;
   imageLoaded = false;
 
+  private _games: Game[];
+
+  @Input()
+  set games(games: Game[]) {
+    this._games = games;
+    setTimeout(() => this.selectMatchingGame(), 0);
+  }
+
+  get games(): Game[] {
+    return this._games;
+  }
+
+  selectMatchingGame() {
+    if (this.event && this.event.game_name && this._games) {
+      const matchingGame = this._games.find(game => game.name === this.event.game_name);
+      if (matchingGame) {
+        this.selectGame(matchingGame);
+      }
+    } else {
+      this.resetSearch();
+    }
+  }
+
+  ngOnInit() {
+    this.selectMatchingGame();
+  }
+
   //Filter games based on search value
   get filteredGames() {
     if (!this.searchValue) return this.games;
@@ -60,7 +85,7 @@ export class SelectGameComponent implements ControlValueAccessor {
     this.searchValue = value;
     this.onChange(value);
     this.isGameSelected = false;
-    this.newEventFromService.changeSelectedGame(null);
+    this.newEventFormService.changeSelectedGame(this.event.id, null);
     this.imageLoaded = false;
   }
 
@@ -98,7 +123,7 @@ export class SelectGameComponent implements ControlValueAccessor {
 
     this.getFullGame(game.id).subscribe(fullGame => {
       this.selectedGame = fullGame;
-      this.newEventFromService.changeSelectedGame(fullGame);
+      this.newEventFormService.changeSelectedGame(this.event ? this.event.id : 0, fullGame);
       this.imageLoaded = true;
     });
 
@@ -119,7 +144,9 @@ export class SelectGameComponent implements ControlValueAccessor {
     this.selectedGame = null;
     this.isGameSelected = false;
     this.onChange();
-    this.newEventFromService.changeSelectedGame(this.selectedGame);
+    if (this.selectedGame) {
+      this.newEventFormService.changeSelectedGame(this.event ? this.event.id : 0, this.selectedGame);
+    }
     this.imageLoaded = false;
   }
 }

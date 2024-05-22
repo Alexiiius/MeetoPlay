@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Game } from '../models/game';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Gamemode } from '../models/gamemode';
 import { FullGame } from '../models/fullgame';
 
@@ -9,8 +8,12 @@ import { FullGame } from '../models/fullgame';
 })
 export class NewEventFormService {
 
-  private selectedGameSource = new BehaviorSubject<FullGame | null>(null);
-  selectedGame$ = this.selectedGameSource.asObservable();
+  // private selectedGameSource = new BehaviorSubject<FullGame | null>(null);
+  // selectedGame$ = this.selectedGameSource.asObservable();
+
+  private selectedGames: { [componentId: number]: FullGame | null } = {};
+  private selectedGameSubject = new Subject<{ componentId: number, game: FullGame | null }>();
+  selectedGame$ = this.selectedGameSubject.asObservable();
 
   private selectedGamemodeSource = new BehaviorSubject<Gamemode | null>(null);
   selectedGamemode$ = this.selectedGamemodeSource.asObservable();
@@ -27,8 +30,18 @@ export class NewEventFormService {
   constructor() {
   }
 
-  changeSelectedGame(game: FullGame | null) {
-    this.selectedGameSource.next(game);
+  // changeSelectedGame(game: FullGame | null) {
+  //   this.selectedGameSource.next(game);
+  //   console.log('Game changed to: ' + game?.game.name);
+  // }
+
+  changeSelectedGame(componentId: number, game: FullGame | null) {
+    this.selectedGames[componentId] = game;
+    this.selectedGameSubject.next({ componentId, game });
+  }
+
+  getSelectedGame(componentId: number): FullGame | null {
+    return this.selectedGames[componentId];
   }
 
   changeSelectedGameMode(gamemode: Gamemode | null) {

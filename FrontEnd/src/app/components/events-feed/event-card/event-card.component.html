@@ -1,16 +1,16 @@
-<div class="relative">
+<div class="relative text-lg">
   <div tabindex="0" class="collapse bg-base-200 hover:shadow-lg" [ngClass]="{'collapse-arrow': isRoute('/main')}">
     <input type="checkbox" [(ngModel)]="isChecked" />
-    <div class="collapse-title text-xl flex items-center justify-between">
+    <div class="collapse-title flex items-center justify-between">
       <div class="flex items-center">
         <img class="w-14 h-auto mr-3" src="{{event.game_pic}}" alt="gameLogo">
         <div class="flex flex-col">
-          <span class="text-2xl text-nowrap text-ellipsis w-64 2xl:w-96 overflow-hidden">{{event.event_title}}</span>
-          <span class="text-base font-light">{{event.game_name}} - {{event.game_mode}} - {{event.platform}}</span>
+          <span class="text-nowrap text-ellipsis w-64 2xl:w-96 overflow-hidden">{{event.event_title}}</span>
+          <span class="font-light text-neutral/90 text-base">{{event.game_name}} - {{event.game_mode}} - {{event.platform}}</span>
         </div>
       </div>
       <div class="flex items-center">
-        <span class="text-lg font-light overflow-hidden text-ellipsis w-36 text-nowrap text-right 2xl:w-full">Creado por
+        <span class="text-base font-light overflow-hidden text-ellipsis w-36 text-nowrap text-right 2xl:w-full">Creado por
           <span class="font-normal">{{event.owner.name}}</span></span>
         <div class="avatar">
           <div class="w-12 ml-3 rounded-full">
@@ -23,24 +23,24 @@
     <div class="collapse-content">
       <div class="flex justify-between">
 
-        <div class="grid grid-cols-[min-content_auto_auto] gap-2 font-light col-span-2 w-fit">
+        <div class="text-base grid grid-cols-[min-content_auto_auto] gap-2 font-light col-span-2 w-fit">
           <span>Empieza</span>
           <div class="flex items-center">
             <i class='bx bx-calendar mr-1'></i>
-            <span class="font-mono text-lg">{{formattedDateBegin}}</span>
+            <span class="font-mono">{{formattedDateBegin}}</span>
           </div>
           <div class="flex items-center">
             <i class='bx bx-time-five mr-1'></i>
-            <span class="font-mono text-lg">{{formattedTimeBegin}}</span>
+            <span class="font-mono">{{formattedTimeBegin}}</span>
           </div>
           <span>Termina</span>
           <div class="flex items-center">
             <i class='bx bx-calendar mr-1'></i>
-            <span class="font-mono text-lg">{{formattedDateEnd}}</span>
+            <span class="font-mono">{{formattedDateEnd}}</span>
           </div>
           <div class="flex items-center">
             <i class='bx bx-time-five mr-1'></i>
-            <span class="font-mono text-lg">{{formattedTimeEnd}}</span>
+            <span class="font-mono">{{formattedTimeEnd}}</span>
           </div>
         </div>
 
@@ -92,15 +92,15 @@
 
   <dialog id="deleteEventModal" #deleteEventModal class="modal">
     <div class="modal-box border-2 border-error">
-      <h3 class="font-semibold text-lg">Eliminar evento</h3>
+      <h3 class="font-medium text-lg">Eliminar evento</h3>
       <p class="font-normal">¿Seguro que quiere borrar este evento?</p>
       <p class="py-4 font-normal">Esta acción es irreversible</p>
 
       <div class="modal-action">
         <form method="dialog">
           <!-- if there is a button in form, it will close the modal -->
-          <button class="btn mr-2">Cancelar</button>
-          <button class="btn btn-error">Borrar</button>
+          <button class="btn btn-ghost font-medium mr-2 text-neutral/90">Cancelar</button>
+          <button class="btn btn-error font-medium">Borrar</button>
         </form>
       </div>
     </div>
@@ -108,14 +108,14 @@
 
   <dialog id="editEventModal" #editEventModal class="modal">
     <div class="modal-box border-2 border-secondary w-11/12 max-w-5xl">
-      <h3 class="font-semibold text-lg">Editar evento</h3>
-      <app-edit-event-form [event]="event"/>
+      <h3 class="font-medium text-lg">Editar evento</h3>
+      <app-edit-event-form [event]="event" />
 
       <div class="modal-action">
         <form method="dialog">
           <!-- if there is a button in form, it will close the modal -->
-          <button class="btn mr-2">Cancelar</button>
-          <button class="btn btn-secondary">Editar</button>
+          <button class="btn btn-ghost mr-2 font-medium text-neutral/90">Cancelar</button>
+          <button class="btn btn-secondary font-medium">Editar</button>
         </form>
       </div>
     </div>

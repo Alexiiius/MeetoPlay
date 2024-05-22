@@ -12,7 +12,6 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { GameStatsComponent } from './components/profile/game-stats/game-stats.component';
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';
 import { ParticipatingComponent } from './components/profile/participating/participating.component';
-import { WipComponent } from './components/wip/wip.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full'},
@@ -20,7 +19,6 @@ export const routes: Routes = [
     { path: '', redirectTo: 'profile/1', pathMatch: 'full' },
     { path: 'profile/:id', component: ProfileComponent, children: [
       { path: '', redirectTo: 'myEvents', pathMatch: 'full' },
-      { path: 'wip', component: WipComponent },
       { path: 'gameStats', component: GameStatsComponent },
       { path: 'myEvents', component: MyEventsComponent },
       { path: 'participating', component: ParticipatingComponent },

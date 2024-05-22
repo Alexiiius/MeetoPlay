@@ -7,11 +7,16 @@
 
 ## Installation
 
-TODO
+- Install dependencies ``` npm install ``` and ``` composer install  ```
+- Launch Sail ``` ./vendor/bin/sail up  ```
+- Launch vite ``` npm run dev ```
+- Link Storage ``` ./vendor/bin/sail artisan storage:link  ```
+- Launch Jobs queue ``` ./vendor/bin/sail artisan queue:work ```
+- Launch WebSocket server ``` ./vendor/bin/sail artisan reverb:start --debug ```
 
 ## Usage
 
-- Still in develop!
+TODO
 
 ## Credits
 

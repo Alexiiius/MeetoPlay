@@ -9,25 +9,28 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log as Logger;
 
 class SendMessage implements ShouldQueue {
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(public Message $message) {
-        //
+    public array $message;
+
+    public function __construct(public Message $data) {
+        $this->message = [
+            'from_user_id' => $data->from_user_id,
+            'to_user_id' => $data->to_user_id,
+            "from_user_name" => $data->from_user_name,
+            "to_user_name" => $data->to_user_name,
+            'text' => $data->text,
+            'time' => $data->time,
+        ];
     }
 
     public function handle(): void {
-        GotMessage::dispatch([
-            'id' => $this->message->id,
-            'from_user_id' => $this->message->user_id,
-            'to_user_id' => $this->message->to_user_id,
-            "from_user_name" => $this->message->from_user_name,
-            "to_user_name" => $this->message->to_user_name,
-            'text' => $this->message->text,
-            'time' => $this->message->time,
-        ]);
+        // Logger::info("dispatching" . json_encode($this->message));
+        GotMessage::dispatch($this->message);
     }
 
 }

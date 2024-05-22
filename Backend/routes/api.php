@@ -70,7 +70,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // ------------------------------------------------------------------- CHATS ENDPOINTS ------------------------------------------------------------------
 
     Route::post('/message/send', [MessageController::class, 'sendMessage']); //send a message to a user
-    Route::get('/message/get/{id}', [MessageController::class, 'getMessages']); //get all messages between auth user and id user
+    Route::get('/message/get/{id}/{page}', [MessageController::class, 'getMessages']); //get all messages between auth user and id user
 
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------

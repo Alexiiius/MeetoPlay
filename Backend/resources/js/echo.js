@@ -13,6 +13,8 @@ window.Echo = new Echo({
     enabledTransports: [ 'ws', 'wss'],
 });
 
-window.Echo.channel('user4').listen('App\\Events\\GotMessage', (e) => {
-    console.log(e);
-});
+
+// window.Echo.private(`App.Models.User.4`).listen('GotMessage', (e) => {
+//     console.log(e);
+// });
+

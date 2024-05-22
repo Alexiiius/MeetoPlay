@@ -8,6 +8,8 @@ use App\Jobs\SendMessage;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\User;
+use Illuminate\Support\Facades\Log as Logger;
+use Illuminate\Pagination\Paginator;
 
 class MessageController extends Controller {
 
@@ -35,7 +37,7 @@ class MessageController extends Controller {
         }
 
         $message = Message::create([
-            'from_user_id' => auth()->id(),
+            'from_user_id' => auth()->user()->id,
             'to_user_id' => $request->get('to_user_id'),
             'text' => $request->get('text'),
             'from_user_name' => auth()->user()->getFullNameAttribute(),
@@ -44,10 +46,10 @@ class MessageController extends Controller {
         ]);
 
         // Dispatch the SendMessage job
-        // SendMessage::dispatch($message);
+        SendMessage::dispatch($message);
 
         // Broadcast the GotMessage event
-        event(new GotMessage($message));
+        // event(new GotMessage($message));
 
         
 
@@ -58,27 +60,37 @@ class MessageController extends Controller {
 
     }
 
-    public function getMessages($id, Request $request) {
-
+    
+    
+    public function getMessages($id, $page, Request $request) {
+    
         if (User::find($id) == null) {
             return response()->json([
                 'success' => false,
                 'message' => "User with ID $id not found.",
             ]);
         }
-
-        $messages = Message::where('from_user_id', auth()->id())
-            ->where('to_user_id', $id)
-            ->orWhere('from_user_id', $id)
-            ->where('to_user_id', auth()->id())
-            ->orderBy('created_at', 'asc')
-            ->get();
-
+    
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+    
+        $messages = Message::where(function ($query) use ($id) {
+            $query->where('from_user_id', auth()->id())
+                  ->where('to_user_id', $id);
+        })->orWhere(function ($query) use ($id) {
+            $query->where('from_user_id', $id)
+                  ->where('to_user_id', auth()->id());
+        })
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
+    
         return response()->json([
             'success' => true,
             'messages' => $messages,
         ]);
-
+    
     }
+    
 
 }

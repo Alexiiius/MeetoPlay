@@ -1,0 +1,63 @@
+<!-- <button (click)="openDialog()" class="btn btn-info font-normal text-base w-24"><span class="text-xl font-mono font-bold">+</span> Info</button>
+<dialog #moreEventInfo class="modal"> -->
+<div
+  class="relative modal-box bg-base-100 bg-clip-padding backdrop-filter  bg-opacity-40 border-2 border-primary w-11/12 h-full max-w-3xl max-h-3xl scrollbar-hidde">
+  <!-- <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeDialog()">✕</button> -->
+
+  <header class="text-2xl absolute top-8 right-12">Nuevo evento!</header>
+  <div role="tablist" class="tabs tabs-bordered tabs-lg w-full">
+    <input type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="What?" checked />
+    <div role="tabpanel" class="tab-content mt-6">
+
+      <form [formGroup]="eventForm">
+
+        <div formGroupName="whatForm" class="grid grid-cols-2 gap-6">
+          <div class="col-span-full">
+            <div class="text-xl col-span-full">Event</div>
+            <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+          </div>
+
+          <label class="form-control col-span-full">
+            <div class="label">
+              <span class="label-text">Título del evento</span>
+            </div>
+            <input type="text" placeholder="🤔 Este evento se titula..." class="input input-bordered col-span-full" formControlName="title"
+            autofocus>
+          </label>
+
+
+          <div class="col-span-full">
+            <div class="text-xl col-span-full">Game</div>
+            <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+          </div>
+
+          <app-new-select-game />
+
+          <div class="flex items-center justify-center">
+            <label class="cursor-pointer label gap-3">
+              <span class="label-text text-base">Ranked</span>
+              <input type="checkbox" class="toggle toggle-primary" checked formControlName="ranked" />
+            </label>
+          </div>
+
+          <!-- <app-select-gamemode formControlName="gameMode" /> -->
+
+          <!-- <app-select-platform formControlName="platform"/> -->
+
+          <div class="col-span-full"></div>
+
+          <button id="nextBtn" type="submit" class="btn btn-neutral col-span-full">Siguente</button>
+        </div>
+      </form>
+
+    </div>
+
+    <input type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="When?" />
+    <div role="tabpanel" class="tab-content mt-6">Tab content 2</div>
+
+    <input type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="Who?" />
+    <div role="tabpanel" class="tab-content mt-6">Tab content 3</div>
+  </div>
+
+</div>
+<!-- </dialog> -->

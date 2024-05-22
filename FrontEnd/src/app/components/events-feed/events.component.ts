@@ -54,13 +54,7 @@ export class EventsFeedComponent implements OnInit {
     private eventFeedService: EventFeedService,
     private userService: UserService) { }
 
-  ngOnInit() {
-    this.getPublicEvents(this.publicPage);
-    this.getFriendsEvents(this.friendsPage);
-    this.getFollowingEvents(this.followingPage);
-    this.getFollowedUsers();
-    this.getFriends();
-
+  ngAfterViewInit() {
     this.eventFeedService.currentGroup.subscribe(group => {
       this.smoothScrollToTop();
       switch (group) {
@@ -80,6 +74,14 @@ export class EventsFeedComponent implements OnInit {
           console.error(`Unexpected group: ${group}`);
       }
     });
+  }
+
+  ngOnInit() {
+    this.getPublicEvents(this.publicPage);
+    this.getFriendsEvents(this.friendsPage);
+    this.getFollowingEvents(this.followingPage);
+    this.getFollowedUsers();
+    this.getFriends();
   }
 
   getFollowedUsers(): void {
@@ -196,7 +198,7 @@ export class EventsFeedComponent implements OnInit {
       this.friendsTotalPages = response.meta.total_pages;
       this.hasMoreEvents = this.friendsPage < this.friendsTotalPages;
 
-      this.displayedEvents = this.friendsEvents;
+      // this.displayedEvents = this.friendsEvents;
 
       this.isLoading = false;
       console.log('Friends events: ', this.friendsEvents);
@@ -215,7 +217,7 @@ export class EventsFeedComponent implements OnInit {
       this.followingTotalPages = response.meta.total_pages;
       this.hasMoreEvents = this.followingPage < this.followingTotalPages;
 
-      this.displayedEvents = this.followingEvents;
+      // this.displayedEvents = this.followingEvents;
 
       this.isLoading = false;
       console.log('Following events: ', this.followingEvents);

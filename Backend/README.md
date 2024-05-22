@@ -8,11 +8,12 @@
 ## Installation
 
 - Install dependencies ``` npm install ``` and ``` composer install  ```
-- Launch Sail ``` ./vendor/bin/sail up  ```
+- Launch Sail (if needed) ``` ./vendor/bin/sail up  ```
 - Launch vite ``` npm run dev ```
-- Link Storage ``` ./vendor/bin/sail artisan storage:link  ```
-- Launch Jobs queue ``` ./vendor/bin/sail artisan queue:work ```
-- Launch WebSocket server ``` ./vendor/bin/sail artisan reverb:start --debug ```
+- Link Storage ``` php artisan storage:link  ```
+- Launch Jobs queue ``` php artisan queue:work ```
+- Launch WebSocket server ``` php artisan reverb:start --debug ```
+- Launch Schedule ``` php artisan schedule:run  ```
 
 ## Usage
 
@@ -35,3 +36,4 @@ TODO
 - [Console Kernel](https://rezakhademix.medium.com/laravel-11-no-http-kernel-no-casts-no-console-kernel-721c62adb6ef)
 - [Laravel Reverb](https://laravel.com/docs/11.x/reverb)
 - [Laravel Pulse](https://laravel.com/docs/11.x/pulse)
+- [Supervisor Config](https://laravel.com/docs/11.x/queues#supervisor-configuration)

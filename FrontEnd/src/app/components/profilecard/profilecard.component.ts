@@ -7,6 +7,7 @@ import { UserData } from '../../interfaces/user-data';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import {  Subscription } from 'rxjs';
+import { HomeComponent } from './home/home.component';
 
 @Component({
   selector: 'app-profilecard',
@@ -17,6 +18,7 @@ import {  Subscription } from 'rxjs';
     SettingsComponent,
     ExtraComponent,
     UserStatusComponent,
+    HomeComponent,
     CommonModule
   ],
   templateUrl: './profilecard.component.html',

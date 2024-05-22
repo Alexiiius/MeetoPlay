@@ -1,28 +1,25 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable, ChangeDetectorRef } from "@angular/core";
-import { AuthService } from "../services/auth.service";
-import { catchError, Observable, throwError } from "rxjs";
-import { Router } from "@angular/router";
+import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
+export const unAuthInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  constructor(private authService: AuthService, private router: Router, private cd: ChangeDetectorRef) { }
-
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          this.authService.isAuth.next(false);
-          this.router.navigate(['/login']).then(() => {
-            localStorage.removeItem('access_token');
-            sessionStorage.removeItem('access_token');
-            sessionStorage.removeItem('user_data');
-            this.cd.detectChanges();
-          });
-        }
-        return throwError(error);
-      })
-    );
-  }
-}
+  return next(req).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        authService.isAuth.next(false);
+        router.navigate(['/login']).then(() => {
+          localStorage.removeItem('access_token');
+          sessionStorage.removeItem('access_token');
+          sessionStorage.removeItem('user_data');
+        });
+      }
+      return throwError(error);
+    })
+  );
+};

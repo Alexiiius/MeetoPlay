@@ -1,13 +1,16 @@
 <div class="relative" [ngClass]="{'border border-red-500 rounded': isInvalid}">
-  <select name="platform" class="myinput appearance-none" (change)="selectPlatform(options[$any($event.target).value])">
-    @if (options.length == 0) {
-      <option [value]="-1" selected hidden>No game selected</option>
+  <select name="platform" class="myinput appearance-none" [(ngModel)]="value">
+
+    @if (!isGameSelected) {
+    <option [value]="null" selected hidden>No game selected</option>
     } @else {
-      <option [value]="-1" selected hidden>Select a platform</option>
-      @for (platform of options; track $index) {
-      <option [value]="$index">{{platform.platform}}</option>
-      }
+    <option [value]="null" selected hidden>Select a platform</option>
     }
+
+    @for (platform of options; track $index) {
+    <option [value]="platform.id" (click)="selectPlatform(platform)">{{platform.platform}}</option>
+    }
+
   </select>
   <svg class="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2"
     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18">

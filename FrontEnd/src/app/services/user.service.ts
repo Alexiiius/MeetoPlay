@@ -21,6 +21,7 @@ export class UserService implements OnInit {
   constructor(private authService: AuthService, private http: HttpClient) {
     this.currentUser = new BehaviorSubject<UserData | null>(null);
     this.authService.userData.subscribe(user => this.currentUser.next(user));
+
   }
 
   ngOnInit(): void {
@@ -50,6 +51,10 @@ export class UserService implements OnInit {
 
   getFriends(): Observable<any>{
     return this.http.get(`${this.backAPIUrl}/friends/${this.currentUser.value?.id}`);
+  }
+
+  getUserById(id: number) {
+    return this.http.get<UserData>(`${this.backAPIUrl}/user/${id}`);
   }
 }
 

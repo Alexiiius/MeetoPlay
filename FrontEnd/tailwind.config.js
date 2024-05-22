@@ -77,7 +77,7 @@ module.exports = {
     function ({ addComponents }) {
       const components = {
         '.container': {
-          '@apply dark:bg-neutral-900 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-4 rounded-xl': {},
+          '@apply dark:bg-neutral-900 dark:text-neutral-200 bg-neutral-300 text-neutral-900 p-4 rounded-box': {},
         },
         '.myinput': {
           '@apply dark:bg-neutral-700 dark:text-neutral-200 bg-neutral-100 text-neutral-900 p-2 rounded-md w-full h-10 border border-gray-500': {},

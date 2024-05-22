@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Event } from '../../../models/event';
 import { format } from 'date-fns';
 import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
+import { Router } from '@angular/router';
+import { EditEventFormComponent } from '../../profile/edit-event-form/edit-event-form.component';
 
 @Component({
   selector: 'app-event-card',
@@ -11,7 +13,8 @@ import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-
   imports: [
     CommonModule,
     FormsModule,
-    MoreEventInfoModalComponent
+    MoreEventInfoModalComponent,
+    EditEventFormComponent
   ],
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.css'
@@ -30,6 +33,9 @@ export class EventCardComponent implements OnInit {
   formattedTimeEnd: string;
 
   isJoined: boolean;
+  friendsParticipating: boolean;
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.formattedDateBegin = format(this.event.date_time_begin, 'dd/MM/yyyy');
@@ -40,8 +46,19 @@ export class EventCardComponent implements OnInit {
     this.eventInscriptionEndTime = new Date(this.event.date_time_inscription_end);
   }
 
-  isJoinedChange(isJoined: boolean) {
-    this.isJoined = isJoined;
+  isRoute(route: string): boolean {
+    return this.router.url === route;
+  }
+
+  @ViewChild('participatingBadge') participatingBadge: ElementRef;
+  @ViewChild('friendsParticipatingBadge') friendsParticipatingBadge: ElementRef;
+
+  hideParticipatingBadge() {
+    this.participatingBadge.nativeElement.style.display = 'none';
+  }
+
+  hideFriendsParticipatingBadge() {
+    this.friendsParticipatingBadge.nativeElement.style.display = 'none';
   }
 
   noRequirments() {
@@ -51,6 +68,18 @@ export class EventCardComponent implements OnInit {
       !this.event.event_requirements.max_level &&
       !this.event.event_requirements.min_hours_played &&
       !this.event.event_requirements.max_hours_played;
+  }
+
+  isJoinedChange(isJoined: boolean) {
+    setTimeout(() => {
+      this.isJoined = isJoined;
+    }, 0);
+  }
+
+  FriendsParticipatingChange(friendsParticipating: boolean) {
+    setTimeout(() => {
+      this.friendsParticipating = friendsParticipating;
+    }, 0);
   }
 
   openDialog() {

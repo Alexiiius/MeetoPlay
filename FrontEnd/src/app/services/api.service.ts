@@ -9,13 +9,9 @@ import { Game } from '../models/game';
   providedIn: 'root'
 })
 export class APIService {
-  // private gamesUrl = 'assets/jsonGames.json';
+
 
   constructor(private http: HttpClient) { }
-
-  // getGames(): Observable<GetGamesResponse> {
-  //   return this.http.get<GetGamesResponse>(this.gamesUrl);
-  // }
 
   getGames(): Observable<Game[]> {
     return this.http.get<Game[]>(gamesApiUrl + '/games');

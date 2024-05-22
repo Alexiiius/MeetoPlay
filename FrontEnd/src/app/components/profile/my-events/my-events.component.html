@@ -1,0 +1,22 @@
+<div class="w-full h-full flex flex-col justify-start space-y-4 rounded-lg">
+  @if (isLoading) {
+  <div *ngFor="let i of [].constructor(8)" class="skeleton bg-neutral/25 w-full h-[88px] min-h-[88px] shadow-lg"></div>
+  }
+  @for (event of myEvents; track $index) {
+  <app-event-card [event]="event" />
+
+  }
+
+  <div class="flex space-x-1">
+
+    @if (hasMoreEvents) {
+    <button class="btn btn-ghost rounded-box font-normal bg-base-200/60 w-full" (click)="loadMoreEvents()">
+      @if (isLoading) {
+      <span class="loading loading-infinity text-primary w-10"></span>
+      } @else {
+      <i class='bx bxs-plus-square bx-sm text-primary'></i>
+      }
+    </button>
+    }
+  </div>
+</div>

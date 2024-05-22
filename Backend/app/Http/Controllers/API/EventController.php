@@ -299,8 +299,7 @@ class EventController extends Controller
         ]);
     }
 
-    public function update(Request $request, Event $event)
-    {
+    public function updateEvent($id, Request $request) {
         $event = Event::find($request->id);
         $user = auth()->user();
 

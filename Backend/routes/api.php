@@ -36,7 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // ------------------------------------------------------------------ EVENT ENDPOINTS ------------------------------------------------------------------
 
     Route::post('/create/event', [EventController::class, 'store']); //create a new event and its requirements
-
+    Route::put('event/update/{id}', [EventController::class, 'updateEvent']); //update a specific event by id only if the user has permission to update it
 
     Route::get('/event/{id}', [EventController::class, 'show']); //show a specific event with requirements by id only if the user has permission to see it
     Route::get('/events/public/{page}', [EventController::class, 'showPublicEvents']); //show all public events

@@ -2,7 +2,7 @@
   @if (isLoading) {
   <div *ngFor="let i of [].constructor(8)" class="skeleton bg-neutral/25 w-full h-[88px] min-h-[88px] shadow-lg"></div>
   }
-  @for (event of myEvents; track $index) {
+  @for (event of myEvents; track event.id) {
   <app-event-card [event]="event" />
 
   }

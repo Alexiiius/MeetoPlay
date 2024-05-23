@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, EventEmitter, forwardRef, HostListener, OnDestroy, OnInit, Output } from '@angular/core';
 import { OptionComponent } from './option/option.component';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { BehaviorSubject, map, startWith } from 'rxjs';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { Game } from '../../../models/game';
 import { APIService } from '../../../services/api.service';
 
@@ -15,27 +15,44 @@ import { APIService } from '../../../services/api.service';
     ReactiveFormsModule,
   ],
   templateUrl: './new-select-game.component.html',
-  styleUrl: './new-select-game.component.css'
+  styleUrl: './new-select-game.component.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => NewSelectGameComponent),
+      multi: true
+    }
+  ]
 })
-export class NewSelectGameComponent {
+export class NewSelectGameComponent implements OnInit, OnDestroy, ControlValueAccessor {
   games: Game[] = [];
+  isLoading = true;
 
   searchControl = new FormControl();
   filteredGames = new BehaviorSubject<Game[]>([]);
 
   isOpen = false;
-  selectedGame: Game | undefined;
+  selectedGame: Game | undefined = { id: -1, name: 'Seleccione un juego', image: '' };
+  @Output() gameSelected = new EventEmitter<Game>();
 
-  constructor(private apiService: APIService) {
-    this.apiService.getGames().subscribe(games => {
-      this.games = games;
-      this.filteredGames.next(this.games.slice(0, 5));
-      this.selectedGame = this.games[0];
-    });
+  private subscriptions: Subscription[] = [];
 
-    this.searchControl.valueChanges.subscribe(text => {
-      this.filteredGames.next(this.filterOptions(text || ''));
-    });
+  constructor(private apiService: APIService, private elementRef: ElementRef) { }
+
+  ngOnInit(): void {
+    this.subscriptions.push(
+      this.apiService.getGames().subscribe(games => {
+        this.games = games;
+        this.filteredGames.next(this.games.slice(0, 5));
+        this.isLoading = false;
+      })
+    );
+
+    this.subscriptions.push(
+      this.searchControl.valueChanges.subscribe(text => {
+        this.filteredGames.next(this.filterOptions(text || ''));
+      })
+    );
   }
 
   private filterOptions(text: string) {
@@ -48,10 +65,36 @@ export class NewSelectGameComponent {
     const selected = this.games.find(opt => opt.id === game.id);
     if (selected) {
       this.selectedGame = selected;
+      this.gameSelected.emit(selected);
+      this.toggle();
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: Event) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.isOpen = false;
     }
   }
 
   toggle() {
     this.isOpen = !this.isOpen;
+  }
+
+  writeValue(obj: Game): void {
+    this.selectedGame = obj;
+  }
+
+  registerOnChange(fn: any): void {
+    this.gameSelected.subscribe(fn);
+  }
+
+  registerOnTouched(fn: any): void {
+    // You can implement this method if you need to handle the touch event
+  }
+
+  ngOnDestroy() {
+    // Cancelar todas las suscripciones cuando se destruye el componente para evitar fugas de memoria.
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }

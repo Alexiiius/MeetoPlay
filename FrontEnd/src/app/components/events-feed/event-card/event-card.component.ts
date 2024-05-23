@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Event } from '../../../models/event';
 import { format } from 'date-fns';
 import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EditEventFormComponent } from '../../profile/edit-event-form/edit-event-form.component';
 
 @Component({
@@ -35,7 +35,7 @@ export class EventCardComponent implements OnInit {
   isJoined: boolean;
   friendsParticipating: boolean;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.formattedDateBegin = format(this.event.date_time_begin, 'dd/MM/yyyy');
@@ -49,6 +49,23 @@ export class EventCardComponent implements OnInit {
   isRoute(route: string): boolean {
     return this.router.url === route;
   }
+
+  isActivatedRouteInChildRoute(routePath: string): boolean {
+    const urlSegments = this.router.url.split('/').filter(segment => segment);
+    const routePathSegments = routePath.split('/').filter(segment => segment);
+
+    if (routePathSegments.length > urlSegments.length) {
+        return false;
+    }
+
+    for (let i = 0; i < routePathSegments.length; i++) {
+        if (routePathSegments[i] !== urlSegments[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
 
   @ViewChild('participatingBadge') participatingBadge: ElementRef;
   @ViewChild('friendsParticipatingBadge') friendsParticipatingBadge: ElementRef;

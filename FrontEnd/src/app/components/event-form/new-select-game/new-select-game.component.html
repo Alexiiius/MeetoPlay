@@ -1,6 +1,6 @@
 <div class="relative w-full">
   <button class="flex items-center space-x-3 select select-bordered w-full" (click)="toggle()">
-    <img [src]="selectedGame?.image" class="w-7 h-7">
+    <img *ngIf="selectedGame?.image" [src]="selectedGame?.image" class="w-7 h-7">
     <span class="text-base">{{ selectedGame?.name }}</span>
   </button>
   <div class="absolute left-0 w-full mt-1 p-1 bg-base-200 rounded-lg" *ngIf="isOpen">
@@ -13,6 +13,7 @@
           clip-rule="evenodd" />
       </svg>
     </label>
+    <app-option *ngIf="isLoading" [isLoading]="isLoading" [game]="{ id: -2, name: 'Cargando juegos...', image: '' }" />
     <app-option *ngFor="let game of filteredGames | async" [game]="game"
       (optionSelected)="onOptionSelected($event)" />
   </div>

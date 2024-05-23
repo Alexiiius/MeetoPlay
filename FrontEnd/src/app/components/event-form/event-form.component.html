@@ -1,15 +1,15 @@
 <!-- <button (click)="openDialog()" class="btn btn-info font-normal text-base w-24"><span class="text-xl font-mono font-bold">+</span> Info</button>
 <dialog #moreEventInfo class="modal"> -->
 <div
-  class="relative modal-box bg-base-100 bg-clip-padding backdrop-filter  bg-opacity-40 border-2 border-primary w-11/12 h-full max-w-3xl max-h-3xl scrollbar-hidde">
+  class="relative modal-box bg-base-200 bg-clip-padding backdrop-filter bg-opacity-40 border-2 border-primary w-11/12 h-full max-w-3xl max-h-3xl scrollbar-hidde">
   <!-- <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeDialog()">✕</button> -->
 
-  <header class="text-2xl absolute top-8 right-12">Nuevo evento!</header>
-  <div role="tablist" class="tabs tabs-bordered tabs-lg w-full">
-    <input type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="What?" checked />
-    <div role="tabpanel" class="tab-content mt-6">
+  <form [formGroup]="eventForm">
+    <header class="text-2xl absolute top-8 right-12">Nuevo evento!</header>
+    <div role="tablist" class="tabs tabs-bordered tabs-lg w-full">
 
-      <form [formGroup]="eventForm">
+      <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="What?" />
+      <div role="tabpanel" class="tab-content mt-6">
 
         <div formGroupName="whatForm" class="grid grid-cols-2 gap-6">
           <div class="col-span-full">
@@ -21,8 +21,8 @@
             <div class="label">
               <span class="label-text">Título del evento</span>
             </div>
-            <input type="text" placeholder="🤔 Este evento se titula..." class="input input-bordered col-span-full" formControlName="title"
-            autofocus>
+            <input type="text" placeholder="🤔 Este evento se titula..." class="input input-bordered col-span-full"
+              formControlName="title" autofocus>
           </label>
 
 
@@ -31,33 +31,215 @@
             <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
           </div>
 
-          <app-new-select-game />
+          <app-new-select-game formControlName="game" (gameSelected)="handleGameSelected($event)" />
 
           <div class="flex items-center justify-center">
             <label class="cursor-pointer label gap-3">
               <span class="label-text text-base">Ranked</span>
-              <input type="checkbox" class="toggle toggle-primary" checked formControlName="ranked" />
+              <input type="checkbox" class="toggle toggle-primary" formControlName="ranked" />
             </label>
           </div>
 
-          <!-- <app-select-gamemode formControlName="gameMode" /> -->
 
-          <!-- <app-select-platform formControlName="platform"/> -->
+          <select class="select select-bordered w-full max-w-xs text-base" formControlName="gamemode">
+            @if (gamemodesLoading) {
+            <option value="default" class="flex items-end" hidden selected>Cargando modos de juego</option>
+            } @else {
+            <option hidden selected value="default">Selecciona un modo de juego</option>
+            @for (gamemode of filteredGamemodes; track gamemode.id) {
+            <option value="{{ gamemode.id }}">{{ gamemode.name }}</option>
+            } @empty {
+            <option value="default">No hay juego seleccionado</option>
+            }
+            }
+          </select>
+
+          <select class="select select-bordered w-full max-w-xs text-base" formControlName="platform">
+            @if (platformsLoading) {
+            <option value="default" class="flex items-end" hidden selected>Cargando plataformas</option>
+            } @else {
+            <option hidden selected value="default">Selecciona una plataforma</option>
+            @for (platform of platforms; track platform.id) {
+            <option value="{{ platform.id }}">{{ platform.platform }}</option>
+            } @empty {
+            <option value="default">No hay juego seleccionado</option>
+            }
+            }
+          </select>
 
           <div class="col-span-full"></div>
 
-          <button id="nextBtn" type="submit" class="btn btn-neutral col-span-full">Siguente</button>
+          <button (click)="nextTab()" class="btn btn-neutral col-span-full">Siguente</button>
         </div>
-      </form>
 
+      </div>
+
+      <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="When?"  />
+      <div role="tabpanel" class="tab-content mt-6">
+        <div class="grid grid-cols-11 gap-y-6" formGroupName="whenForm">
+          <div class="col-span-full">
+            <div class="text-xl col-span-full">Event</div>
+            <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+          </div>
+          <div class="col-span-5">
+            <input type="datetime-local" class="input input-bordered w-full" formControlName="eventBegin">
+          </div>
+
+          <div class="flex w-full h-full items-center justify-center opacity-60">to</div>
+
+          <div class="col-span-5">
+            <input type="datetime-local" class="input input-bordered w-full" formControlName="eventEnd">
+          </div>
+
+          <div class="col-span-full flex flex-col">
+            <span class="w-full text-center mb-3">La gente puede participar</span>
+
+            <label class="cursor-pointer label gap-3 p-0 w-full flex items-center justify-center">
+              <span class="label-text w-40 text-right text-base">No</span>
+              <input type="checkbox" class="toggle toggle-primary" checked formControlName="inscriptionToggle" />
+              <span class="label-text w-40 text-base">Si</span>
+            </label>
+
+          </div>
+
+          <fieldset class="col-span-full grid grid-cols-11 gap-y-6 transition-opacity duration-1000"
+            [disabled]="!inscriptionToggle"
+            [ngClass]="{'opacity-25': !inscriptionToggle}">
+
+            <div class="col-span-full ">
+              <div class="text-xl col-span-full">Registration deadline</div>
+              <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+            </div>
+
+            <div class="col-span-5">
+              <input type="datetime-local" class="input input-bordered w-full" formControlName="inscriptionBegin">
+            </div>
+
+            <div class="flex w-full h-full items-center justify-center opacity-60">to</div>
+
+            <div class="col-span-5">
+              <input type="datetime-local" class="input input-bordered w-full" formControlName="inscriptionEnd">
+            </div>
+          </fieldset>
+
+          <div class="col-span-full"></div>
+          <button id="nextBtn" (click)="nextTab()" class="col-span-full btn btn-neutral">Siguente</button>
+        </div>
+      </div>
+
+      <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="Who?" checked/>
+      <div role="tabpanel" class="tab-content mt-6">
+        <div class="grid grid-cols-2 gap-6" formGroupName="whoForm">
+          <div class="col-span-full">
+            <div class="text-xl col-span-full">Privacy</div>
+            <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+          </div>
+
+          <div class="relative">
+            <select formControlName="privacy" class="select select-bordered w-full">
+              <option value="public">Público</option>
+              <option value="followers">Seguidores</option>
+              <option value="friends">Amigos</option>
+              <option value="hidden">Oculto</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-center gap-3">
+            @if (inscriptionToggle) {
+            <input type="number" placeholder="Plazas" class="input input-bordered w-16" formControlName="maxParticipants" min="0">
+            }
+            <label class="cursor-pointer label gap-3">
+              <span class="label-text text-right text-base">Requirments</span>
+              <input type="checkbox" class="toggle toggle-secondary" checked formControlName="requirmentsToggle" />
+            </label>
+          </div>
+
+          <fieldset class="col-span-full grid gap-y-3 transition-opacity duration-1000">
+            <div class="col-span-full">
+              <div class="text-xl col-span-full">Requirments</div>
+              <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+            </div>
+
+            <div class="col-span-full"></div>
+
+            @if (ranked) {
+            <fieldset class="col-span-full" [disabled]="!ranked">
+              <div class="flex gap-3">
+                <label class="label cursor-pointer">
+                  <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="rank" />
+                  <span class="label-text text-base text-nowrap min-w-36 ml-3">Rango</span>
+                </label>
+
+                <div class="relative w-full" [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('rank')?.value}">
+
+                  <select formControlName="minRank" class="myinput appearance-none">
+
+                    <option value="" selected hidden>Select min rank</option>
+                    @for (rank of ranks; track $index) {
+                    <option value="{{rank}}">{{rank}}</option>
+                    }
+
+                  </select>
+
+                  <svg class="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18">
+                    <path fill="#EAE9EA" transform="scale(0.3 0.3)"
+                      d="M9.15581 18.125C9.49255 18.0413 9.8764 17.9459 10.2252 17.961C11.6884 18.0246 28.1125 35.1629 30.1287 37.2995C32.5048 33.9297 36.0892 30.967 39.0027 28.0298L45.346 21.7003C46.6349 20.4186 47.8967 18.892 49.5 18.001C50.6317 18.0185 50.8603 18.091 51.8139 18.7016C51.9152 18.9088 52.0091 19.1438 52.0297 19.375C52.1562 20.7979 51.4132 21.3163 50.5685 22.3375C47.6736 25.6405 44.2912 28.6781 41.1794 31.7909C37.6369 35.3345 34.0181 39.5496 29.9897 42.5004L9.09228 21.9082C8.5483 21.2948 7.93379 20.6222 7.98635 19.75C8.29225 18.8806 8.43585 18.7023 9.15581 18.125Z" />
+                  </svg>
+                </div>
+                <div class="relative w-full" [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('rank')?.value}">
+
+                  <select formControlName="maxRank" class="myinput appearance-none">
+
+                    <option value="" selected hidden>Select max rank</option>
+                    @for (rank of ranks; track $index) {
+                    <option value="{{rank}}">{{rank}}</option>
+                    }
+
+                  </select>
+
+                  <svg class="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18">
+                    <path fill="#EAE9EA" transform="scale(0.3 0.3)"
+                      d="M9.15581 18.125C9.49255 18.0413 9.8764 17.9459 10.2252 17.961C11.6884 18.0246 28.1125 35.1629 30.1287 37.2995C32.5048 33.9297 36.0892 30.967 39.0027 28.0298L45.346 21.7003C46.6349 20.4186 47.8967 18.892 49.5 18.001C50.6317 18.0185 50.8603 18.091 51.8139 18.7016C51.9152 18.9088 52.0091 19.1438 52.0297 19.375C52.1562 20.7979 51.4132 21.3163 50.5685 22.3375C47.6736 25.6405 44.2912 28.6781 41.1794 31.7909C37.6369 35.3345 34.0181 39.5496 29.9897 42.5004L9.09228 21.9082C8.5483 21.2948 7.93379 20.6222 7.98635 19.75C8.29225 18.8806 8.43585 18.7023 9.15581 18.125Z" />
+                  </svg>
+                </div>
+
+              </div>
+            </fieldset>
+            }
+
+            <div class="flex flex-col gap-3 max-h-56 h-full p-y-1">
+              <div class="flex gap-3">
+                <label class="label cursor-pointer ">
+                  <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="level" />
+                  <span class="label-text text-base text-nowrap min-w-36 ml-3">Por nivel</span>
+                </label>
+                <input type="number" min="0" class="myinput" placeholder="Min" formControlName="minLevel"
+                  [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('level')?.value}">
+                <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxLevel"
+                  [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('level')?.value}">
+              </div>
+
+              <div class="flex gap-3">
+                <label class="label cursor-pointer">
+                  <input type="checkbox" checked="checked" class="checkbox checkbox-primary"
+                    formControlName="hoursPlayed" />
+                  <span class="label-text text-base text-nowrap min-w-36 ml-3"> Horas jugadas</span>
+                </label>
+                <input type="number" min="0" class="myinput" placeholder="Min" formControlName="minHours"
+                  [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('hoursPlayed')?.value}">
+                <input type="number" min="0" class="myinput" placeholder="Max" formControlName="maxHours"
+                  [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('hourPlayed')?.value}">
+              </div>
+            </div>
+
+          </fieldset>
+          <button id="nextBtn" type="submit" (click)="onSubmit()"
+            class="col-span-full btn btn-neutral">Siguente</button>
+        </div>
+      </div>
     </div>
-
-    <input type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="When?" />
-    <div role="tabpanel" class="tab-content mt-6">Tab content 2</div>
-
-    <input type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="Who?" />
-    <div role="tabpanel" class="tab-content mt-6">Tab content 3</div>
-  </div>
-
+  </form>
 </div>
 <!-- </dialog> -->

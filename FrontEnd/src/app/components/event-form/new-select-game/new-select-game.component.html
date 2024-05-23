@@ -1,5 +1,5 @@
 <div class="relative w-full">
-  <button class="flex items-center space-x-3 select select-bordered w-full" (click)="toggle()">
+  <button class="flex items-center space-x-3 select select-bordered w-full" (click)="toggle()" [class.select-error]="isInvalid">
     <img *ngIf="selectedGame?.image" [src]="selectedGame?.image" class="w-7 h-7">
     <span class="text-base">{{ selectedGame?.name }}</span>
   </button>

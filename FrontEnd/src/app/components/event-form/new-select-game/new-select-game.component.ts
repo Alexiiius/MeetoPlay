@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, forwardRef, HostListener, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, forwardRef, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { OptionComponent } from './option/option.component';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -32,8 +32,13 @@ export class NewSelectGameComponent implements OnInit, OnDestroy, ControlValueAc
   filteredGames = new BehaviorSubject<Game[]>([]);
 
   isOpen = false;
+  hasBeenTouched = false;
   selectedGame: Game | undefined = { id: -1, name: 'Seleccione un juego', image: '' };
   @Output() gameSelected = new EventEmitter<Game>();
+  @Output() gamesEmitter = new EventEmitter<Game[]>();
+  @Output() selectGameTouched = new EventEmitter<void>();
+
+  @Input() isInvalid: boolean = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -45,6 +50,7 @@ export class NewSelectGameComponent implements OnInit, OnDestroy, ControlValueAc
         this.games = games;
         this.filteredGames.next(this.games.slice(0, 5));
         this.isLoading = false;
+        this.gamesEmitter.emit(this.games);
       })
     );
 
@@ -74,11 +80,15 @@ export class NewSelectGameComponent implements OnInit, OnDestroy, ControlValueAc
   clickOutside(event: Event) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isOpen = false;
+      if (this.hasBeenTouched) {
+        this.selectGameTouched.emit();
+      }
     }
   }
 
   toggle() {
     this.isOpen = !this.isOpen;
+    this.hasBeenTouched = true;
   }
 
   writeValue(obj: Game): void {

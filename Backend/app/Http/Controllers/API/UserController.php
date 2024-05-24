@@ -31,6 +31,7 @@ class UserController extends Controller
         return $user = User::find($id);
     }
 
+    //return a user not sensitive data by id
     public function showNew(string $id) {
         $user = User::where('id', $id)
             ->select('id', 'name', 'tag', 'email', 'avatar', 'date_of_birth', 'bio', 'socials')

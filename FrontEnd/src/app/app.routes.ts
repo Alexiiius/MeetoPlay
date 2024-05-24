@@ -1,9 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { NewEventFormComponent } from './components/new-event-form/new-event-form.component';
-import { WhatFormComponent } from './components/new-event-form/what-form/what-form.component';
-import { WhenFormComponent } from './components/new-event-form/when-form/when-form.component';
-import { WhoFormComponent } from './components/new-event-form/who-form/who-form.component';
 import { EventsFeedComponent } from './components/events-feed/events.component';
 import { LoginRegisterComponent } from './components/login-register/login-register.component';
 import { MainComponent } from './components/main/main.component';
@@ -46,21 +42,11 @@ import { EventFormComponent } from './components/event-form/event-form.component
 // ];
 
 export const routes: Routes = [
-  { path: 'wip', component: EventFormComponent },
-  { path: '', redirectTo: 'wip', pathMatch: 'full' },
+  { path: '', redirectTo: 'main', pathMatch: 'full' },
   {
     path: 'main', component: MainComponent, canActivate: [authGuard], children: [
-      { path: '', component: EventFormComponent }, //Todo: change this to eventsFeed
-      {
-        path: 'newEvent',
-        component: NewEventFormComponent,
-        children: [
-          { path: '', redirectTo: 'what', pathMatch: 'full' },
-          { path: 'what', component: WhatFormComponent, data: { animation: 'whatAnim' } },
-          { path: 'when', component: WhenFormComponent, data: { animation: 'whenAnim' } },
-          { path: 'who', component: WhoFormComponent, data: { animation: 'whoAnim' } },
-        ]
-      },
+      { path: '', component: EventsFeedComponent }, // TODO cambiar a EventsFeedComponent
+      { path: 'newEvent', component: EventFormComponent },
       {
         path: 'profile/:id', component: ProfileComponent, children: [
           { path: '', redirectTo: 'gameStats', pathMatch: 'full' },
@@ -77,3 +63,14 @@ export const routes: Routes = [
   // otras rutas aquí
   { path: '**', redirectTo: 'wip' },
 ];
+
+// {
+//   path: 'newEvent',
+//   component: NewEventFormComponent,
+//   children: [
+//     { path: '', redirectTo: 'what', pathMatch: 'full' },
+//     { path: 'what', component: WhatFormComponent, data: { animation: 'whatAnim' } },
+//     { path: 'when', component: WhenFormComponent, data: { animation: 'whenAnim' } },
+//     { path: 'who', component: WhoFormComponent, data: { animation: 'whoAnim' } },
+//   ]
+// },

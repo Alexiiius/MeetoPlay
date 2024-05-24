@@ -3,7 +3,7 @@
     <img *ngIf="selectedGame?.image" [src]="selectedGame?.image" class="w-7 h-7">
     <span class="text-base">{{ selectedGame?.name }}</span>
   </button>
-  <div class="absolute left-0 w-full mt-1 p-1 bg-base-200 rounded-lg" *ngIf="isOpen">
+  <div class="absolute left-0 w-full mt-1 p-1 bg-base-200 rounded-lg border border-base-300" *ngIf="isOpen">
 
     <label class="input flex items-center gap-2">
       <input type="text" placeholder="Search" [formControl]="searchControl" class="w-full">

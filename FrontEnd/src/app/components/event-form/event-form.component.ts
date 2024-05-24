@@ -1,18 +1,20 @@
+import { Event } from './../../models/event';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Event } from '../../models/event';
 import { NewSelectGameComponent } from './new-select-game/new-select-game.component';
 import { Game } from '../../models/game';
 import { APIService } from '../../services/api.service';
 import { Subscription } from 'rxjs';
 import { Gamemode } from '../../models/gamemode';
 import { Platform } from '../../models/platform';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { NewFullGame } from '../../interfaces/new-fullGame';
 import { FormatedNewEvent } from '../../interfaces/formated-new-event';
 import { UserService } from '../../services/user.service';
 import { UserData } from '../../interfaces/user-data';
-
+import { EventsService } from '../../services/events.service';
+import { AlertService } from '../../services/alert.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-event-form',
@@ -20,7 +22,7 @@ import { UserData } from '../../interfaces/user-data';
   imports: [
     ReactiveFormsModule,
     NewSelectGameComponent,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './event-form.component.html',
   styleUrl: './event-form.component.css'
@@ -71,6 +73,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
   ranks: string[] = [''];
   maxPlayers: number = 0;
 
+  isFormSubmmiting = false;
+
   private subscriptions: Subscription[] = [];
 
   @ViewChildren('tab') tabs: QueryList<ElementRef>;
@@ -79,37 +83,41 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private apiService: APIService,
     private cdr: ChangeDetectorRef,
-    private userService: UserService) { }
+    private userService: UserService,
+    private location: Location,
+    private eventService: EventsService,
+    private alertService: AlertService,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.eventForm = this.formBuilder.group({
       whatForm: this.formBuilder.group({
         ranked: [false],
-        title: ['', Validators.required],
+        title: ['', [Validators.required, this.noWhitespaceValidator()]],
         game: [{ id: -1, name: '👾 Seleccione un juego', image: '' }, [Validators.required, this.gameExists.bind(this)]],
         gamemode: ['default', [Validators.required, this.gamemodeBelongsToGame.bind(this)]],
         platform: ['default', [Validators.required, this.platformBelongsToGame.bind(this)]],
       }),
       whenForm: this.formBuilder.group({
         inscriptionToggle: [true],
-        eventBegin: ['', [Validators.required, this.notInPastValidator()]],
-        eventEnd: ['', Validators.required],
-        inscriptionBegin: ['', Validators.required],
-        inscriptionEnd: ['', Validators.required]
+        eventBegin: [null, [Validators.required, this.notInPastValidator()]],
+        eventEnd: [null, Validators.required],
+        inscriptionBegin: [null, Validators.required],
+        inscriptionEnd: [null, Validators.required]
       }),
       whoForm: this.formBuilder.group({
         privacy: ['default', [Validators.required, this.privacyNotDefault.bind(this)]],
-        maxParticipants: ['', [Validators.required, this.minZero.bind(this), this.maxPlayersValidator()]],
+        maxParticipants: [null, [Validators.required, this.minZero.bind(this), this.maxPlayersValidator.bind(this), this.integerValidator()]],
         requirmentsToggle: [false],
         rank: [false], // Para el checkbox de Rango
         maxRank: [{ value: '', disabled: true }, Validators.required], // Para el input de Max en Rango
         minRank: [{ value: '', disabled: true }, Validators.required], // Para el input de Min en Rango
         level: [false], // Para el checkbox de Por nivel
-        maxLevel: [{ value: '', disabled: true }, [Validators.required, this.minZero]], // Para el input de Max en Por nivel
-        minLevel: [{ value: '', disabled: true }, [Validators.required, this.minZero]], // Para el input de Min en Por nivel
+        maxLevel: [{ value: '', disabled: true }, [Validators.required, this.minZero, this.integerValidator()]], // Para el input de Max en Por nivel
+        minLevel: [{ value: '', disabled: true }, [Validators.required, this.minZero, this.integerValidator()]], // Para el input de Min en Por nivel
         hoursPlayed: [false], // Para el checkbox de Horas jugadas
-        maxHours: [{ value: '', disabled: true }, [Validators.required, this.minZero]], // Para el input de Max en Horas jugadas
-        minHours: [{ value: '', disabled: true }, [Validators.required, this.minZero]]
+        maxHours: [{ value: '', disabled: true }, [Validators.required, this.minZero, this.integerValidator()]], // Para el input de Max en Horas jugadas
+        minHours: [{ value: '', disabled: true }, [Validators.required, this.minZero, this.integerValidator()]] // Para el input de Min en Horas jugadas
       },
         {
           validators: [
@@ -156,7 +164,10 @@ export class EventFormComponent implements OnInit, OnDestroy {
         this.ranks = gamemode.ranks;
         this.maxPlayers = gamemode.max_players;
       }
+
+      this.eventForm.get('whoForm')?.reset({ privacy: 'default' })
     });
+
 
     // Si el evento existe, establece los valores del formulario
     if (this.event) {
@@ -271,6 +282,19 @@ export class EventFormComponent implements OnInit, OnDestroy {
     this.platformsLoading = true;
     this.selectedGame = game;
 
+    this.eventForm.get('whoForm')?.reset({ privacy: 'default' })
+
+    // Restablecer los campos de gamemode y platform a su valor predeterminado y marcarlos como "no tocados"
+    const whatForm = this.eventForm.get('whatForm');
+    if (whatForm) {
+      whatForm.patchValue({
+        gamemode: 'default',
+        platform: 'default'
+      });
+      whatForm.get('gamemode')?.markAsUntouched();
+      whatForm.get('platform')?.markAsUntouched();
+    }
+
     const rankedControl = this.eventForm.get('whatForm')?.get('ranked');
     if (rankedControl) {
       // Obtener todos los gamemodes una vez
@@ -296,17 +320,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
         this.gamemodesLoading = false;
         this.platformsLoading = false;
-
-        // Restablecer los campos de gamemode y platform a su valor predeterminado y marcarlos como "no tocados"
-        const whatForm = this.eventForm.get('whatForm');
-        if (whatForm) {
-          whatForm.patchValue({
-            gamemode: 'default',
-            platform: 'default'
-          });
-          whatForm.get('gamemode')?.markAsUntouched();
-          whatForm.get('platform')?.markAsUntouched();
-        }
       });
     }
   }
@@ -342,22 +355,19 @@ export class EventFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  goBack(): void {
+    this.location.back();
+  }
+
   async onSubmit(): Promise<void> {
+    this.isFormSubmmiting = true;
 
-    const gameMode = this.gamemodes.find(mode => mode.id == this.eventForm?.get('whatForm')?.get('gamemode')?.value);
+    const gamemode = this.gamemodes.find(mode => mode.id == this.eventForm?.get('whatForm')?.get('gamemode')?.value);
     const platform = this.platforms.find(plat => plat.id == this.eventForm?.get('whatForm')?.get('platform')?.value);
-
-    // Si se encontró un gameMode y platform correspondiente, cambia el valor al nombre
-    if (gameMode) {
-      this.eventForm?.get('whatForm.gamemode')?.patchValue(gameMode.name);
-    }
-
-    if (platform) {
-      this.eventForm?.get('whatForm.platform')?.patchValue(platform.platform);
-    }
 
     this.userService.getLogedUserData().subscribe((userData: UserData) => {
       const eventOwnerId = userData.id;
+
 
       const formatedNewEvent: FormatedNewEvent = {
         data: {
@@ -365,9 +375,9 @@ export class EventFormComponent implements OnInit, OnDestroy {
             event_title: this.eventForm?.get('whatForm.title')?.value,
             game_id: this.eventForm?.get('whatForm.game')?.value.id,
             game_name: this.eventForm?.get('whatForm.game')?.value.name,
-            game_mode: this.eventForm?.get('whatForm.gamemode')?.value,
+            game_mode: gamemode?.name || '',
             game_pic: this.eventForm?.get('whatForm.game')?.value.image,
-            platform: this.eventForm?.get('whatForm.platform')?.value,
+            platform: platform?.platform || '',
             event_owner_id: eventOwnerId,
             date_time_begin: this.eventForm?.get('whenForm.eventBegin')?.value,
             date_time_end: this.eventForm?.get('whenForm.eventEnd')?.value,
@@ -387,11 +397,23 @@ export class EventFormComponent implements OnInit, OnDestroy {
         }
       };
 
+
       console.log('Form submitted', formatedNewEvent);
+
+      this.eventService.postNewEvent(formatedNewEvent).subscribe(
+        (response) => {
+          this.isFormSubmmiting = false;
+          this.alertService.showAlert('success', 'Evento creado con éxito! 😄');
+          this.router.navigate(['/main']);
+
+          console.log(response);
+        },
+        (error) => {
+          this.alertService.showAlert('error', 'Error! Algo ha fallado al crear el evento. 😓');
+          console.error(error);
+        }
+      );
     });
-
-
-
   }
 
   ngOnDestroy() {
@@ -402,6 +424,14 @@ export class EventFormComponent implements OnInit, OnDestroy {
   //Validaciones ______________________________________________________
 
   //whatForm validations ______________________________________________________
+
+  // Que el titulo no tenga solo espacios
+  noWhitespaceValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      return isWhitespace ? { 'whitespace': { value: control.value } } : null;
+    };
+  }
 
   //Comprueba si el campo game contiene un juego que existe en el array de juegos
   gameExists(control: AbstractControl): ValidationErrors | null {
@@ -429,26 +459,37 @@ export class EventFormComponent implements OnInit, OnDestroy {
     const inscriptionBegin = form.get('inscriptionBegin');
     const inscriptionEnd = form.get('inscriptionEnd');
 
+    // Si eventBegin y eventEnd tienen valores, comprueba si eventBegin es mayor que eventEnd
     if (eventBegin && eventEnd && eventBegin.value && eventEnd.value) {
       if (eventBegin.value > eventEnd.value) {
+        // Si eventBegin es mayor que eventEnd, establece un error de 'dateRange' en eventEnd
         eventEnd.setErrors({ 'dateRange': true });
       } else {
+        // Si eventBegin no es mayor que eventEnd, limpia los errores en eventEnd
         eventEnd.setErrors(null);
       }
     }
 
+    // Si inscriptionBegin e inscriptionEnd tienen valores y no están deshabilitados, comprueba si inscriptionBegin es mayor que inscriptionEnd
     if (inscriptionBegin && inscriptionEnd && inscriptionBegin.value && inscriptionEnd.value && !inscriptionBegin.disabled && !inscriptionEnd.disabled) {
       if (inscriptionBegin.value > inscriptionEnd.value) {
+        // Si inscriptionBegin es mayor que inscriptionEnd, establece un error de 'dateRange' en inscriptionEnd
+        console.log('inscriptionBegin > inscriptionEnd')
+
         inscriptionEnd.setErrors({ 'dateRange': true });
       } else {
+        // Si inscriptionBegin no es mayor que inscriptionEnd, limpia los errores en inscriptionEnd
         inscriptionEnd.setErrors(null);
       }
     }
 
+    // Si eventEnd e inscriptionEnd tienen valores y inscriptionEnd no está deshabilitado, comprueba si inscriptionEnd es mayor que eventEnd
     if (eventEnd && inscriptionEnd && eventEnd.value && inscriptionEnd.value && !inscriptionEnd.disabled) {
       if (inscriptionEnd.value > eventEnd.value) {
+        // Si inscriptionEnd es mayor que eventEnd, establece un error de 'dateRangeI' en inscriptionEnd
         inscriptionEnd.setErrors({ 'dateRangeI': true });
-      } else if (!inscriptionEnd.errors || !inscriptionEnd.errors['dateRange'] || !inscriptionEnd.errors['dateRangeI']) {
+      } else if (!inscriptionEnd.errors || Object.keys(inscriptionEnd.errors).length === 0) {
+        // Si inscriptionEnd no es mayor que eventEnd y no tiene errores, limpia los errores en inscriptionEnd
         inscriptionEnd.setErrors(null);
       }
     }
@@ -456,6 +497,9 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
   notInPastValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
+      if (control.value === null || control.value === undefined) {
+        return null;
+      }
       const now = new Date();
       const selectedDate = new Date(control.value);
       return selectedDate < now ? { 'inPast': { value: control.value } } : null;
@@ -476,10 +520,12 @@ export class EventFormComponent implements OnInit, OnDestroy {
   }
 
   //Comprueba que no se superan los max_players del gamemode
-  maxPlayersValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      return control.value >= this.maxPlayers ? { maxPlayersExceeded: true } : null;
-    };
+  maxPlayersValidator(control: AbstractControl): { [key: string]: any } | null {
+    const value = control.value;
+    if (value === null || value === undefined) {
+      return null;
+    }
+    return value > this.maxPlayers ? { maxPlayersExceeded: true } : null;
   }
 
   //Comprueba que el valor de max* sea mayor que el de min*
@@ -505,6 +551,13 @@ export class EventFormComponent implements OnInit, OnDestroy {
         return { minGreaterThanMax: true };
       }
       return null;
+    };
+  }
+
+  integerValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isInteger = Number.isInteger(Number(control.value));
+      return !isInteger ? { 'notInteger': { value: control.value } } : null;
     };
   }
 }

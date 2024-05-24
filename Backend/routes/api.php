@@ -47,7 +47,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/events/participating/{page}', [EventController::class, 'showParticipatingEvents']); //show all events that auth user is participating
 
     Route::delete('/event/{id}', [EventController::class, 'destroy']); //delete a specific event by id only if the user has permission to delete it
-    Route::put('/event/{id}', [EventController::class, 'update']); //update a specific event by id only if the user has permission to update it
+    Route::put('/event/{id}', [EventController::class, 'updateEvent']); //update a specific event by id only if the user has permission to update it
 
     Route::post('/event/{id}/join', [EventController::class, 'addParticipant']); //join a specific event by id only if the user has permission to join it
     Route::post('/event/{id}/leave', [EventController::class, 'removeParticipant']); //leave a specific event by id only if the user has permission to leave it

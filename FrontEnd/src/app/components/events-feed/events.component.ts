@@ -43,8 +43,20 @@ export class EventsFeedComponent implements OnInit {
   followingTotalPages = 1;
 
   isLoading = false;
-  hasMoreEvents = false;
-  moreEventsLoaded = false;
+
+  actualGroup: 'Public' | 'Friends' | 'Followed' | string;
+
+  hasMoreEvents: { [K in typeof this.actualGroup]: boolean } = {
+    'Public': false,
+    'Friends': false,
+    'Followed': false
+  };
+
+  moreEventsLoaded: { [K in typeof this.actualGroup]: boolean } = {
+    'Public': false,
+    'Friends': false,
+    'Followed': false
+  };
 
   followedUsers: SocialUser[];
   friends: SocialUser[];
@@ -54,32 +66,44 @@ export class EventsFeedComponent implements OnInit {
     private eventFeedService: EventFeedService,
     private userService: UserService) { }
 
-  ngOnInit() {
-    this.getPublicEvents(this.publicPage);
-    this.getFriendsEvents(this.friendsPage);
-    this.getFollowingEvents(this.followingPage);
-    this.getFollowedUsers();
-    this.getFriends();
-
+  ngAfterViewInit() {
     this.eventFeedService.currentGroup.subscribe(group => {
       this.smoothScrollToTop();
+      this.actualGroup = group;
       switch (group) {
         case 'Public':
           this.displayedEvents = this.publicEvents;
-          this.hasMoreEvents = this.publicPage < this.publicTotalPages;
+          this.hasMoreEvents['Public'] = this.publicPage < this.publicTotalPages;
           break;
         case 'Friends':
           this.displayedEvents = this.friendsEvents;
-          this.hasMoreEvents = this.friendsPage < this.friendsTotalPages;
+          this.hasMoreEvents['Friends'] = this.friendsPage < this.friendsTotalPages;
           break;
         case 'Followed':
-          this.hasMoreEvents = this.followingPage < this.followingTotalPages;
+          this.hasMoreEvents['Followed'] = this.followingPage < this.followingTotalPages;
           this.displayedEvents = this.followingEvents;
           break;
         default:
           console.error(`Unexpected group: ${group}`);
       }
     });
+  }
+
+  ngOnInit() {
+    this.getPublicEvents(this.publicPage);
+    this.getFriendsEvents(this.friendsPage);
+    this.getFollowingEvents(this.followingPage);
+    this.getFollowedUsers();
+    this.getFriends();
+  }
+
+  showMoreEventsBtn(): boolean {
+    return this.hasMoreEvents[this.actualGroup];
+  }
+
+
+  showScrolltoTopBtn(): boolean {
+    return this.moreEventsLoaded[this.actualGroup];
   }
 
   getFollowedUsers(): void {
@@ -147,19 +171,19 @@ export class EventsFeedComponent implements OnInit {
         case 'Public':
           if (this.publicPage < this.publicTotalPages) {
             this.getPublicEvents(++this.publicPage);
-            this.moreEventsLoaded = true;
+            this.moreEventsLoaded['Public'] = true;
           }
           break;
         case 'Friends':
           if (this.friendsPage < this.friendsTotalPages) {
             this.getFriendsEvents(++this.friendsPage);
-            this.moreEventsLoaded = true;
+            this.moreEventsLoaded['Friends'] = true;
           }
           break;
         case 'Followed':
           if (this.followingPage < this.followingTotalPages) {
             this.getFollowingEvents(++this.followingPage);
-            this.moreEventsLoaded = true;
+            this.moreEventsLoaded['Followed'] = true;
           }
           break;
         default:
@@ -175,7 +199,7 @@ export class EventsFeedComponent implements OnInit {
       const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
       this.publicEvents = [...this.publicEvents, ...newEvents];
       this.publicTotalPages = response.meta.total_pages;
-      this.hasMoreEvents = this.publicPage < this.publicTotalPages;
+      this.hasMoreEvents['Public'] = this.publicPage < this.publicTotalPages;
 
       this.displayedEvents = this.publicEvents;
 
@@ -194,9 +218,11 @@ export class EventsFeedComponent implements OnInit {
       const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
       this.friendsEvents = [...this.friendsEvents, ...newEvents];
       this.friendsTotalPages = response.meta.total_pages;
-      this.hasMoreEvents = this.friendsPage < this.friendsTotalPages;
+      this.hasMoreEvents['Friends'] = this.friendsPage < this.friendsTotalPages;
 
-      this.displayedEvents = this.friendsEvents;
+      if (page < 1) {
+        this.displayedEvents = this.friendsEvents;
+      }
 
       this.isLoading = false;
       console.log('Friends events: ', this.friendsEvents);
@@ -213,9 +239,11 @@ export class EventsFeedComponent implements OnInit {
       const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
       this.followingEvents = [...this.followingEvents, ...newEvents];
       this.followingTotalPages = response.meta.total_pages;
-      this.hasMoreEvents = this.followingPage < this.followingTotalPages;
+      this.hasMoreEvents['Followed'] = this.followingPage < this.followingTotalPages;
 
-      this.displayedEvents = this.followingEvents;
+      if (page < 1) {
+        this.displayedEvents = this.followingEvents;
+      }
 
       this.isLoading = false;
       console.log('Following events: ', this.followingEvents);

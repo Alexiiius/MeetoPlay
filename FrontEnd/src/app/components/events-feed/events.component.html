@@ -13,13 +13,13 @@
     }
     <div class="flex space-x-1">
 
-      @if (!isLoading && moreEventsLoaded) {
+      @if (!isLoading && showScrolltoTopBtn()) {
       <button (click)="smoothScrollToTop()" class="scroll-to-top btn font-normal bg-base-200/60 btn-ghost rounded-box"
-        [ngClass]="hasMoreEvents ? 'w-1/2' : 'w-full'"><i class='bx bxs-to-top bx-sm text-secondary'></i></button>
+        [ngClass]="showMoreEventsBtn() ? 'w-1/2' : 'w-full'"><i class='bx bxs-to-top bx-sm text-secondary'></i></button>
       }
-      @if (hasMoreEvents) {
+      @if (showMoreEventsBtn()) {
       <button class="btn btn-ghost rounded-box font-normal bg-base-200/60" (click)="loadMoreEvents()"
-        [ngClass]="!isLoading && moreEventsLoaded ? 'w-1/2' : 'w-full'">
+        [ngClass]="!isLoading && showScrolltoTopBtn() ? 'w-1/2' : 'w-full'">
         @if (isLoading) {
         <span class="loading loading-infinity text-primary w-10"></span>
         } @else {

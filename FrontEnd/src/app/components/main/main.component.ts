@@ -8,6 +8,7 @@ import { ProfilecardComponent } from '../profilecard/profilecard.component';
 import { NewEventFormComponent } from '../new-event-form/new-event-form.component';
 import { AuthService } from '../../services/auth.service';
 import { APIService } from '../../services/api.service';
+import { AlertComponent } from './alert/alert.component';
 
 @Component({
   selector: 'app-main',
@@ -19,14 +20,18 @@ import { APIService } from '../../services/api.service';
     FiltersComponent,
     ProfilecardComponent,
     NewEventFormComponent,
-    HttpClientModule
+    HttpClientModule,
+    AlertComponent
   ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })
 export class MainComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+
+  ) { }
 
   ngOnInit() {
     this.authService.getUserData().subscribe();

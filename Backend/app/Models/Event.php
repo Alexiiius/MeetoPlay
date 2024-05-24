@@ -45,6 +45,8 @@ class Event extends Model {
         }
     
         $this->participants()->attach($user_id);
+        $this->participants()->where('users.id', $user_id)->updateExistingPivot($user_id, ['created_at' => now()]);
+        $this->participants()->where('users.id', $user_id)->updateExistingPivot($user_id, ['updated_at' => now()]);
         $this->save();
     }
     

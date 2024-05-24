@@ -1,0 +1,12 @@
+<div  role="alert"
+  class="alert absolute top-3 right-3 w-min max-w-96 translate-x-full transition-all duration-300  opacity-0"
+  *ngIf="alert"
+  [class.translate-x-0]="showAlert"
+  [class.opacity-100]="showAlert"
+  [ngClass]="{'alert-success': alert.type === 'success', 'alert-error': alert.type === 'error', 'alert-warning': alert.type === 'warning', 'alert-info': alert.type === 'info'}">
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+  <span class="text-nowrap">Evento creado con éxito! 😄</span>
+</div>

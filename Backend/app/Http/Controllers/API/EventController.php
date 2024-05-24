@@ -267,8 +267,39 @@ class EventController extends Controller
         ]);
     }
 
-    public function update(Request $request, Event $event)
+    //eventos en los que participo
+    public function showParticipatingEvents(Request $request)
     {
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+        $userId = auth()->id();
+        $events = User::find($userId)->events()
+            ->with('event_requirements')
+            ->with(['owner' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            }])
+            ->with(['participants' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            }])
+            ->skip($skip)
+            ->take($perPage)
+            ->get();
+        $total = User::find($userId)->events()->count();
+
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $request->page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function updateEvent($id, Request $request) {
         $event = Event::find($request->id);
         $user = auth()->user();
 
@@ -419,12 +450,19 @@ class EventController extends Controller
         ], 200);
     }
 
-    //TODO: refactoriza cabron
+    
     public function canUserSeeThisEvent(Event $event, User $user)
     {
 
         if ($event->privacy == 'hidden' && $event->event_owner_id != $user->id && $user->is_admin != true) {
             return false;
+        }
+
+        if ($event->privacy == 'followers') {
+            $following = $user->followingArray()->toArray();
+            if (!in_array($event->event_owner_id, $following) && $event->event_owner_id != $user->id && $user->is_admin != true) {
+                return false;
+            }
         }
 
         if ($event->privacy == 'friends') {
@@ -437,17 +475,47 @@ class EventController extends Controller
         return true;
     }
 
-    public function test(Request $request)
-    {
-        $user = auth()->user();
-        $event = Event::find($request->id);
+
+    public function search($search, Request $request) {
+        $query = $request->search;
+
+        if (empty($query) || $query == null ) {
+            return response()->json(['error' => 'No search query'], 400);
+        }
+
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+
+        $events = Event::where('event_title', 'like', "%{$query}%")
+            ->orWhereHas('owner', function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->orWhere('platform', 'like', "%{$query}%")
+            ->orWhere('game_name', 'like', "%{$query}%")
+            ->orWhere('game_mode', 'like', "%{$query}%")
+            ->skip($skip)
+            ->take($perPage)
+            ->get();
+
+        $total = $events->count();
+
+        if ($events->isEmpty()) {
+            return response()->json(['message' => 'No events found'], 200);
+        }
+
         return response()->json([
             'data' => [
-                'can_see' => $this->canUserSeeThisEvent($event, $user),
+                'events' => $events,
             ],
             'meta' => [
+                'current_page' => $request->page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
                 'timestamp' => now(),
             ],
         ]);
     }
+
+
+
 }

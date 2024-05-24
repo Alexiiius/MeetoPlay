@@ -24,8 +24,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']); //logout the user authenticated
     Route::get('/users', [UserController::class, 'index']); //return name, email and id from all users
 
-    Route::get('/user/{id}', [UserController::class, 'show']); //all data from specific user
+    Route::get('/user/{id}', [UserController::class, 'showNew']); //return id, name, email, tag, avatar, date_of_birth, bio and socials from a specific user by id
     Route::get('/user', [UserController::class, 'user']); //return all data from the authenticated user
+
+    Route::get('/user/search/{search}', [UserController::class, 'search'])->where('search', '.*'); //search users by name, tag and name#tag
 
     //WIP
     Route::post('/user/{id}', [UserController::class, 'update']);

@@ -27,8 +27,15 @@ class UserController extends Controller
     }
 
     //return a user full data by id
-    public function show(string $id) {
+    public function showOld(string $id) {
         return $user = User::find($id);
+    }
+
+    public function showNew(string $id) {
+        $user = User::where('id', $id)
+            ->select('id', 'name', 'tag', 'email', 'avatar', 'date_of_birth', 'bio', 'socials')
+            ->first();
+        return $user;
     }
 
     //update a user by id and data
@@ -54,4 +61,26 @@ class UserController extends Controller
             return response()->json(['message' => 'User deletion failed']);
         }
     }
+
+
+    public function search(string $search) {
+        $parts = explode('#', $search);
+    
+        if (count($parts) == 2) {
+            // Buscar por name y tag
+            $users = User::where('name', 'like', '%'.$parts[0].'%')
+                ->where('tag', 'like', '%'.$parts[1].'%')
+                ->select('id', 'name', 'tag', 'avatar')
+                ->get();
+        } else {
+            // Buscar solo por name o tag
+            $users = User::where('name', 'like', '%'.$search.'%')
+                ->orWhere('tag', 'like', '%'.$search.'%')
+                ->select('id', 'name', 'tag', 'avatar')
+                ->get();
+        }
+    
+        return $users;
+    }
+
 }

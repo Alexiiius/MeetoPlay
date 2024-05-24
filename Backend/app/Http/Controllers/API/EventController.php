@@ -182,6 +182,7 @@ class EventController extends Controller
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             }])
             ->where('event_owner_id', $userId)
+            ->orderBy('created_at', 'desc')
             ->skip($skip)
             ->take($perPage)
             ->get();

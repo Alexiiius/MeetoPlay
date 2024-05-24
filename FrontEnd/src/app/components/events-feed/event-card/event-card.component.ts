@@ -20,8 +20,9 @@ import { EditEventFormComponent } from '../../profile/edit-event-form/edit-event
   styleUrl: './event-card.component.css'
 })
 export class EventCardComponent implements OnInit {
-  // Simula la fecha y hora del final del evento
+
   isChecked = false;
+  isOpen = false;
 
   @Input() event: Event;
   @ViewChild('moreEventInfo') modalDialog!: ElementRef<HTMLDialogElement>;
@@ -35,7 +36,7 @@ export class EventCardComponent implements OnInit {
   isJoined: boolean;
   friendsParticipating: boolean;
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.formattedDateBegin = format(this.event.date_time_begin, 'dd/MM/yyyy');
@@ -55,17 +56,22 @@ export class EventCardComponent implements OnInit {
     const routePathSegments = routePath.split('/').filter(segment => segment);
 
     if (routePathSegments.length > urlSegments.length) {
-        return false;
+      return false;
     }
 
     for (let i = 0; i < routePathSegments.length; i++) {
-        if (routePathSegments[i] !== urlSegments[i]) {
-            return false;
-        }
+      if (routePathSegments[i] !== urlSegments[i]) {
+        return false;
+      }
     }
 
     return true;
-}
+  }
+
+  toggleOpen() {
+    this.isOpen = !this.isOpen;
+    console.log(this.isOpen);
+  }
 
   @ViewChild('participatingBadge') participatingBadge: ElementRef;
   @ViewChild('friendsParticipatingBadge') friendsParticipatingBadge: ElementRef;

@@ -1,5 +1,7 @@
 <div class="relative text-lg">
-  <div tabindex="0" class="collapse bg-base-200 hover:shadow-lg" [ngClass]="{'collapse-arrow': isRoute('/main')}">
+  <div tabindex="0" class="collapse bg-base-200/80 shadow-md hover:bg-base-200 hover:shadow-lg transition-all duration-300"
+  [ngClass]="{'collapse-arrow': isRoute('/main'), 'bg-base-200': isOpen, 'bg-base-200/80': !isOpen}"
+  (click)="toggleOpen()">
     <input type="checkbox" [(ngModel)]="isChecked" />
     <div class="collapse-title flex items-center justify-between">
       <div class="flex items-center">

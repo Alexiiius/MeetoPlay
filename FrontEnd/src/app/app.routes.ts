@@ -46,7 +46,6 @@ export const routes: Routes = [
   {
     path: 'main', component: MainComponent, canActivate: [authGuard], children: [
       { path: '', component: EventsFeedComponent }, // TODO cambiar a EventsFeedComponent
-      { path: 'newEvent', component: EventFormComponent },
       {
         path: 'profile/:id', component: ProfileComponent, children: [
           { path: '', redirectTo: 'gameStats', pathMatch: 'full' },

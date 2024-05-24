@@ -1,13 +1,13 @@
 import { Event } from './../../models/event';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { NewSelectGameComponent } from './new-select-game/new-select-game.component';
 import { Game } from '../../models/game';
 import { APIService } from '../../services/api.service';
 import { Subscription } from 'rxjs';
 import { Gamemode } from '../../models/gamemode';
 import { Platform } from '../../models/platform';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NewFullGame } from '../../interfaces/new-fullGame';
 import { FormatedNewEvent } from '../../interfaces/formated-new-event';
 import { UserService } from '../../services/user.service';
@@ -23,6 +23,7 @@ import { Router } from '@angular/router';
     ReactiveFormsModule,
     NewSelectGameComponent,
     CommonModule,
+    FormsModule
   ],
   templateUrl: './event-form.component.html',
   styleUrl: './event-form.component.css'
@@ -31,30 +32,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
   @Input() event: Event;
   eventForm: FormGroup;
-
-  // event: any = {
-  //   id: 1,
-  //   event_title: 'Evento de prueba',
-  //   game_id: 1,
-  //   game_name: 'League of Legends',
-  //   game_mode: 'Ranked',
-  //   game_pic: 'https://via.placeholder.com/150',
-  //   platform: 'PC',
-  //   date_time_begin: new Date(),
-  //   date_time_end: new Date(),
-  //   date_time_inscription_begin: new Date(),
-  //   date_time_inscription_end: new Date(),
-  //   privacy: 'public',
-  //   max_participants: 5,
-  //   event_requirements: {
-  //     max_rank: 'Platinum',
-  //     min_rank: 'Silver',
-  //     max_level: 30,
-  //     min_level: 1,
-  //     max_hours_played: 100,
-  //     min_hours_played: 0
-  //   }
-  // };
 
   fullGame: NewFullGame;
   gamemodes: Gamemode[] = [];
@@ -84,7 +61,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private apiService: APIService,
     private cdr: ChangeDetectorRef,
     private userService: UserService,
-    private location: Location,
     private eventService: EventsService,
     private alertService: AlertService,
     private router: Router) { }
@@ -168,41 +144,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
       this.eventForm.get('whoForm')?.reset({ privacy: 'default' })
     });
 
-
-    // Si el evento existe, establece los valores del formulario
-    if (this.event) {
-      this.eventForm.patchValue({
-        whatForm: {
-          // ranked: this.event.ranked,
-          title: this.event.event_title,
-          game: this.event.game_name,
-          platform: this.event.platform,
-          gamemode: this.event.game_mode,
-        },
-        whenForm: {
-          // inscriptionToggle: this.event.inscriptionToggle,
-          eventBegin: this.event.date_time_begin,
-          eventEnd: this.event.date_time_end,
-          inscriptionBegin: this.event.date_time_inscription_begin,
-          inscriptionEnd: this.event.date_time_inscription_end
-        },
-        whoForm: {
-          privacy: this.event.privacy,
-          maxParticipants: this.event.max_participants,
-          // toggleRequirments: this.event.toggleRequirments,
-          // rank: this.event.rank,
-          maxRank: this.event.event_requirements.max_rank,
-          minRank: this.event.event_requirements.min_rank,
-          // level: this.event.level,
-          maxLevel: this.event.event_requirements.max_level,
-          minLevel: this.event.event_requirements.min_level,
-          // hoursPlayed: this.event.hoursPlayed,
-          maxHours: this.event.event_requirements.max_hours_played,
-          minHours: this.event.event_requirements.min_hours_played
-        }
-      });
-    }
-
     this.eventForm.get('whenForm')?.get('eventBegin')?.valueChanges.subscribe((value) => {
       if (value) {
         const eventBeginDate = new Date(value);
@@ -261,6 +202,11 @@ export class EventFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Formatea la fecha para que sea compatible con el input de tipo datetime-local
+  formatDateTime(dateTime: Date): string {
+    return dateTime.toISOString().slice(0, 16);
+  }
+
   toggleInscription(): void {
     const inscriptionBeginControl = this.eventForm.get('whenForm')?.get('inscriptionBegin');
     const inscriptionEndControl = this.eventForm.get('whenForm')?.get('inscriptionEnd');
@@ -300,8 +246,55 @@ export class EventFormComponent implements OnInit, OnDestroy {
       // Obtener todos los gamemodes una vez
       this.apiService.newGetFullGame(game.id).subscribe(fullGame => {
         this.gamemodes = fullGame.gamemodes;
-
         this.platforms = fullGame.platforms;
+
+        // Si hay un evento, establece los valores de gamemode y platform
+        if (this.event) {
+          const gamemode = this.gamemodes.find(gamemode => gamemode.name === this.event.game_mode);
+          const platform = this.platforms.find(platform => platform.platform === this.event.platform);
+
+          rankedControl.setValue(gamemode?.ranked ? true : false);
+
+          this.maxPlayers = this.event.max_participants;
+          this.ranks = gamemode?.ranks || [''];
+
+          if (gamemode && platform) {
+            const whatForm = this.eventForm.get('whatForm');
+            if (whatForm) {
+              whatForm.patchValue({
+                gamemode: gamemode.id,
+                platform: platform.id
+              });
+            }
+          }
+
+          this.eventForm.patchValue({
+            whatForm: {
+              title: this.event.event_title,
+            },
+            whenForm: {
+              inscriptionToggle:this.event.date_time_inscription_begin && this.event.date_time_inscription_end ? true : false,
+              eventBegin: this.formatDateTime(this.event.date_time_begin),
+              eventEnd: this.formatDateTime(this.event.date_time_end),
+              inscriptionBegin: this.formatDateTime(this.event.date_time_inscription_begin),
+              inscriptionEnd: this.formatDateTime(this.event.date_time_inscription_end)
+            },
+            whoForm: {
+              privacy: this.event.privacy,
+              maxParticipants: this.event.max_participants,
+              requirmentsToggle: this.hasRequirements(),
+              rank: this.event.event_requirements.max_rank || this.event.event_requirements.min_rank ? true : false,
+              maxRank: this.event.event_requirements.max_rank,
+              minRank: this.event.event_requirements.min_rank,
+              level: this.event.event_requirements.max_level || this.event.event_requirements.min_level ? true : false,
+              maxLevel: this.event.event_requirements.max_level,
+              minLevel: this.event.event_requirements.min_level,
+              hoursPlayed: this.event.event_requirements.max_hours_played || this.event.event_requirements.min_hours_played ? true : false,
+              maxHours: this.event.event_requirements.max_hours_played,
+              minHours: this.event.event_requirements.min_hours_played
+            }
+          });
+        }
 
         // Filtrar los gamemodes con el valor inicial de ranked
         const initialRanked = rankedControl.value;
@@ -322,6 +315,13 @@ export class EventFormComponent implements OnInit, OnDestroy {
         this.platformsLoading = false;
       });
     }
+  }
+
+  //Comprueba si this.event.event_requirments tiene algún requirtment !== a null
+  hasRequirements(): boolean {
+    const eventRequirements = this.event.event_requirements;
+    console.log(Object.values(eventRequirements).some(value => value !== null));
+    return Object.values(eventRequirements).some(value => value !== null);
   }
 
   handleGamesLoaded(games: Game[]): void {
@@ -355,15 +355,13 @@ export class EventFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  goBack(): void {
-    this.location.back();
-  }
-
   async onSubmit(): Promise<void> {
     this.isFormSubmmiting = true;
 
     const gamemode = this.gamemodes.find(mode => mode.id == this.eventForm?.get('whatForm')?.get('gamemode')?.value);
     const platform = this.platforms.find(plat => plat.id == this.eventForm?.get('whatForm')?.get('platform')?.value);
+
+    const inscriptionToggle = this.eventForm?.get('whenForm')?.get('inscriptionToggle')?.value;
 
     this.userService.getLogedUserData().subscribe((userData: UserData) => {
       const eventOwnerId = userData.id;
@@ -381,9 +379,9 @@ export class EventFormComponent implements OnInit, OnDestroy {
             event_owner_id: eventOwnerId,
             date_time_begin: this.eventForm?.get('whenForm.eventBegin')?.value,
             date_time_end: this.eventForm?.get('whenForm.eventEnd')?.value,
-            date_time_inscription_begin: this.eventForm?.get('whenForm.inscriptionBegin')?.value,
-            date_time_inscription_end: this.eventForm?.get('whenForm.inscriptionEnd')?.value,
-            max_participants: this.eventForm?.get('whoForm.maxParticipants')?.value,
+            date_time_inscription_begin: inscriptionToggle ? this.eventForm?.get('whenForm.inscriptionBegin')?.value : null,
+            date_time_inscription_end: inscriptionToggle ? this.eventForm?.get('whenForm.inscriptionEnd')?.value : null,
+            max_participants: this.eventForm?.get('whoForm.maxParticipants')?.value || 0,
             privacy: this.eventForm.get('whoForm')?.get('privacy')?.value
           },
           event_requirements: {
@@ -410,6 +408,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.alertService.showAlert('error', 'Error! Algo ha fallado al crear el evento. 😓');
+          this.isFormSubmmiting = false;
           console.error(error);
         }
       );

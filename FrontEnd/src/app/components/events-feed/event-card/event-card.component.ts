@@ -5,7 +5,7 @@ import { Event } from '../../../models/event';
 import { format } from 'date-fns';
 import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EditEventFormComponent } from '../../profile/edit-event-form/edit-event-form.component';
+import { EventOptionsComponent } from './event-options/event-options.component';
 
 @Component({
   selector: 'app-event-card',
@@ -14,7 +14,7 @@ import { EditEventFormComponent } from '../../profile/edit-event-form/edit-event
     CommonModule,
     FormsModule,
     MoreEventInfoModalComponent,
-    EditEventFormComponent
+    EventOptionsComponent
   ],
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.css'
@@ -70,7 +70,6 @@ export class EventCardComponent implements OnInit {
 
   toggleOpen() {
     this.isOpen = !this.isOpen;
-    console.log(this.isOpen);
   }
 
   @ViewChild('participatingBadge') participatingBadge: ElementRef;

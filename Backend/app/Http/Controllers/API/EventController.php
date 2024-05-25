@@ -494,7 +494,7 @@ class EventController extends Controller
     }
 
 
-    public function search($search, Request $request) {
+    public function searchOLD($search, Request $request) {
         $query = $request->search;
 
         if (empty($query) || $query == null ) {
@@ -521,6 +521,75 @@ class EventController extends Controller
             return response()->json(['message' => 'No events found'], 200);
         }
 
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $request->page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function searchNEW($search, $group, Request $request) {
+        $query = $request->search;
+
+        if (empty($query) || $query == null ) {
+            return response()->json(['error' => 'No search query'], 400);
+        }
+
+        $userId = auth()->id();
+        $idToSearch = null;
+        
+        if ($group == 'followed'){
+            $idToSearch = User::find($userId)->following()->pluck('users.id');
+        } else if ($group == 'friends'){
+            $idToSearch = User::find($userId)->friends();
+        }
+        
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+        
+        $events = Event::when($idToSearch, function ($query, $idToSearch) {
+            return $query->whereIn('event_owner_id', $idToSearch);
+        })
+        ->where(function ($query) use ($search) {
+            $query->where('event_title', 'like', "%{$search}%")
+                ->orWhereHas('owner', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })
+                ->orWhere('platform', 'like', "%{$search}%")
+                ->orWhere('game_name', 'like', "%{$search}%")
+                ->orWhere('game_mode', 'like', "%{$search}%");
+        })
+        ->with(['owner' => function ($query) {
+            $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+        }])
+        ->with('event_requirements')
+        ->with(['participants' => function ($query) {
+            $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+        }])
+        ->skip($skip)
+        ->take($perPage)
+        ->get();
+    
+        // Get the current authenticated user
+        $user = auth()->user();
+    
+        // Filter the events
+        $events = $events->filter(function ($event) use ($user) {
+            return $this->canUserSeeThisEvent($event, $user);
+        });
+    
+        $total = $events->count();
+    
+        if ($events->isEmpty()) {
+            return response()->json(['message' => 'No events found'], 200);
+        }
+    
         return response()->json([
             'data' => [
                 'events' => $events,

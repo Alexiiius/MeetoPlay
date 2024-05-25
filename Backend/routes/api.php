@@ -52,7 +52,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/event/{id}/join', [EventController::class, 'addParticipant']); //join a specific event by id only if the user has permission to join it
     Route::post('/event/{id}/leave', [EventController::class, 'removeParticipant']); //leave a specific event by id only if the user has permission to leave it
 
-    Route::get('events/search/{search}/{page}', [EventController::class, 'search']); //search events by title, game name, game mode, platform, date time begin, date time end, date time inscription begin, date time inscription end, max participants, privacy, event owner id, event requirement id
+    Route::get('/events/search/{search}/{group}/{page}', [EventController::class, 'searchNEW']); //search events by title, game name, game mode, platform, date time begin, date time end, date time inscription begin, date time inscription end, max participants, privacy, event owner id, event requirement id
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -94,7 +94,7 @@ Route::get('health-check', function () {
 });
 
 //Pepazo endpoint for fun
-Route::get('pepazo', function () {
+Route::get('/pepazo', function () {
     return response()->json([ 'pepazo' => '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣿⠽⠭⣥⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡴⠞⠉⠁⠀⠀⠀⠀⠉⠉⠛⠶⣤⣀⠀⠀⢀⣤⠴⠞⠛⠉⠉⠉⠛⠶⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡾⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⣏⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻⣆⠀⠀⠀⠀⠀⠀⠀⠀

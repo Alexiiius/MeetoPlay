@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Follower::factory(30)->create();
-        $events = Event::factory(10)->create(['event_requirement_id' => null]);
+        $events = Event::factory(50)->create(['event_requirement_id' => null]);
 
         foreach ($events as $index => $event) {
             $eventRequirement = EventRequirement::factory()->create();

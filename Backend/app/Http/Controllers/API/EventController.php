@@ -494,7 +494,7 @@ class EventController extends Controller
     }
 
 
-    public function search($search, Request $request) {
+    public function searchOLD($search, Request $request) {
         $query = $request->search;
 
         if (empty($query) || $query == null ) {
@@ -544,9 +544,9 @@ class EventController extends Controller
         $userId = auth()->id();
         $idToSearch = null;
         
-        if ($group == 'Followed'){
+        if ($group == 'followed'){
             $idToSearch = User::find($userId)->following()->pluck('users.id');
-        } else if ($group == 'Friends'){
+        } else if ($group == 'friends'){
             $idToSearch = User::find($userId)->friends();
         }
         
@@ -556,13 +556,15 @@ class EventController extends Controller
         $events = Event::when($idToSearch, function ($query, $idToSearch) {
             return $query->whereIn('event_owner_id', $idToSearch);
         })
-        ->where('event_title', 'like', "%{$query}%")
-        ->orWhereHas('owner', function ($q) use ($query) {
-            $q->where('name', 'like', "%{$query}%");
+        ->where(function ($query) use ($search) {
+            $query->where('event_title', 'like', "%{$search}%")
+                ->orWhereHas('owner', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })
+                ->orWhere('platform', 'like', "%{$search}%")
+                ->orWhere('game_name', 'like', "%{$search}%")
+                ->orWhere('game_mode', 'like', "%{$search}%");
         })
-        ->orWhere('platform', 'like', "%{$query}%")
-        ->orWhere('game_name', 'like', "%{$query}%")
-        ->orWhere('game_mode', 'like', "%{$query}%")
         ->with(['owner' => function ($query) {
             $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
         }])

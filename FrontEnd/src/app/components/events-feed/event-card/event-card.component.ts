@@ -70,7 +70,6 @@ export class EventCardComponent implements OnInit {
 
   toggleOpen() {
     this.isOpen = !this.isOpen;
-    console.log(this.isOpen);
   }
 
   @ViewChild('participatingBadge') participatingBadge: ElementRef;

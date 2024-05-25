@@ -184,4 +184,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Message::class, 'to_user_id');
     }
 
+    public function gameStats() {
+        return $this->hasMany(GameUserStats::class, 'user_id', 'id');
+    }
+
 }

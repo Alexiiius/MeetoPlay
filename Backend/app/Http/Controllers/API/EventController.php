@@ -117,6 +117,7 @@ class EventController extends Controller
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             }])
             ->where('privacy', 'public')
+            ->orderBy('date_time_begin', 'asc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -149,6 +150,7 @@ class EventController extends Controller
             }])
             ->where('privacy', 'hidden')
             ->where('event_owner_id', $userId)
+            ->orderBy('date_time_begin', 'asc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -216,6 +218,7 @@ class EventController extends Controller
             ->with(['participants' => function ($query) {
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             }])
+            ->orderBy('date_time_begin', 'asc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -251,6 +254,7 @@ class EventController extends Controller
             ->with(['participants' => function ($query) {
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             }])
+            ->orderBy('date_time_begin', 'asc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -285,6 +289,7 @@ class EventController extends Controller
             ->with(['participants' => function ($query) {
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             }])
+            ->orderBy('date_time_begin', 'asc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -527,6 +532,21 @@ class EventController extends Controller
                 'timestamp' => now(),
             ],
         ]);
+    }
+
+    public function test1() {
+
+        $events = Event::where('date_time_end', '<', now())->pluck('id');
+
+        return response()->json([
+            'data' => [
+                'message' => 'Old events!!',
+                'events' => $events,
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], 200);
     }
 
 

@@ -7,8 +7,8 @@ import { authGuard, loggedGuard } from './auth.guard';
 import { ProfileComponent } from './components/profile/profile.component';
 import { GameStatsComponent } from './components/profile/game-stats/game-stats.component';
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';
-import { ParticipatingComponent } from './components/profile/participating/participating.component';
 import { EventFormComponent } from './components/event-form/event-form.component';
+import { ParticipatingEventsComponent } from './components/profile/participating-events/participating-events.component';
 
 // export const routes: Routes = [
 //   { path: '', redirectTo: 'main', pathMatch: 'full' },
@@ -52,7 +52,7 @@ export const routes: Routes = [
           { path: '', redirectTo: 'gameStats', pathMatch: 'full' },
           { path: 'gameStats', component: GameStatsComponent },
           { path: 'myEvents', component: MyEventsComponent },
-          { path: 'participating', component: ParticipatingComponent },
+          { path: 'participating', component: ParticipatingEventsComponent },
         ]
       }
     ]

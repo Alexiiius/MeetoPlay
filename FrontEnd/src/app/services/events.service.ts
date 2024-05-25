@@ -46,6 +46,10 @@ export class EventsService {
     return this.http.get<any[]>(`${this.backAPIUrl}/events/my/${page}`);
   }
 
+  getSearchedEvents(page: number, search: string) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/search/${search}/${page}`);
+  }
+
   joinEvent(eventId: number) {
     return this.http.post(`${this.backAPIUrl}/event/${eventId}/join`, {});
   }

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { FormatedNewEvent } from '../interfaces/formated-new-event';
 import { HttpClient } from '@angular/common/http';
 import { backAPIUrl } from '../config';
-import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 import { first } from 'rxjs';
 
@@ -13,14 +12,18 @@ export class EventsService {
 
   private backAPIUrl = backAPIUrl;
 
-  constructor(private http: HttpClient, private userService: UserService) { }
+  constructor(private http: HttpClient) { }
 
-  async postNewEvent(newEvent: any) {
-    let formatedNewEvent = await this.formatNewEvent(newEvent);
-    console.log('Creating new event: ');
-    console.log(formatedNewEvent);
+  postNewEvent(newEvent: any) {
+    return this.http.post(this.backAPIUrl + '/create/event', newEvent);
+  }
 
-    return this.http.post(this.backAPIUrl + '/create/event', formatedNewEvent);
+  updateEvent(eventId: number, updatedEvent: any) {
+    return this.http.put(this.backAPIUrl + '/event/update/' + eventId, updatedEvent);
+  }
+
+  deleteEvent(eventId: number) {
+    return this.http.delete(this.backAPIUrl + '/event/delete/' + eventId);
   }
 
   getPublicEvents(page: number) {
@@ -49,43 +52,5 @@ export class EventsService {
 
   leaveEvent(eventId: number) {
     return this.http.post(`${this.backAPIUrl}/event/${eventId}/leave`, {});
-  }
-
-  async formatNewEvent(newEvent: any): Promise<FormatedNewEvent> {
-    let user = await this.userService.currentUser.pipe(first()).toPromise();
-    console.log(user);
-    let userId = user?.id;
-
-    let formatedNewEvent = {
-      data: {
-        event: {
-          event_title: newEvent.whatForm.title,
-          game_id: newEvent.whatForm.game.id,
-          game_name: newEvent.whatForm.game.name,
-          game_mode: newEvent.whatForm.gameMode.name,
-          game_pic: newEvent.whatForm.game.image,
-          platform: newEvent.whatForm.platform.platform,
-          event_owner_id: userId || 0,
-          date_time_begin: newEvent.whenForm.eventBegin,
-          date_time_end: newEvent.whenForm.eventEnd,
-          date_time_inscription_begin: newEvent.whenForm.inscriptionToggle ? newEvent.whenForm.inscriptionBegin : null,
-          date_time_inscription_end: newEvent.whenForm.inscriptionToggle ? newEvent.whenForm.inscriptionEnd : null,
-          max_participants: newEvent.whoForm.maxParticipants ? newEvent.whoForm.maxParticipants : 0,
-          privacy: newEvent.whoForm.privacy,
-        },
-        event_requirements: {
-
-          max_rank: newEvent.whoForm.toggleRequirments && newEvent.whoForm.rank ? newEvent.whoForm.maxRank : null,
-          min_rank: newEvent.whoForm.toggleRequirments && newEvent.whoForm.rank ? newEvent.whoForm.minRank : null,
-
-          max_level: newEvent.whoForm.toggleRequirments && newEvent.whoForm.level ? newEvent.whoForm.maxLevel : null,
-          min_level: newEvent.whoForm.toggleRequirments && newEvent.whoForm.level ? newEvent.whoForm.minLevel : null,
-
-          max_hours_played: newEvent.whoForm.toggleRequirments && newEvent.whoForm.hoursPlayed ? newEvent.whoForm.maxHours : null,
-          min_hours_played: newEvent.whoForm.toggleRequirments && newEvent.whoForm.hoursPlayed ? newEvent.whoForm.minHours : null
-        }
-      }
-    }
-    return formatedNewEvent;
   }
 }

@@ -1,17 +1,20 @@
 <div class="relative" [ngClass]="{'border border-red-500 rounded': isInvalid}">
-  <select name="game_mode" class="myinput appearance-none" (change)="selectGamemode(options[$any($event.target).value])">
-    @if (selectedGame === undefined) {
-      <option [value]="0" selected hidden>No game selected</option>
+  <select name="game_mode" class="myinput appearance-none" [(ngModel)]="value">
+
+    @if (!isGameSelected) {
+      <option [value]="null" selected hidden>No game selected</option>
     } @else {
-      <option value="-1" selected hidden>Select a game mode</option>
-      @for (game_mode of options; track $index) {
-        <option [value]="$index">{{game_mode.name}}</option>
-      }
+      <option [value]="null" selected hidden >Select a gamemode</option>
+    }
+
+    @for (game_mode of options; track $index) {
+    <option [value]="game_mode.id" (click)="selectGamemode(game_mode)">{{game_mode.name}}</option>
     }
 
   </select>
-  <svg class="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18">
-    <path fill="#EAE9EA" transform="scale(0.3 0.3)" d="M9.15581 18.125C9.49255 18.0413 9.8764 17.9459 10.2252 17.961C11.6884 18.0246 28.1125 35.1629 30.1287 37.2995C32.5048 33.9297 36.0892 30.967 39.0027 28.0298L45.346 21.7003C46.6349 20.4186 47.8967 18.892 49.5 18.001C50.6317 18.0185 50.8603 18.091 51.8139 18.7016C51.9152 18.9088 52.0091 19.1438 52.0297 19.375C52.1562 20.7979 51.4132 21.3163 50.5685 22.3375C47.6736 25.6405 44.2912 28.6781 41.1794 31.7909C37.6369 35.3345 34.0181 39.5496 29.9897 42.5004L9.09228 21.9082C8.5483 21.2948 7.93379 20.6222 7.98635 19.75C8.29225 18.8806 8.43585 18.7023 9.15581 18.125Z"/>
+  <svg class="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2"
+    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18">
+    <path fill="#EAE9EA" transform="scale(0.3 0.3)"
+      d="M9.15581 18.125C9.49255 18.0413 9.8764 17.9459 10.2252 17.961C11.6884 18.0246 28.1125 35.1629 30.1287 37.2995C32.5048 33.9297 36.0892 30.967 39.0027 28.0298L45.346 21.7003C46.6349 20.4186 47.8967 18.892 49.5 18.001C50.6317 18.0185 50.8603 18.091 51.8139 18.7016C51.9152 18.9088 52.0091 19.1438 52.0297 19.375C52.1562 20.7979 51.4132 21.3163 50.5685 22.3375C47.6736 25.6405 44.2912 28.6781 41.1794 31.7909C37.6369 35.3345 34.0181 39.5496 29.9897 42.5004L9.09228 21.9082C8.5483 21.2948 7.93379 20.6222 7.98635 19.75C8.29225 18.8806 8.43585 18.7023 9.15581 18.125Z" />
   </svg>
 </div>
-

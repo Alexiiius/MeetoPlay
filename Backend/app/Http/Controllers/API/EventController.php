@@ -28,7 +28,10 @@ class EventController extends Controller
             'data.event.event_owner_id' => 'required|integer',
             'data.event.date_time_begin' => 'required|date',
             'data.event.date_time_end' => 'required|date',
-            'data.event.privacy' => 'required|string',
+            'data.event.date_time_inscription_begin' => 'nullable|date',
+            'data.event.date_time_inscription_end' => 'nullable|date',
+            'data.event.max_participants' => 'required|integer',
+            'data.event.privacy' => 'required|string|in:hidden,friends,public,followers',
             'data.event_requirements.max_rank' => 'nullable|string',
             'data.event_requirements.min_rank' => 'nullable|string',
             'data.event_requirements.max_level' => 'nullable|integer',
@@ -114,6 +117,7 @@ class EventController extends Controller
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             }])
             ->where('privacy', 'public')
+            ->orderBy('date_time_begin', 'asc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -146,6 +150,7 @@ class EventController extends Controller
             }])
             ->where('privacy', 'hidden')
             ->where('event_owner_id', $userId)
+            ->orderBy('date_time_begin', 'asc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -179,6 +184,7 @@ class EventController extends Controller
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             }])
             ->where('event_owner_id', $userId)
+            ->orderBy('created_at', 'desc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -212,6 +218,7 @@ class EventController extends Controller
             ->with(['participants' => function ($query) {
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             }])
+            ->orderBy('date_time_begin', 'asc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -247,6 +254,7 @@ class EventController extends Controller
             ->with(['participants' => function ($query) {
                 $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
             }])
+            ->orderBy('date_time_begin', 'asc')
             ->skip($skip)
             ->take($perPage)
             ->get();
@@ -267,8 +275,40 @@ class EventController extends Controller
         ]);
     }
 
-    public function update(Request $request, Event $event)
+    //eventos en los que participo
+    public function showParticipatingEvents(Request $request)
     {
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+        $userId = auth()->id();
+        $events = User::find($userId)->events()
+            ->with('event_requirements')
+            ->with(['owner' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            }])
+            ->with(['participants' => function ($query) {
+                $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+            }])
+            ->orderBy('date_time_begin', 'asc')
+            ->skip($skip)
+            ->take($perPage)
+            ->get();
+        $total = User::find($userId)->events()->count();
+
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $request->page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
+    public function updateEvent($id, Request $request) {
         $event = Event::find($request->id);
         $user = auth()->user();
 
@@ -290,7 +330,10 @@ class EventController extends Controller
             'data.event.event_owner_id' => 'required|integer',
             'data.event.date_time_begin' => 'required|date',
             'data.event.date_time_end' => 'required|date',
-            'data.event.privacy' => 'required|string',
+            'data.event.date_time_inscription_begin' => 'nullable|date',
+            'data.event.date_time_inscription_end' => 'nullable|date',
+            'data.event.max_participants' => 'required|integer',
+            'data.event.privacy' => 'required|string|in:hidden,friends,public,followers',
             'data.event_requirements.max_rank' => 'nullable|string',
             'data.event_requirements.min_rank' => 'nullable|string',
             'data.event_requirements.max_level' => 'nullable|integer',
@@ -300,7 +343,13 @@ class EventController extends Controller
         ]);
 
         $data = $request->input('data');
-        $data['event']['event_owner_id'] = $request->user()->id;
+
+        //if admin is updating the event, the owner keeps the same
+        if ($user->is_admin == true) {
+            $data['event']['event_owner_id'] = $request->input('data.event.event_owner_id');
+        } else {
+            $data['event']['event_owner_id'] = $user->id;
+        }
         $request->merge(['data' => $data]);
 
         // Update the event
@@ -419,12 +468,19 @@ class EventController extends Controller
         ], 200);
     }
 
-    //TODO: refactoriza cabron
+    
     public function canUserSeeThisEvent(Event $event, User $user)
     {
 
         if ($event->privacy == 'hidden' && $event->event_owner_id != $user->id && $user->is_admin != true) {
             return false;
+        }
+
+        if ($event->privacy == 'followers') {
+            $following = $user->followingArray()->toArray();
+            if (!in_array($event->event_owner_id, $following) && $event->event_owner_id != $user->id && $user->is_admin != true) {
+                return false;
+            }
         }
 
         if ($event->privacy == 'friends') {
@@ -437,17 +493,46 @@ class EventController extends Controller
         return true;
     }
 
-    public function test(Request $request)
-    {
-        $user = auth()->user();
-        $event = Event::find($request->id);
+
+    public function search($search, Request $request) {
+        $query = $request->search;
+
+        if (empty($query) || $query == null ) {
+            return response()->json(['error' => 'No search query'], 400);
+        }
+
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+
+        $events = Event::where('event_title', 'like', "%{$query}%")
+            ->orWhereHas('owner', function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->orWhere('platform', 'like', "%{$query}%")
+            ->orWhere('game_name', 'like', "%{$query}%")
+            ->orWhere('game_mode', 'like', "%{$query}%")
+            ->skip($skip)
+            ->take($perPage)
+            ->get();
+
+        $total = $events->count();
+
+        if ($events->isEmpty()) {
+            return response()->json(['message' => 'No events found'], 200);
+        }
+
         return response()->json([
             'data' => [
-                'can_see' => $this->canUserSeeThisEvent($event, $user),
+                'events' => $events,
             ],
             'meta' => [
+                'current_page' => $request->page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
                 'timestamp' => now(),
             ],
         ]);
     }
+
+
 }

@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Event } from '../../../models/event';
 import { format } from 'date-fns';
 import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
-import { NgZone } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EventOptionsComponent } from './event-options/event-options.component';
 
 @Component({
   selector: 'app-event-card',
@@ -12,14 +13,16 @@ import { NgZone } from '@angular/core';
   imports: [
     CommonModule,
     FormsModule,
-    MoreEventInfoModalComponent
+    MoreEventInfoModalComponent,
+    EventOptionsComponent
   ],
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.css'
 })
 export class EventCardComponent implements OnInit {
-  // Simula la fecha y hora del final del evento
+
   isChecked = false;
+  isOpen = false;
 
   @Input() event: Event;
   @ViewChild('moreEventInfo') modalDialog!: ElementRef<HTMLDialogElement>;
@@ -33,7 +36,7 @@ export class EventCardComponent implements OnInit {
   isJoined: boolean;
   friendsParticipating: boolean;
 
-  constructor(private ngZone: NgZone) {}
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.formattedDateBegin = format(this.event.date_time_begin, 'dd/MM/yyyy');
@@ -42,6 +45,31 @@ export class EventCardComponent implements OnInit {
     this.formattedTimeEnd = format(this.event.date_time_end, 'HH:mm');
 
     this.eventInscriptionEndTime = new Date(this.event.date_time_inscription_end);
+  }
+
+  isRoute(route: string): boolean {
+    return this.router.url === route;
+  }
+
+  isActivatedRouteInChildRoute(routePath: string): boolean {
+    const urlSegments = this.router.url.split('/').filter(segment => segment);
+    const routePathSegments = routePath.split('/').filter(segment => segment);
+
+    if (routePathSegments.length > urlSegments.length) {
+      return false;
+    }
+
+    for (let i = 0; i < routePathSegments.length; i++) {
+      if (routePathSegments[i] !== urlSegments[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  toggleOpen() {
+    this.isOpen = !this.isOpen;
   }
 
   @ViewChild('participatingBadge') participatingBadge: ElementRef;

@@ -56,5 +56,9 @@ export class UserService implements OnInit {
   getUserById(id: number) {
     return this.http.get<UserData>(`${this.backAPIUrl}/user/${id}`);
   }
+
+  getLogedUserData(): Observable<UserData> {
+      return this.http.get<UserData>(this.backAPIUrl + '/user')
+  }
 }
 

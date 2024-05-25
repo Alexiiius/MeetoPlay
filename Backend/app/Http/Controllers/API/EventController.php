@@ -534,21 +534,5 @@ class EventController extends Controller
         ]);
     }
 
-    public function test1() {
-
-        $events = Event::where('date_time_end', '<', now())->pluck('id');
-
-        return response()->json([
-            'data' => [
-                'message' => 'Old events!!',
-                'events' => $events,
-            ],
-            'meta' => [
-                'timestamp' => now(),
-            ],
-        ], 200);
-    }
-
-
 
 }

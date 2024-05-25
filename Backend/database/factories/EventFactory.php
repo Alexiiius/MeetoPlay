@@ -30,7 +30,7 @@ class EventFactory extends Factory
             'date_time_inscription_begin' => $this->faker->dateTime,
             'date_time_inscription_end' => $this->faker->dateTime,
             'max_participants' => $this->faker->numberBetween(1, 50),
-            'privacy' => $this->faker->randomElement(['public', 'hidden', 'friends']),
+            'privacy' => $this->faker->randomElement(['public', 'hidden', 'friends', 'followers']),
             'event_requirement_id' => 1,
         ];
     }

@@ -52,6 +52,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
   isFormSubmmiting = false;
   isUpdating: boolean;
+  updateDataLoading = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -78,6 +79,10 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isUpdating = !!this.event;
+    if (this.isUpdating) {
+      this.updateDataLoading = true;
+  }
+
     this.eventForm = this.formBuilder.group({
       whatForm: this.formBuilder.group({
         ranked: [false],
@@ -308,6 +313,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
               minHours: this.event.event_requirements.min_hours_played
             }
           });
+
+          this.updateDataLoading = false;
         }
 
         // Filtrar los gamemodes con el valor inicial de ranked
@@ -334,7 +341,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
   //Comprueba si this.event.event_requirments tiene algún requirtment !== a null
   hasRequirements(): boolean {
     const eventRequirements = this.event.event_requirements;
-    console.log(Object.values(eventRequirements).some(value => value !== null));
     return Object.values(eventRequirements).some(value => value !== null);
   }
 

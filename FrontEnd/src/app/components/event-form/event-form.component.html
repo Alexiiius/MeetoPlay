@@ -3,7 +3,12 @@
 
   <div
     class="modal-box w-11/12 max-w-5xl bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-60 relative rounded-box p-6 bg-base-200 border border-primary/50 h-[600px] scrollbar-hidde flex items-center">
-    <form method="dialog" #closeForm="ngForm">
+
+    <div *ngIf="updateDataLoading" class="absolute inset-0 bg-opacity-70 bg-base-100 z-10 flex items-center justify-center">
+      <span class="loading loading-bars loading-lg text-primary"></span>
+    </div>
+
+    <form method="dialog" #closeForm="ngForm" class="z-20">
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
     </form>
 
@@ -31,7 +36,7 @@
                 <span class="label-text">Título del evento</span>
               </div>
               <input type="text" placeholder="🤔 Este evento se titula..." class="input input-bordered col-span-full"
-                formControlName="title" autofocus [class.input-error]="isInvalid('whatForm', 'title')">
+                formControlName="title" [attr.autofocus]="isUpdating ? null : ''" [class.input-error]="isInvalid('whatForm', 'title')">
             </label>
 
 

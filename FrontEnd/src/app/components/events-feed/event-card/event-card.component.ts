@@ -5,7 +5,7 @@ import { Event } from '../../../models/event';
 import { format } from 'date-fns';
 import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EditEventFormComponent } from '../../profile/edit-event-form/edit-event-form.component';
+import { EventOptionsComponent } from './event-options/event-options.component';
 
 @Component({
   selector: 'app-event-card',
@@ -14,14 +14,15 @@ import { EditEventFormComponent } from '../../profile/edit-event-form/edit-event
     CommonModule,
     FormsModule,
     MoreEventInfoModalComponent,
-    EditEventFormComponent
+    EventOptionsComponent
   ],
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.css'
 })
 export class EventCardComponent implements OnInit {
-  // Simula la fecha y hora del final del evento
+
   isChecked = false;
+  isOpen = false;
 
   @Input() event: Event;
   @ViewChild('moreEventInfo') modalDialog!: ElementRef<HTMLDialogElement>;
@@ -35,7 +36,7 @@ export class EventCardComponent implements OnInit {
   isJoined: boolean;
   friendsParticipating: boolean;
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.formattedDateBegin = format(this.event.date_time_begin, 'dd/MM/yyyy');
@@ -55,17 +56,21 @@ export class EventCardComponent implements OnInit {
     const routePathSegments = routePath.split('/').filter(segment => segment);
 
     if (routePathSegments.length > urlSegments.length) {
-        return false;
+      return false;
     }
 
     for (let i = 0; i < routePathSegments.length; i++) {
-        if (routePathSegments[i] !== urlSegments[i]) {
-            return false;
-        }
+      if (routePathSegments[i] !== urlSegments[i]) {
+        return false;
+      }
     }
 
     return true;
-}
+  }
+
+  toggleOpen() {
+    this.isOpen = !this.isOpen;
+  }
 
   @ViewChild('participatingBadge') participatingBadge: ElementRef;
   @ViewChild('friendsParticipatingBadge') friendsParticipatingBadge: ElementRef;

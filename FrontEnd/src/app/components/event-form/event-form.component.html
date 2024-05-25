@@ -1,350 +1,347 @@
-<div
-  class="relative rounded-box p-6 bg-base-200 border border-primary/50 w-full h-auto scrollbar-hidde flex items-center">
+<!-- <button class="btn" onclick="event_form_modal.showModal()">New Event</button> -->
+<dialog id="event_form_modal" class="modal" #eventModal>
 
-  <form [formGroup]="eventForm" class="w-full">
-    <header class="text-2xl absolute top-8 right-12">Nuevo evento!</header>
-    <div role="tablist" class="tabs tabs-bordered tabs-lg w-full">
+  <div
+    class="modal-box w-11/12 max-w-5xl bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-60 relative rounded-box p-6 bg-base-200 border border-primary/50 h-[600px] scrollbar-hidde flex items-center">
+    <form method="dialog" #closeForm="ngForm">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
 
-      <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="What?" checked />
-      <div role="tabpanel" class="tab-content mt-6">
+    <form [formGroup]="eventForm" class="w-full">
+      <header class="text-2xl absolute top-8 right-12">
+        @if (isUpdating) {
+        <span class="text-2xl">Editando evento </span>
+        } @else {
+        <span class="text-2xl">Nuevo evento!</span>
+        }
+      </header>
+      <div role="tablist" class="tabs tabs-bordered tabs-lg w-full">
 
-        <div formGroupName="whatForm" class="grid grid-cols-2 gap-6">
-          <div class="col-span-full">
-            <div class="text-xl col-span-full">Event</div>
-            <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
-          </div>
+        <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="What?" checked />
+        <div role="tabpanel" class="tab-content mt-6">
 
-          <label class="form-control col-span-full">
-            <div class="label">
-              <span class="label-text">Título del evento</span>
-            </div>
-            <input type="text" placeholder="🤔 Este evento se titula..." class="input input-bordered col-span-full"
-              formControlName="title" autofocus [class.input-error]="isInvalid('whatForm', 'title')">
-          </label>
-
-
-          <div class="col-span-full">
-            <div class="text-xl col-span-full">Game</div>
-            <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
-          </div>
-
-          <app-new-select-game formControlName="game" (gamesEmitter)="handleGamesLoaded($event)"
-            (gameSelected)="handleGameSelected($event)" (selectGameTouched)="handleSelectGameTouched()"
-            [isInvalid]="isInvalid('whatForm', 'game')" />
-
-          <div class="flex items-center justify-center">
-            <label class="cursor-pointer label gap-3">
-              <span class="label-text text-base">Ranked</span>
-              <input type="checkbox" class="toggle toggle-primary" formControlName="ranked" />
-            </label>
-          </div>
-
-
-          <select class="select select-bordered w-full text-base" formControlName="gamemode"
-            [class.select-error]="isInvalid('whatForm', 'gamemode')">
-            @if (gamemodesLoading) {
-            <option value="default" class="flex items-end" hidden selected>⏳ Cargando modos de juego</option>
-            } @else {
-            <option hidden selected value="default">Selecciona un modo de juego</option>
-            @for (gamemode of filteredGamemodes; track gamemode.id) {
-            <option value="{{ gamemode.id }}">{{ gamemode.name }}</option>
-            } @empty {
-            @if (ranked) {
-            <option value="default">No hay modos de competitivos</option>
-            } @else {
-            <option value="default">No hay juego seleccionado</option>
-            }
-            }
-            }
-          </select>
-
-          <select class="select select-bordered w-full text-base" formControlName="platform"
-            [class.select-error]="isInvalid('whatForm', 'platform')">
-            @if (platformsLoading) {
-            <option value="default" class="flex items-end" hidden selected>⏳ Cargando plataformas</option>
-            } @else {
-            <option hidden selected value="default">Selecciona una plataforma</option>
-            @for (platform of platforms; track platform.id) {
-            <option value="{{ platform.id }}">{{ platform.platform }}</option>
-            } @empty {
-            <option value="default">No hay juego seleccionado</option>
-            }
-            }
-          </select>
-
-          <div class="col-span-full"></div>
-
-          <button *ngIf="!isFormSubmmiting" (click)="goBack()"
-            class="btn bg-transparent text-base font-sans font-medium text-neutral/60 hover:text-error">
-            Cancelar
-          </button>
-
-          <button (click)="nextTab()" class="btn btn-secondary text-base font-sans font-medium"
-            [disabled]="!isSubFormGroupValid('whatForm')">
-            Siguente
-          </button>
-        </div>
-
-      </div>
-
-      <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="When?"
-        [disabled]="!isSubFormGroupValid('whatForm')" />
-      <!-- [disabled]="!isSubFormGroupValid('whatForm')" -->
-      <div role="tabpanel" class="tab-content mt-6">
-        <div class="grid grid-cols-11 gap-y-6" formGroupName="whenForm">
-          <div class="col-span-full">
-            <div class="text-xl col-span-full">Event</div>
-            <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400 rounded"></div>
-          </div>
-          <div class="relative col-span-5">
-            <input type="datetime-local" class="input input-bordered w-full" formControlName="eventBegin"
-              [class.input-error]="isInvalid('whenForm', 'eventBegin')">
-            @if (eventForm.get('whenForm')?.get('eventBegin')?.errors?.['inPast']) {
-            <span class="absolute text-error text-xs font-light left-2 top-12 text-nowrap">
-              El evento no puede empezar en el pasado
-            </span>
-            }
-          </div>
-
-          <div class="flex w-full h-full items-center justify-center opacity-60">to</div>
-
-          <div class="relative col-span-5">
-            <input type="datetime-local" class="input input-bordered w-full" formControlName="eventEnd"
-              [class.input-error]="isInvalid('whenForm', 'eventEnd')">
-            @if (eventForm.get('whenForm')?.get('eventEnd')?.errors?.['dateRange']) {
-            <span class="absolute text-error text-xs font-light left-2 top-12 text-nowrap">
-              La fecha de fin debe ser posterior a la de inicio
-            </span>
-            }
-          </div>
-
-          <div class="col-span-full flex flex-col">
-            <span class="w-full text-center mb-3">La gente puede participar</span>
-
-            <div class="w-full flex items-center justify-center">
-              <label class="cursor-pointer label gap-3 p-0 ">
-                <span class="label-text w-min text-right text-base">No</span>
-                <input type="checkbox" class="toggle toggle-primary" checked formControlName="inscriptionToggle" />
-                <span class="label-text w-min text-base">Si</span>
-              </label>
-            </div>
-
-          </div>
-
-          <fieldset class="col-span-full grid grid-cols-11 gap-y-6 transition-opacity duration-1000"
-            [disabled]="!inscriptionToggle" [ngClass]="{'opacity-25': !inscriptionToggle}">
-
-            <div class="col-span-full ">
-              <div class="text-xl col-span-full">Registration deadline</div>
+          <div formGroupName="whatForm" class="grid grid-cols-2 gap-6">
+            <div class="col-span-full">
+              <div class="text-xl col-span-full">Evento</div>
               <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
             </div>
 
+            <label class="form-control col-span-full">
+              <div class="label">
+                <span class="label-text">Título del evento</span>
+              </div>
+              <input type="text" placeholder="🤔 Este evento se titula..." class="input input-bordered col-span-full"
+                formControlName="title" autofocus [class.input-error]="isInvalid('whatForm', 'title')">
+            </label>
+
+
+            <div class="col-span-full">
+              <div class="text-xl col-span-full">Juego</div>
+              <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+            </div>
+
+            <app-new-select-game formControlName="game" (gamesEmitter)="handleGamesLoaded($event)"
+              (gameSelected)="handleGameSelected($event)" (selectGameTouched)="handleSelectGameTouched()"
+              [isInvalid]="isInvalid('whatForm', 'game')" [event]="event" />
+
+            <div class="flex items-center justify-center">
+              <label class="cursor-pointer label gap-3">
+                <span class="label-text text-base">Ranked</span>
+                <input type="checkbox" class="toggle toggle-primary" formControlName="ranked" />
+              </label>
+            </div>
+
+
+            <select class="select select-bordered w-full text-base" formControlName="gamemode"
+              [class.select-error]="isInvalid('whatForm', 'gamemode')">
+              @if (gamemodesLoading) {
+              <option value="default" class="flex items-end" hidden selected>⏳ Cargando modos de juego</option>
+              } @else {
+              <option hidden selected value="default">Selecciona un modo de juego</option>
+              @for (gamemode of filteredGamemodes; track gamemode.id) {
+              <option value="{{ gamemode.id }}">{{ gamemode.name }}</option>
+              } @empty {
+              @if (ranked) {
+              <option value="default">No hay modos de competitivos</option>
+              } @else {
+              <option value="default">No hay juego seleccionado</option>
+              }
+              }
+              }
+            </select>
+
+            <select class="select select-bordered w-full text-base" formControlName="platform"
+              [class.select-error]="isInvalid('whatForm', 'platform')">
+              @if (platformsLoading) {
+              <option value="default" class="flex items-end" hidden selected>⏳ Cargando plataformas</option>
+              } @else {
+              <option hidden selected value="default">Selecciona una plataforma</option>
+              @for (platform of platforms; track platform.id) {
+              <option value="{{ platform.id }}">{{ platform.platform }}</option>
+              } @empty {
+              <option value="default">No hay juego seleccionado</option>
+              }
+              }
+            </select>
+
+            <div class="col-span-full"></div>
+
+            <button (click)="nextTab()" class="btn btn-secondary text-base font-sans font-medium col-span-full"
+              [disabled]="!isSubFormGroupValid('whatForm')">
+              Siguente
+            </button>
+          </div>
+
+        </div>
+
+        <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="When?"
+          [disabled]="!isSubFormGroupValid('whatForm')" />
+        <!-- [disabled]="!isSubFormGroupValid('whatForm')" -->
+        <div role="tabpanel" class="tab-content mt-6">
+          <div class="grid grid-cols-11 gap-y-6" formGroupName="whenForm">
+            <div class="col-span-full">
+              <div class="text-xl col-span-full">Event</div>
+              <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400 rounded"></div>
+            </div>
             <div class="relative col-span-5">
-              <input type="datetime-local" class="input input-bordered w-full" formControlName="inscriptionBegin"
-                [class.input-error]="isInvalid('whenForm', 'inscriptionBegin')">
+              <input type="datetime-local" class="input input-bordered w-full" formControlName="eventBegin"
+                [class.input-error]="isInvalid('whenForm', 'eventBegin')">
+              @if (eventForm.get('whenForm')?.get('eventBegin')?.errors?.['inPast']) {
+              <span class="absolute text-error text-xs font-light left-2 top-12 text-nowrap">
+                El evento no puede empezar en el pasado
+              </span>
+              }
             </div>
 
             <div class="flex w-full h-full items-center justify-center opacity-60">to</div>
 
             <div class="relative col-span-5">
-              <input type="datetime-local" class="input input-bordered w-full" formControlName="inscriptionEnd"
-                [class.input-error]="isInvalid('whenForm', 'inscriptionEnd')">
-              <div class="absolute text-error text-xs font-light left-2 top-12 flex flex-col gap-1">
-                @if (eventForm.get('whenForm')?.get('inscriptionEnd')?.errors?.['dateRange']) {
-                <span class=" text-nowrap">
-                  La fecha de fin debe ser posterior a la de inicio
-                </span>
-                }
-                @if (eventForm.get('whenForm')?.get('inscriptionEnd')?.errors?.['dateRangeI']) {
-                <span class="">
-                  La inscripción debe cerrar antes de que acabe el evento
-                </span>
-                }
+              <input type="datetime-local" class="input input-bordered w-full" formControlName="eventEnd"
+                [class.input-error]="isInvalid('whenForm', 'eventEnd')">
+              @if (eventForm.get('whenForm')?.get('eventEnd')?.errors?.['dateRange']) {
+              <span class="absolute text-error text-xs font-light left-2 top-12 text-nowrap">
+                La fecha de fin debe ser posterior a la de inicio
+              </span>
+              }
+            </div>
+
+            <div class="col-span-full flex flex-col">
+              <span class="w-full text-center mb-3">La gente puede participar</span>
+
+              <div class="w-full flex items-center justify-center">
+                <label class="cursor-pointer label gap-3 p-0 ">
+                  <span class="label-text w-min text-right text-base">No</span>
+                  <input type="checkbox" class="toggle toggle-primary" checked formControlName="inscriptionToggle" />
+                  <span class="label-text w-min text-base">Si</span>
+                </label>
               </div>
+
             </div>
-          </fieldset>
 
-          <div class="col-span-full"></div>
-          <div class="col-span-full grid grid-cols-2 gap-6">
-            <button *ngIf="!isFormSubmmiting" (click)="goBack()"
-              class="btn bg-transparent text-base font-sans font-medium text-neutral/60 hover:text-error">
-              Cancelar
-            </button>
-            <button (click)="nextTab()" class="btn btn-secondary text-base font-sans font-medium"
-              [disabled]="!isSubFormGroupValid('whenForm')">
-              Siguente
-            </button>
-          </div>
-        </div>
-      </div>
+            <fieldset class="col-span-full grid grid-cols-11 gap-y-6 transition-opacity duration-1000"
+              [disabled]="!inscriptionToggle" [ngClass]="{'opacity-25': !inscriptionToggle}">
 
-      <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="Who?"
-        [disabled]="!isSubFormGroupValid('whatForm') || !isSubFormGroupValid('whenForm')" />
-      <!-- [disabled]="!isSubFormGroupValid('whatForm') || !isSubFormGroupValid('whenForm')" -->
-      <div role="tabpanel" class="tab-content mt-6">
-        <div class="grid grid-cols-2 gap-6" formGroupName="whoForm">
-          <div class="col-span-full">
-            <div class="text-xl col-span-full">Privacy</div>
-            <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
-          </div>
+              <div class="col-span-full ">
+                <div class="text-xl col-span-full">Registration deadline</div>
+                <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+              </div>
 
-          <div>
-            <select formControlName="privacy" class="select select-bordered w-full text-base"
-              [class.select-error]="isInvalid('whoForm','privacy')">
-              <option value="default" hidden>🧐 Selecciona la privacidad</option>
-              <option value="public">🌍 Público</option>
-              <option value="followers">👀 Seguidores</option>
-              <option value="friends">👊🏻 Amigos</option>
-              <option value="hidden">🙈 Oculto</option>
-            </select>
-          </div>
+              <div class="relative col-span-5">
+                <input type="datetime-local" class="input input-bordered w-full" formControlName="inscriptionBegin"
+                  [class.input-error]="isInvalid('whenForm', 'inscriptionBegin')">
+              </div>
 
-          <div class="flex justify-center gap-3">
-            @if (inscriptionToggle) {
-            <div class="relative">
-              <input type="number" placeholder="🎟️ Plazas" class="input input-bordered min-w-0 max-w-32"
-                formControlName="maxParticipants" min="0" [class.select-error]="isInvalid('whoForm','maxParticipants')">
-              <span *ngIf="eventForm.get('whoForm')?.get('maxParticipants')?.errors?.['maxPlayersExceeded']"
-                class="absolute text-error text-xs font-light left-2 top-12">Max players {{maxPlayers}}</span>
-            </div>
-            }
-            <label class="cursor-pointer label gap-3">
-              <span class="label-text text-right text-base">Requirements</span>
-              <input type="checkbox" class="toggle toggle-secondary" checked formControlName="requirmentsToggle" />
-            </label>
-          </div>
+              <div class="flex w-full h-full items-center justify-center opacity-60">to</div>
 
-          <fieldset class="col-span-full grid gap-y-3 transition-opacity duration-1000" [disabled]="!requirmentsToggle"
-            [ngClass]="{'opacity-25': !requirmentsToggle}">
-            <div class="col-span-full">
-              <div class="text-xl col-span-full">Requirements</div>
-              <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
-            </div>
+              <div class="relative col-span-5">
+                <input type="datetime-local" class="input input-bordered w-full" formControlName="inscriptionEnd"
+                  [class.input-error]="isInvalid('whenForm', 'inscriptionEnd')">
+                <div class="absolute text-error text-xs font-light left-2 top-12 flex flex-col gap-1">
+                  @if (eventForm.get('whenForm')?.get('inscriptionEnd')?.errors?.['dateRange']) {
+                  <span class=" text-nowrap">
+                    La fecha de fin debe ser posterior a la de inicio
+                  </span>
+                  }
+                  @if (eventForm.get('whenForm')?.get('inscriptionEnd')?.errors?.['dateRangeI']) {
+                  <span class="">
+                    La inscripción debe cerrar antes de que acabe el evento
+                  </span>
+                  }
+                </div>
+              </div>
+            </fieldset>
 
             <div class="col-span-full"></div>
 
-            <div class="flex flex-col gap-3 max-h-56 h-full p-y-1">
-              <div class="flex items-end gap-3">
-                <label class="label cursor-pointer ">
-                  <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="level" />
-                  <span class="label-text text-base text-nowrap min-w-36 ml-3">Por nivel</span>
-                </label>
-                <label class="form-control w-full max-w-xs">
-                  <div class="label">
-                    <span class="label-text">Min</span>
-                    <span class="label-text-alt"></span>
-                  </div>
-                  <input type="number" min="0" class="input input-bordered" placeholder="Min" formControlName="minLevel"
-                    [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('level')?.value}"
-                    [class.input-error]="isInvalid('whoForm', 'minLevel')">
-                </label>
+              <button (click)="nextTab()" class="btn btn-secondary text-base font-sans font-medium col-span-full"
+                [disabled]="!isSubFormGroupValid('whenForm')">
+                Siguente
+              </button>
 
-                <label class="form-control w-full max-w-xs">
-                  <div class="label">
-                    <span class="label-text">Max</span>
-                    <span class="label-text-alt"></span>
-                  </div>
-                  <input type="number" min="0" class="input input-bordered" placeholder="Max" formControlName="maxLevel"
-                    [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('level')?.value}"
-                    [class.input-error]="isInvalid('whoForm', 'maxLevel')">
-                </label>
+          </div>
+        </div>
 
-
-              </div>
-
-              <div class="flex gap-3">
-                <label class="label cursor-pointer">
-                  <input type="checkbox" checked="checked" class="checkbox checkbox-primary"
-                    formControlName="hoursPlayed" />
-                  <span class="label-text text-base text-nowrap min-w-36 ml-3"> Horas jugadas</span>
-                </label>
-                <input type="number" min="0" class="input input-bordered w-full" placeholder="Min"
-                  formControlName="minHours"
-                  [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('hoursPlayed')?.value}"
-                  [class.input-error]="isInvalid('whoForm', 'minHours')">
-
-                <input type="number" min="0" class="input input-bordered w-full" placeholder="Max"
-                  formControlName="maxHours"
-                  [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('hoursPlayed')?.value}"
-                  [class.input-error]="isInvalid('whoForm', 'maxHours')">
-              </div>
+        <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="Who?"
+          [disabled]="!isSubFormGroupValid('whatForm') || !isSubFormGroupValid('whenForm')" />
+        <!-- [disabled]="!isSubFormGroupValid('whatForm') || !isSubFormGroupValid('whenForm')" -->
+        <div role="tabpanel" class="tab-content mt-6">
+          <div class="grid grid-cols-2 gap-6" formGroupName="whoForm">
+            <div class="col-span-full">
+              <div class="text-xl col-span-full">Privacy</div>
+              <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
             </div>
 
-            @if (ranked) {
-            <fieldset class="col-span-full" [disabled]="!ranked">
-              <div class="flex gap-3">
-                <label class="label cursor-pointer">
-                  <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="rank" />
-                  <span class="label-text text-base text-nowrap min-w-36 ml-3">Rango</span>
-                </label>
+            <div>
+              <select formControlName="privacy" class="select select-bordered w-full text-base"
+                [class.select-error]="isInvalid('whoForm','privacy')">
+                <option value="default" hidden>🧐 Selecciona la privacidad</option>
+                <option value="public">🌍 Público</option>
+                <option value="followers">👀 Seguidores</option>
+                <option value="friends">👊🏻 Amigos</option>
+                <option value="hidden">🙈 Oculto</option>
+              </select>
+            </div>
 
-                <div class="w-full" [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('rank')?.value}">
-
-                  <select formControlName="minRank" class="select select-bordered w-full"
-                    [class.select-error]="isInvalid('whoForm', 'minRank')">
-
-                    <option value="" selected hidden>Select min rank</option>
-                    @for (rank of ranks; track $index) {
-                    <option value="{{rank}}">{{rank}}</option>
-                    }
-
-                  </select>
-                </div>
-                <div class="w-full" [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('rank')?.value}">
-
-                  <select formControlName="maxRank" class="select select-bordered  w-full"
-                    [class.select-error]="isInvalid('whoForm', 'maxRank')">
-
-                    <option value="" selected hidden>Select max rank</option>
-                    @for (rank of ranks; track $index) {
-                    <option value="{{rank}}">{{rank}}</option>
-                    }
-
-                  </select>
-                </div>
-
+            <div class="flex justify-center gap-3">
+              @if (inscriptionToggle) {
+              <div class="relative">
+                <input type="number" placeholder="🎟️ Plazas" class="input input-bordered min-w-0 max-w-32"
+                  formControlName="maxParticipants" min="0"
+                  [class.select-error]="isInvalid('whoForm','maxParticipants')">
+                <span *ngIf="eventForm.get('whoForm')?.get('maxParticipants')?.errors?.['maxPlayersExceeded']"
+                  class="absolute text-error text-xs font-light left-2 top-12">Max players {{maxPlayers}}</span>
               </div>
+              }
+              <label class="cursor-pointer label gap-3">
+                <span class="label-text text-right text-base">Requirements</span>
+                <input type="checkbox" class="toggle toggle-secondary" checked formControlName="requirmentsToggle" />
+              </label>
+            </div>
+
+            <fieldset class="col-span-full grid gap-y-3 transition-opacity duration-1000"
+              [disabled]="!requirmentsToggle" [ngClass]="{'opacity-25': !requirmentsToggle}">
+              <div class="col-span-full">
+                <div class="text-xl col-span-full">Requirements</div>
+                <div class="h-0.5 bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+              </div>
+
+              <div class="col-span-full"></div>
+
+              <div class="flex flex-col gap-3 max-h-56 h-full p-y-1">
+                <div class="flex items-end gap-3">
+                  <label class="label cursor-pointer ">
+                    <input type="checkbox" checked="checked" class="checkbox checkbox-primary"
+                      formControlName="level" />
+                    <span class="label-text text-base text-nowrap min-w-36 ml-3">Por nivel</span>
+                  </label>
+                  <label class="form-control w-full">
+                    <div class="label">
+                      <span class="label-text">Min</span>
+                      <span class="label-text-alt"></span>
+                    </div>
+                    <input type="number" min="0" class="input input-bordered" placeholder="Min"
+                      formControlName="minLevel"
+                      [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('level')?.value}"
+                      [class.input-error]="isInvalid('whoForm', 'minLevel')">
+                  </label>
+
+                  <label class="form-control w-full">
+                    <div class="label">
+                      <span class="label-text">Max</span>
+                      <span class="label-text-alt"></span>
+                    </div>
+                    <input type="number" min="0" class="input input-bordered" placeholder="Max"
+                      formControlName="maxLevel"
+                      [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('level')?.value}"
+                      [class.input-error]="isInvalid('whoForm', 'maxLevel')">
+                  </label>
+
+
+                </div>
+
+                <div class="flex gap-3">
+                  <label class="label cursor-pointer">
+                    <input type="checkbox" checked="checked" class="checkbox checkbox-primary"
+                      formControlName="hoursPlayed" />
+                    <span class="label-text text-base text-nowrap min-w-36 ml-3"> Horas jugadas</span>
+                  </label>
+                  <input type="number" min="0" class="input input-bordered w-full" placeholder="Min"
+                    formControlName="minHours"
+                    [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('hoursPlayed')?.value}"
+                    [class.input-error]="isInvalid('whoForm', 'minHours')">
+
+                  <input type="number" min="0" class="input input-bordered w-full" placeholder="Max"
+                    formControlName="maxHours"
+                    [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('hoursPlayed')?.value}"
+                    [class.input-error]="isInvalid('whoForm', 'maxHours')">
+                </div>
+              </div>
+
+              @if (ranked) {
+              <fieldset class="col-span-full" [disabled]="!ranked">
+                <div class="flex gap-3">
+                  <label class="label cursor-pointer">
+                    <input type="checkbox" checked="checked" class="checkbox checkbox-primary" formControlName="rank" />
+                    <span class="label-text text-base text-nowrap min-w-36 ml-3">Rango</span>
+                  </label>
+
+                  <div class="w-full" [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('rank')?.value}">
+
+                    <select formControlName="minRank" class="select select-bordered w-full"
+                      [class.select-error]="isInvalid('whoForm', 'minRank')">
+
+                      <option value="" selected hidden>Select min rank</option>
+                      @for (rank of ranks; track $index) {
+                      <option value="{{rank}}">{{rank}}</option>
+                      }
+
+                    </select>
+                  </div>
+                  <div class="w-full" [ngClass]="{'opacity-10' : !eventForm.get('whoForm')?.get('rank')?.value}">
+
+                    <select formControlName="maxRank" class="select select-bordered  w-full"
+                      [class.select-error]="isInvalid('whoForm', 'maxRank')">
+
+                      <option value="" selected hidden>Select max rank</option>
+                      @for (rank of ranks; track $index) {
+                      <option value="{{rank}}">{{rank}}</option>
+                      }
+
+                    </select>
+                  </div>
+
+                </div>
+              </fieldset>
+              }
+
             </fieldset>
+
+            @if (isUpdating) {
+              @if (isFormSubmmiting){
+                <button class="btn btn-secondary text-base font-sans font-medium cursor-wait col-span-full">
+                  <span class="flex items-end">Actualizando evento<span class="loading loading-dots loading-xs"></span></span>
+                </button>
+                } @else {
+                <button (click)="onSubmit()" class="btn btn-secondary text-base font-sans font-medium col-span-full"
+                  [disabled]="!isSubFormGroupValid('whoForm')">
+                  Guardar cambios 💾
+                </button>
+                }
+            } @else {
+              @if (isFormSubmmiting){
+                <button class="btn btn-secondary text-base font-sans font-medium cursor-wait col-span-full">
+                  <span class="flex items-end">Creando evento<span class="loading loading-dots loading-xs"></span></span>
+                </button>
+                } @else {
+                <button (click)="onSubmit()" class="btn btn-secondary text-base font-sans font-medium col-span-full"
+                  [disabled]="!isSubFormGroupValid('whoForm')">
+                  Crear evento 🚀
+                </button>
+                }
             }
-
-          </fieldset>
-
-          <button *ngIf="!isFormSubmmiting" (click)="goBack()"
-            class="btn bg-transparent text-base font-sans font-medium text-neutral/60 hover:text-error">
-            Cancelar
-          </button>
-
-          @if (isFormSubmmiting){
-          <button class="btn btn-secondary text-base font-sans font-medium cursor-wait"
-            [ngClass]="{'col-span-full': isFormSubmmiting}">
-            <span class="flex items-end">Creando evento<span class="loading loading-dots loading-xs"></span></span>
-          </button>
-          } @else {
-          <button (click)="onSubmit()" class="btn btn-secondary text-base font-sans font-medium"
-            [disabled]="!isSubFormGroupValid('whoForm')" [ngClass]="{'col-span-full': isFormSubmmiting}">
-            Crear evento 🚀
-          </button>
-          }
+          </div>
         </div>
       </div>
-    </div>
-  </form>
-</div>
-
-<div  role="alert"
-  class="alert alert-success absolute top-3 right-3 w-min max-w-96 translate-x-full transition-all duration-300  opacity-0">
-  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-  <span class="text-nowrap">Evento creado con éxito! 😄</span>
-</div>
-
-<div  role="alert"
-  class="alert alert-error absolute top-3 right-3 w-min max-w-96 translate-x-full transition-all duration-300 opacity-0">
-  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-  <span class="text-nowrap">Error! Algo ha fallado al crear el evento. 😓</span>
-</div>
+    </form>
+  </div>
+</dialog>

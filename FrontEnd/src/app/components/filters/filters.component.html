@@ -1,5 +1,7 @@
 <div class="">
-  <button class="btn"><a routerLink="/main/newEvent">newEvent</a></button>
-  <button class="btn mt-3" (click)="logout()">logout</button>
+  <button class="btn" onclick="event_form_modal.showModal()">New Event</button>
   <button class="btn mt-3" (click)="testAlert()">Test alert</button>
 </div>
+
+<app-event-form></app-event-form>
+

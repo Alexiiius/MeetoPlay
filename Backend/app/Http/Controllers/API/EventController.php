@@ -534,5 +534,72 @@ class EventController extends Controller
         ]);
     }
 
+    public function searchNEW($search, $group, Request $request) {
+        $query = $request->search;
+
+        if (empty($query) || $query == null ) {
+            return response()->json(['error' => 'No search query'], 400);
+        }
+
+        $userId = auth()->id();
+        $idToSearch = null;
+        
+        if ($group == 'Followed'){
+            $idToSearch = User::find($userId)->following()->pluck('users.id');
+        } else if ($group == 'Friends'){
+            $idToSearch = User::find($userId)->friends();
+        }
+        
+        $perPage = 10;
+        $skip = ($request->page - 1) * $perPage;
+        
+        $events = Event::when($idToSearch, function ($query, $idToSearch) {
+            return $query->whereIn('event_owner_id', $idToSearch);
+        })
+        ->where('event_title', 'like', "%{$query}%")
+        ->orWhereHas('owner', function ($q) use ($query) {
+            $q->where('name', 'like', "%{$query}%");
+        })
+        ->orWhere('platform', 'like', "%{$query}%")
+        ->orWhere('game_name', 'like', "%{$query}%")
+        ->orWhere('game_mode', 'like', "%{$query}%")
+        ->with(['owner' => function ($query) {
+            $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+        }])
+        ->with('event_requirements')
+        ->with(['participants' => function ($query) {
+            $query->select('users.id', 'users.tag', 'users.name', 'users.avatar');
+        }])
+        ->skip($skip)
+        ->take($perPage)
+        ->get();
+    
+        // Get the current authenticated user
+        $user = auth()->user();
+    
+        // Filter the events
+        $events = $events->filter(function ($event) use ($user) {
+            return $this->canUserSeeThisEvent($event, $user);
+        });
+    
+        $total = $events->count();
+    
+        if ($events->isEmpty()) {
+            return response()->json(['message' => 'No events found'], 200);
+        }
+    
+        return response()->json([
+            'data' => [
+                'events' => $events,
+            ],
+            'meta' => [
+                'current_page' => $request->page,
+                'total_pages' => ceil($total / $perPage),
+                'total_events' => $total,
+                'timestamp' => now(),
+            ],
+        ]);
+    }
+
 
 }

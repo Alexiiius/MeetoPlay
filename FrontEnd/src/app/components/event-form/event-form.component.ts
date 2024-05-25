@@ -1,5 +1,5 @@
 import { Event } from './../../models/event';
-import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { NewSelectGameComponent } from './new-select-game/new-select-game.component';
 import { Game } from '../../models/game';
@@ -51,10 +51,21 @@ export class EventFormComponent implements OnInit, OnDestroy {
   maxPlayers: number = 0;
 
   isFormSubmmiting = false;
+  isUpdating: boolean;
 
   private subscriptions: Subscription[] = [];
 
   @ViewChildren('tab') tabs: QueryList<ElementRef>;
+  @ViewChild('eventModal') modalDialog!: ElementRef<HTMLDialogElement>;
+
+
+  openModal() {
+    this.modalDialog.nativeElement.showModal();
+  }
+
+  closeModal() {
+    this.modalDialog.nativeElement.close();
+  }
 
   constructor(
     private formBuilder: FormBuilder,
@@ -66,6 +77,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private router: Router) { }
 
   ngOnInit(): void {
+    this.isUpdating = !!this.event;
     this.eventForm = this.formBuilder.group({
       whatForm: this.formBuilder.group({
         ranked: [false],
@@ -203,8 +215,9 @@ export class EventFormComponent implements OnInit, OnDestroy {
   }
 
   // Formatea la fecha para que sea compatible con el input de tipo datetime-local
-  formatDateTime(dateTime: Date): string {
-    return dateTime.toISOString().slice(0, 16);
+  formatDateTime(dateTime: string): string {
+    const date = new Date(dateTime);
+    return date.toISOString().slice(0, 16);
   }
 
   toggleInscription(): void {
@@ -250,6 +263,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
         // Si hay un evento, establece los valores de gamemode y platform
         if (this.event) {
+
           const gamemode = this.gamemodes.find(gamemode => gamemode.name === this.event.game_mode);
           const platform = this.platforms.find(platform => platform.platform === this.event.platform);
 
@@ -274,10 +288,10 @@ export class EventFormComponent implements OnInit, OnDestroy {
             },
             whenForm: {
               inscriptionToggle:this.event.date_time_inscription_begin && this.event.date_time_inscription_end ? true : false,
-              eventBegin: this.formatDateTime(this.event.date_time_begin),
-              eventEnd: this.formatDateTime(this.event.date_time_end),
-              inscriptionBegin: this.formatDateTime(this.event.date_time_inscription_begin),
-              inscriptionEnd: this.formatDateTime(this.event.date_time_inscription_end)
+              eventBegin: this.formatDateTime(this.event.date_time_begin as string),
+              eventEnd: this.formatDateTime(this.event.date_time_end as string),
+              inscriptionBegin: this.formatDateTime(this.event.date_time_inscription_begin as string),
+              inscriptionEnd: this.formatDateTime(this.event.date_time_inscription_end as string)
             },
             whoForm: {
               privacy: this.event.privacy,
@@ -398,20 +412,37 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
       console.log('Form submitted', formatedNewEvent);
 
-      this.eventService.postNewEvent(formatedNewEvent).subscribe(
-        (response) => {
-          this.isFormSubmmiting = false;
-          this.alertService.showAlert('success', 'Evento creado con éxito! 😄');
-          this.router.navigate(['/main']);
+      if (this.isUpdating) {
+        this.eventService.updateEvent(this.event.id, formatedNewEvent).subscribe(
+          (response) => {
+            this.isFormSubmmiting = false;
+            this.alertService.showAlert('success', 'Evento actualizado con éxito! 😄');
+            this.router.navigate(['/main']);
 
-          console.log(response);
-        },
-        (error) => {
-          this.alertService.showAlert('error', 'Error! Algo ha fallado al crear el evento. 😓');
-          this.isFormSubmmiting = false;
-          console.error(error);
-        }
-      );
+            console.log(response);
+          },
+          (error) => {
+            this.alertService.showAlert('error', 'Error! Algo ha fallado al actualizar el evento. 😓');
+            this.isFormSubmmiting = false;
+            console.error(error);
+          }
+        );
+      } else {
+        this.eventService.postNewEvent(formatedNewEvent).subscribe(
+          (response) => {
+            this.isFormSubmmiting = false;
+            this.alertService.showAlert('success', 'Evento creado con éxito! 😄');
+            this.router.navigate(['/main']);
+
+            console.log(response);
+          },
+          (error) => {
+            this.alertService.showAlert('error', 'Error! Algo ha fallado al crear el evento. 😓');
+            this.isFormSubmmiting = false;
+            console.error(error);
+          }
+        );
+      }
     });
   }
 

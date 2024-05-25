@@ -8,7 +8,7 @@
     </li>
 
     <li>
-      <button onclick="event_form_modal.showModal()"><i class='bx bx-edit-alt text-secondary'></i>Editar evento</button>
+      <button (click)="openEditModal()"><i class='bx bx-edit-alt text-secondary'></i>Editar evento</button>
     </li>
   </ul>
 </div>
@@ -24,7 +24,7 @@
       <form method="dialog">
         <!-- if there is a button in form, it will close the modal -->
         <button class="btn btn-ghost font-medium mr-2 text-neutral/90">Cancelar</button>
-        <button class="btn btn-error font-medium">Borrar</button>
+        <button (click)="deleteEvent()" class="btn btn-error font-medium">Borrar</button>
       </form>
     </div>
   </div>

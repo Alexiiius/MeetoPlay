@@ -1,6 +1,6 @@
 <!-- <button class="btn" onclick="event_form_modal.showModal()">New Event</button> -->
-<dialog id="event_form_modal" class="modal" #editEventModal> //TODO Seguir por aqui, no va el modal
-  
+<dialog id="event_form_modal" class="modal" #eventModal>
+
   <div
     class="modal-box w-11/12 max-w-5xl bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-60 relative rounded-box p-6 bg-base-200 border border-primary/50 h-[600px] scrollbar-hidde flex items-center">
     <form method="dialog" #closeForm="ngForm">
@@ -8,7 +8,13 @@
     </form>
 
     <form [formGroup]="eventForm" class="w-full">
-      <header class="text-2xl absolute top-8 right-12">Nuevo evento!</header>
+      <header class="text-2xl absolute top-8 right-12">
+        @if (isUpdating) {
+        <span class="text-2xl">Editando evento </span>
+        } @else {
+        <span class="text-2xl">Nuevo evento!</span>
+        }
+      </header>
       <div role="tablist" class="tabs tabs-bordered tabs-lg w-full">
 
         <input #tab type="radio" name="event-form-tabs" role="tab" class="tab" aria-label="What?" checked />
@@ -310,15 +316,28 @@
 
             </fieldset>
 
-            @if (isFormSubmmiting){
-            <button class="btn btn-secondary text-base font-sans font-medium cursor-wait col-span-full">
-              <span class="flex items-end">Creando evento<span class="loading loading-dots loading-xs"></span></span>
-            </button>
+            @if (isUpdating) {
+              @if (isFormSubmmiting){
+                <button class="btn btn-secondary text-base font-sans font-medium cursor-wait col-span-full">
+                  <span class="flex items-end">Actualizando evento<span class="loading loading-dots loading-xs"></span></span>
+                </button>
+                } @else {
+                <button (click)="onSubmit()" class="btn btn-secondary text-base font-sans font-medium col-span-full"
+                  [disabled]="!isSubFormGroupValid('whoForm')">
+                  Guardar cambios 💾
+                </button>
+                }
             } @else {
-            <button (click)="onSubmit()" class="btn btn-secondary text-base font-sans font-medium col-span-full"
-              [disabled]="!isSubFormGroupValid('whoForm')">
-              Crear evento 🚀
-            </button>
+              @if (isFormSubmmiting){
+                <button class="btn btn-secondary text-base font-sans font-medium cursor-wait col-span-full">
+                  <span class="flex items-end">Creando evento<span class="loading loading-dots loading-xs"></span></span>
+                </button>
+                } @else {
+                <button (click)="onSubmit()" class="btn btn-secondary text-base font-sans font-medium col-span-full"
+                  [disabled]="!isSubFormGroupValid('whoForm')">
+                  Crear evento 🚀
+                </button>
+                }
             }
           </div>
         </div>

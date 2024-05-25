@@ -1,6 +1,7 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { Event } from '../../../../models/event';
 import { EventFormComponent } from '../../../event-form/event-form.component';
+import { EventsService } from '../../../../services/events.service';
 
 @Component({
   selector: 'app-event-options',
@@ -13,6 +14,21 @@ import { EventFormComponent } from '../../../event-form/event-form.component';
 })
 export class EventOptionsComponent {
 
+  constructor(private eventService: EventsService) {}
+
   @Input() event: Event;
-  @ViewChild('moreEventInfo') modalDialog!: ElementRef<HTMLDialogElement>;
+
+  @ViewChild(EventFormComponent) eventFormComponent!: EventFormComponent;
+
+  openEditModal() {
+    this.eventFormComponent.openModal();
+  }
+
+  closeEditModal() {
+    this.eventFormComponent.closeModal();
+  }
+
+  deleteEvent() {
+    this.eventService.deleteEvent(this.event.id);
+  }
 }

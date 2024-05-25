@@ -23,7 +23,7 @@ class EventFactory extends Factory
             'game_pic' => $this->faker->imageUrl(),
             'game_name' => $this->faker->word,
             'game_mode' => $this->faker->word,
-            'platform' => $this->faker->word,
+            'platform' => $this->faker->randomElement(['pc', 'xbox', 'nintendo', 'mobile', 'crossplay', 'otros']),
             'event_owner_id' => DB::table('users')->inRandomOrder()->first()->id,
             'date_time_begin' => $this->faker->dateTime,
             'date_time_end' => $this->faker->dateTime,

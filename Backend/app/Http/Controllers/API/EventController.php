@@ -556,6 +556,7 @@ class EventController extends Controller
         $events = Event::when($idToSearch, function ($query, $idToSearch) {
             return $query->whereIn('event_owner_id', $idToSearch);
         })
+        ->where('event_owner_id', '!=', $userId)
         ->where(function ($query) use ($search) {
             $query->where('event_title', 'like', "%{$search}%")
                 ->orWhereHas('owner', function ($q) use ($search) {

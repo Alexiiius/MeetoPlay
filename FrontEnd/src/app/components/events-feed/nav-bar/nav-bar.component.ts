@@ -1,37 +1,59 @@
-import { Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { EventFeedService } from '../../../services/event-feed.service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [],
+  imports: [
+    ReactiveFormsModule
+  ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
 })
 export class NavBarComponent {
+  searchControl = new FormControl();
+  searchSubscription: Subscription;
 
   @Input() isLoading: boolean;
+  @Input() isSearchLoading: boolean;
+  @Output() searchEventInput = new EventEmitter<string>();
 
-  @ViewChild('searchEventInput') searchInput: ElementRef;
+  @ViewChild('searchEventInput') searchInputElement: ElementRef;
 
   ngOnInit() {
     this.addKeyboardShortcut();
+
+    this.searchSubscription = this.searchControl.valueChanges.subscribe(value => {
+      const trimmedValue = value.trim();
+      if (trimmedValue !== '' || value === '') {
+        this.searchEventInput.emit(trimmedValue);
+      }
+    });
   }
 
   constructor(private eventFeedService: EventFeedService) { }
 
-onSelectChange(event: any) {
-  this.eventFeedService.changeGroup(event.target.value);
-}
+
+  onSelectChange(event: any) {
+    this.eventFeedService.changeGroup(event.target.value);
+  }
 
   addKeyboardShortcut() {
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.key === 'k') {
-        this.searchInput.nativeElement.focus();
+        this.searchInputElement.nativeElement.focus();
         event.preventDefault();
       } else if (event.key === 'Escape' || event.key === 'Esc') { // Esc key
-        this.searchInput.nativeElement.blur();
+        this.searchInputElement.nativeElement.blur();
       }
     });
-}
+  }
+
+  ngOnDestroy() {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
 }

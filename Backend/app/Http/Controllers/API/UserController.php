@@ -84,4 +84,27 @@ class UserController extends Controller
         return $users;
     }
 
+    public function changeStatus(Request $request, string $status) {
+        
+        $user = auth()->user();
+        $userOldStatus = $user->status;
+
+        try {
+            $user->setStatus($status);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+
+        if ($user->wasChanged()) {
+            return response()->json([
+                'message' => 'Status changed successfully',
+                'old_status' => $userOldStatus,
+                'new_status' => $user->status,
+            ]);
+        }else{
+            return response()->json(['message' => 'Status change failed or already the same status.']);
+        }
+
+    }
+
 }

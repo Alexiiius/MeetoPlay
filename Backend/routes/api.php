@@ -26,6 +26,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/user/{id}', [UserController::class, 'showNew']); //return id, name, email, tag, avatar, date_of_birth, bio and socials from a specific user by id
     Route::get('/user', [UserController::class, 'user']); //return all data from the authenticated user
+    Route::patch('/user/status/{status}', [UserController::class, 'changeStatus']); //update the status of the authenticated user (online, offline, away, busy, invisible)
 
     Route::get('/user/search/{search}', [UserController::class, 'search'])->where('search', '.*'); //search users by name, tag and name#tag
 

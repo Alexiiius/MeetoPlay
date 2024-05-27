@@ -192,4 +192,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(GameUserStats::class, 'user_id', 'id');
     }
 
+    public function setStatus($status) {
+
+        if (!in_array($status, ['online', 'offline', 'afk', 'dnd', 'invisible'])) {
+            throw new \Exception('Invalid status.');
+        }
+
+        $this->status = $status;
+        $this->save();
+    }
+
 }

@@ -5,7 +5,6 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModu
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Game } from '../../../models/game';
 import { APIService } from '../../../services/api.service';
-import { Event } from '../../../models/event';
 
 @Component({
   selector: 'app-new-select-game',
@@ -40,7 +39,6 @@ export class NewSelectGameComponent implements OnInit, OnDestroy, ControlValueAc
   @Output() selectGameTouched = new EventEmitter<void>();
 
   @Input() isInvalid: boolean = false;
-  @Input() event: Event;
 
   private subscriptions: Subscription[] = [];
 
@@ -53,15 +51,6 @@ export class NewSelectGameComponent implements OnInit, OnDestroy, ControlValueAc
         this.filteredGames.next(this.games.slice(0, 5));
         this.isLoading = false;
         this.gamesEmitter.emit(this.games);
-
-        // Si hay un evento, selecciona el juego correspondiente
-        if (this.event && this.event.game_id) {
-          const game = this.games.find(game => game.id == this.event.game_id);
-          if (game) {
-            this.toggle();
-            this.onOptionSelected(game);
-          }
-        }
       })
     );
 
@@ -88,7 +77,7 @@ export class NewSelectGameComponent implements OnInit, OnDestroy, ControlValueAc
   }
 
   @HostListener('document:click', ['$event'])
-  clickOutside(event: globalThis.Event) {
+  clickOutside(event: Event) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isOpen = false;
       if (this.hasBeenTouched) {

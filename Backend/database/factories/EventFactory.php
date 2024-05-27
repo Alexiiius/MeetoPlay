@@ -23,14 +23,14 @@ class EventFactory extends Factory
             'game_pic' => $this->faker->imageUrl(),
             'game_name' => $this->faker->word,
             'game_mode' => $this->faker->word,
-            'platform' => $this->faker->randomElement(['pc', 'xbox', 'nintendo', 'mobile', 'crossplay', 'otros']),
+            'platform' => $this->faker->word,
             'event_owner_id' => DB::table('users')->inRandomOrder()->first()->id,
             'date_time_begin' => $this->faker->dateTime,
             'date_time_end' => $this->faker->dateTime,
             'date_time_inscription_begin' => $this->faker->dateTime,
             'date_time_inscription_end' => $this->faker->dateTime,
             'max_participants' => $this->faker->numberBetween(1, 50),
-            'privacy' => $this->faker->randomElement(['public', 'hidden', 'friends', 'followers']),
+            'privacy' => $this->faker->randomElement(['public', 'hidden', 'friends']),
             'event_requirement_id' => 1,
         ];
     }

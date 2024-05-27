@@ -11,10 +11,10 @@ export class Event {
   game_pic: string;
   platform: string;
   event_owner_id: number;
-  date_time_begin: Date | string;
-  date_time_end: Date | string;
-  date_time_inscription_begin: Date | string;
-  date_time_inscription_end: Date | string;
+  date_time_begin: Date;
+  date_time_end: Date;
+  date_time_inscription_begin: Date;
+  date_time_inscription_end: Date;
   max_participants: number;
   privacy: string;
   event_requirements: EventRequirments;

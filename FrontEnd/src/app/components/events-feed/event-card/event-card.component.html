@@ -1,8 +1,7 @@
 <div class="relative text-lg">
-  <div tabindex="0"
-    class="collapse bg-base-200/80 shadow-md hover:bg-base-200 hover:shadow-lg transition-all duration-300"
-    [ngClass]="{'collapse-arrow': isRoute('/main'), 'bg-base-200': isOpen, 'bg-base-200/80': !isOpen}"
-    (click)="toggleOpen()">
+  <div tabindex="0" class="collapse bg-base-200/80 shadow-md hover:bg-base-200 hover:shadow-lg transition-all duration-300"
+  [ngClass]="{'collapse-arrow': isRoute('/main'), 'bg-base-200': isOpen, 'bg-base-200/80': !isOpen}"
+  (click)="toggleOpen()">
     <input type="checkbox" [(ngModel)]="isChecked" />
     <div class="collapse-title flex items-center justify-between">
       <div class="flex items-center">
@@ -79,9 +78,54 @@
       </div>
     </div>
   </div>
-
   @if (isActivatedRouteInChildRoute('main/profile')) {
-  <app-event-options [event]="event"></app-event-options>
-  }
+  <div class="dropdown dropdown-left absolute top-2 right-2 z-10">
+    <div tabindex="0" role="button" class="btn btn-circle btn-ghost btn-sm"><i
+        class='bx bx-dots-vertical-rounded bx-sm'></i></div>
+    <ul tabindex="0" class="dropdown-content fixed z-20 menu p-2 shadow bg-base-100 rounded-box w-52">
+
+      <li>
+        <button (click)="deleteEventModal.showModal()"><i class='bx bx-trash text-error'></i>Borrar evento</button>
+      </li>
+
+      <li>
+        <button (click)="editEventModal.showModal()"><i class='bx bx-edit-alt text-secondary'></i>Editar evento</button>
+      </li>
+    </ul>
+  </div>
+
+
+  <dialog id="deleteEventModal" #deleteEventModal class="modal">
+    <div class="modal-box border-2 border-error">
+      <h3 class="font-medium text-lg">Eliminar evento</h3>
+      <p class="font-normal">¿Seguro que quiere borrar este evento?</p>
+      <p class="py-4 font-normal">Esta acción es irreversible</p>
+
+      <div class="modal-action">
+        <form method="dialog">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="btn btn-ghost font-medium mr-2 text-neutral/90">Cancelar</button>
+          <button class="btn btn-error font-medium">Borrar</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="editEventModal" #editEventModal class="modal">
+    <div class="modal-box border-2 border-secondary w-11/12 max-w-5xl">
+      <h3 class="font-medium text-lg">Editar evento</h3>
+      <app-edit-event-form [event]="event" />
+
+      <div class="modal-action">
+        <form method="dialog">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="btn btn-ghost mr-2 font-medium text-neutral/90">Cancelar</button>
+          <button class="btn btn-secondary font-medium">Editar</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+}
 
 </div>
+

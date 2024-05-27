@@ -176,6 +176,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 'full_tag' => $following->getFullNameAttribute(),
                 'avatar' => $following->avatar,
                 'status' => $following->status,
+
             ];
         });
     }
@@ -186,10 +187,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function receivedMessages(): HasMany {
         return $this->hasMany(Message::class, 'to_user_id');
-    }
-
-    public function gameStats() {
-        return $this->hasMany(GameUserStats::class, 'user_id', 'id');
     }
 
 }

@@ -268,7 +268,7 @@ export class EventsFeedComponent implements OnInit {
     this.isLoading = true;
 
     this.eventService.getPublicEvents(page).subscribe((response: any) => {
-      const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      const newEvents = response.data.events.map((event: Event) => this.eventService.transformToEvent(event));
       this.publicEvents = [...this.publicEvents, ...newEvents];
       this.publicTotalPages = response.meta.total_pages;
       this.hasMoreEvents['Public'] = this.publicPage < this.publicTotalPages;
@@ -287,7 +287,7 @@ export class EventsFeedComponent implements OnInit {
     this.isLoading = true;
 
     this.eventService.getFriendsEvents(page).subscribe((response: any) => {
-      const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      const newEvents = response.data.events.map((event: Event) => this.eventService.transformToEvent(event));
       this.friendsEvents = [...this.friendsEvents, ...newEvents];
       this.friendsTotalPages = response.meta.total_pages;
       this.hasMoreEvents['Friends'] = this.friendsPage < this.friendsTotalPages;
@@ -308,7 +308,7 @@ export class EventsFeedComponent implements OnInit {
     this.isLoading = true;
 
     this.eventService.getFollowingEvents(page).subscribe((response: any) => {
-      const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
+      const newEvents = response.data.events.map((event: Event) => this.eventService.transformToEvent(event));
       this.followingEvents = [...this.followingEvents, ...newEvents];
       this.followingTotalPages = response.meta.total_pages;
       this.hasMoreEvents['Followed'] = this.followingPage < this.followingTotalPages;
@@ -324,52 +324,5 @@ export class EventsFeedComponent implements OnInit {
       console.error('Error fetching following events: ', error)
 
     });
-  }
-
-  transformToEvent(apiResponse: any): Event {
-    const eventRequirments = new EventRequirments(
-      apiResponse.event_requirements.max_rank,
-      apiResponse.event_requirements.min_rank,
-      apiResponse.event_requirements.max_level,
-      apiResponse.event_requirements.min_level,
-      apiResponse.event_requirements.max_hours_played,
-      apiResponse.event_requirements.min_hours_played
-    );
-
-    const owner = new Owner(
-      apiResponse.owner.id,
-      apiResponse.owner.tag,
-      apiResponse.owner.name,
-      apiResponse.owner.avatar
-    );
-
-    const participants = apiResponse.participants.map((participant: any) => {
-      return {
-        id: participant.id,
-        name: participant.name,
-        tag: participant.tag,
-        avatar: participant.avatar,
-        status: participant.status
-      } as UserReduced;
-
-    }); return new Event(
-      apiResponse.id,
-      apiResponse.event_title,
-      apiResponse.game_id,
-      apiResponse.game_name,
-      apiResponse.game_mode,
-      apiResponse.game_pic,
-      apiResponse.platform,
-      apiResponse.event_owner_id,
-      apiResponse.date_time_begin,
-      apiResponse.date_time_end,
-      apiResponse.date_time_inscription_begin,
-      apiResponse.date_time_inscription_end,
-      apiResponse.max_participants,
-      apiResponse.privacy,
-      eventRequirments,
-      owner,
-      participants
-    );
   }
 }

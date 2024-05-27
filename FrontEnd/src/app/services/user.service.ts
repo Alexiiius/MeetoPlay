@@ -45,6 +45,10 @@ export class UserService implements OnInit {
     }
   }
 
+  getFollowers(): Observable<any> {
+    return this.http.get(`${this.backAPIUrl}/followers/${this.currentUser.value?.id}`);
+  }
+
   getFollowedUsers(): Observable<any>  {
     return this.http.get(`${this.backAPIUrl}/following/${this.currentUser.value?.id}`);
   }

@@ -85,6 +85,7 @@ export class AuthService {
         id: userData.id,
         name: userData.name,
         tag: userData.tag,
+        full_tag: `${userData.name}#${userData.tag}`,
         avatar: userData.avatar,
         status: 'Online'
       };

@@ -18,6 +18,7 @@ export class NavBarComponent {
 
   @Input() isLoading: boolean;
   @Input() isSearchLoading: boolean;
+  @Input() firstLoad: boolean;
   @Output() searchEventInput = new EventEmitter<string>();
 
   @ViewChild('searchEventInput') searchInputElement: ElementRef;
@@ -26,9 +27,11 @@ export class NavBarComponent {
     this.addKeyboardShortcut();
 
     this.searchSubscription = this.searchControl.valueChanges.subscribe(value => {
-      const trimmedValue = value.trim();
-      if (trimmedValue !== '' || value === '') {
-        this.searchEventInput.emit(trimmedValue);
+      if (value !== null) {
+        const trimmedValue = value.trim();
+        if (trimmedValue !== '' || value === '') {
+          this.searchEventInput.emit(trimmedValue);
+        }
       }
     });
   }
@@ -49,6 +52,15 @@ export class NavBarComponent {
         this.searchInputElement.nativeElement.blur();
       }
     });
+  }
+
+  //Si es la primera carga, el campo de busqueda se deshabilita
+  ngOnChanges() {
+    if (this.firstLoad) {
+      this.searchControl.disable();
+    } else {
+      this.searchControl.enable();
+    }
   }
 
   ngOnDestroy() {

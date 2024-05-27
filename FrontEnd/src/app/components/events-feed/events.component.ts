@@ -50,6 +50,7 @@ export class EventsFeedComponent implements OnInit {
 
   isLoading: boolean = false;
   isSearchLoading: boolean = false;
+  firstLoad: boolean = true;
 
   noEventsFound: boolean = false;
 
@@ -75,33 +76,6 @@ export class EventsFeedComponent implements OnInit {
     private eventFeedService: EventFeedService,
     private userService: UserService) { }
 
-  // ngAfterViewInit() {
-  //   this.eventFeedService.currentGroup.subscribe(group => {
-  //     this.smoothScrollToTop();
-  //     this.actualGroup = group;
-  //     switch (group) {
-  //       case 'Public':
-  //         this.displayedEvents = this.publicEvents;
-  //         this.hasMoreEvents['Public'] = this.publicPage < this.publicTotalPages;
-  //         break;
-  //       case 'Friends':
-  // this.displayedEvents = this.friendsEvents;
-  // this.hasMoreEvents['Friends'] = this.friendsPage < this.friendsTotalPages;
-  //         break;
-  //       case 'Followed':
-  // this.hasMoreEvents['Followed'] = this.followingPage < this.followingTotalPages;
-  // this.displayedEvents = this.followingEvents;
-  //         break;
-  //       case 'Search':
-  //         this.hasMoreEvents['Search'] = this.searchedEvents.length < this.searchedTotalPages;
-  //         this.displayedEvents = this.searchedEvents;
-  //         break;
-  //       default:
-  //         console.error(`Unexpected group: ${group}`);
-  //     }
-  //   });
-  // }
-
   ngAfterViewInit() {
     let latestSearchValue = '';
     let latestGroup = '';
@@ -121,7 +95,8 @@ export class EventsFeedComponent implements OnInit {
         console.log('Actual group: ', group);
         console.log('Search value: ', value);
 
-        if (value === '' || value === null || (value as string).length <= 2) {
+        if (value === '' || value === null || (value as string).length <= 1) {
+          this.searchedEvents = [];
           // Si no hay valor de búsqueda, obtenemos los eventos del grupo actual
           switch (group) {
             case 'Public':
@@ -180,30 +155,6 @@ export class EventsFeedComponent implements OnInit {
     this.getFollowingEvents(this.followingPage);
     this.getFollowedUsers();
     this.getFriends();
-
-    // this.searchValue.pipe(
-    //   debounceTime(500),
-    //   switchMap(value => this.eventService.getSearchedEvents(this.searchedPage, this.actualGroup.toLowerCase(), value)),
-    //   map((apiResponse: any) => {
-    //     if (apiResponse.data) {
-    //       return {
-    //         events: apiResponse.data.events.map((event: Event) => this.eventService.transformToEvent(event)),
-    //         totalPages: apiResponse.meta.total_pages
-    //       };
-    //     } else {
-    //       console.log(apiResponse.message);  // Muestra el mensaje "No events found"
-    //       return {
-    //         events: [],
-    //         totalPages: 0
-    //       };
-    //     }
-    //   })
-    // ).subscribe(({ events, totalPages }) => {
-    //   this.searchedEvents = events;
-    //   this.searchedTotalPages = totalPages;
-    //   console.log('Searched events: ');
-    //   console.log(events);
-    // });
   }
 
   searchValue = new Subject<string>();
@@ -212,40 +163,6 @@ export class EventsFeedComponent implements OnInit {
     this.searchValue.next(searchValue);
   }
 
-  // getSearchEvents(search: string, page: number) {
-  //   this.isLoading = true;
-
-  //   this.eventService.getSearchedEvents(page, this.actualGroup, search).subscribe((response: any) => {
-  //     const newEvents = response.data.events.map((event: Event) => this.transformToEvent(event));
-  //     switch (this.actualGroup) {
-  //       case 'Public':
-  //         this.publicEvents = [...this.publicEvents, ...newEvents];
-  //         this.searchPublicTotalPages = response.meta.total_pages;
-  //         this.hasMoreEvents['Public'] = this.searchPublicPage < this.searchPublicTotalPages;
-  //         break;
-  //       case 'Friends':
-  //         this.friendsEvents = [...this.friendsEvents, ...newEvents];
-  //         this.searchFriendsTotalPages = response.meta.total_pages;
-  //         this.hasMoreEvents['Friends'] = this.searchFriendsPage < this.searchFriendsTotalPages;
-  //         break;
-  //       case 'Followed':
-  //         this.followingEvents = [...this.followingEvents, ...newEvents];
-  //         this.searchFollowingTotalPages = response.meta.total_pages;
-  //         this.hasMoreEvents['Followed'] = this.searchFollowingPage < this.searchFollowingTotalPages;
-  //         break;
-  //       default:
-  //         console.error(`Unexpected group: ${this.actualGroup}`);
-  //     }
-
-  //     this.displayedEvents = newEvents;
-
-  //     this.isLoading = false;
-  //   }, error => {
-  //     console.error('Error fetching searched events: ', error);
-  //     this.isLoading = false;
-  //   });
-
-  // }
 
   showMoreEventsBtn(): boolean {
     return this.hasMoreEvents[this.actualGroup];
@@ -354,6 +271,7 @@ export class EventsFeedComponent implements OnInit {
       this.displayedEvents = this.publicEvents;
 
       this.isLoading = false;
+      this.firstLoad = false;
       console.log('Public events: ', this.publicEvents);
     }, error => {
       console.error('Error fetching public events: ', error)

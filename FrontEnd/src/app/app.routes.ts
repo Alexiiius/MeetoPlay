@@ -17,7 +17,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'profile/1', pathMatch: 'full' },
       {
         path: 'profile/:id', component: ProfileComponent, children: [
-          { path: '', redirectTo: 'myEvents', pathMatch: 'full' },
+          { path: '', redirectTo: 'gameStats', pathMatch: 'full' },
           { path: 'gameStats', component: GameStatsComponent },
           { path: 'myEvents', component: MyEventsComponent },
           { path: 'participating', component: ParticipatingEventsComponent },

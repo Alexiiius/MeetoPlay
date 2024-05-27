@@ -7,8 +7,7 @@
       <!-- Avatar -->
       <div class="w-full flex items-center">
         <div class="flex items-center">
-          <div
-            class="skeleton w-[106px] h-[106px] min-w-[106px] min-h-[106px] rounded-full ">
+          <div class="skeleton w-[106px] h-[106px] min-w-[106px] min-h-[106px] rounded-full ">
 
           </div>
           <!-- UserName -->
@@ -38,19 +37,31 @@
   </div>
 
   <!-- Bio -->
-<div class="w-full dropdown dropdown-hover mt-2">
-  <div #bioDiv tabindex="0" role="button"
-    class="m-1 h-6 2xl:h-20 overflow-hidden text-ellipsis whitespace-nowrap font-normal flex flex-col gap-1"
-    [ngClass]="{'pointer-events-none': !isOverflow(bioDiv)}">
-    <div class="skeleton w-full h-3"></div>
-    <div class="skeleton w-1/2 h-3"></div>
-  </div>
-  @if (isOverflow(bioDiv)) {
-  <div tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-full border-neutral skeleton">
+  <div class="w-full dropdown dropdown-hover mt-2">
+    <div #bioDiv tabindex="0" role="button"
+      class="m-1 h-6 2xl:h-20 overflow-hidden text-ellipsis whitespace-nowrap font-normal flex flex-col gap-1"
+      [ngClass]="{'pointer-events-none': !isOverflow(bioDiv)}">
+      <div class="skeleton w-full h-3"></div>
+      <div class="skeleton w-1/2 h-3"></div>
+    </div>
+    @if (isOverflow(bioDiv)) {
+    <div tabindex="0"
+      class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-full border-neutral skeleton">
 
+    </div>
+    }
   </div>
-  }
-</div>
+
+  <!-- Socials + tabs -->
+  <div class="flex justify-between items-end">
+    <div class="flex gap-2">
+      <div role="tablist" class="tabs-boxed w-1/3 min-w-80 h-10 skeleton bg-base-300">
+      </div>
+    </div>
+    <div>
+      <app-socials [isLoading]="isLoading"></app-socials>
+    </div>
+  </div>
 
   } @else {
   <!-- Avatar + username + follows -->
@@ -72,18 +83,50 @@
         </div>
 
         <!-- Follow Followers Friends -->
-        <div class="w-80 flex justify-around mx-auto">
-          <div class="flex flex-col items-center">
-            <span class="text-xl font-mono font-bold">{{userFriends.length}}</span>
-            <span class="font-light link link-hover" (click)="openUserListModal('friends', userFriends)">Amigos</span>
+        <div class="w-80 flex flex-col gap-3 mx-auto mt-8">
+          <div class="w-full flex justify-around ">
+            <div class="flex flex-col items-center">
+              <span class="text-xl font-mono font-bold">{{userFriends.length}}</span>
+              <span class="font-light link link-hover" (click)="openUserListModal('friends', userFriends)">Amigos</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <span class="text-xl font-mono font-bold">{{userFollowed.length}}</span>
+              <span class="font-light link link-hover"
+                (click)="openUserListModal('followed', userFollowed)">Seguidos</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <span class="text-xl font-mono font-bold">{{userFollowers.length}}</span>
+              <span class="font-light link link-hover"
+                (click)="openUserListModal('followers', userFollowers)">Seguidores</span>
+            </div>
           </div>
-          <div class="flex flex-col items-center">
-            <span class="text-xl font-mono font-bold">{{userFollowed.length}}</span>
-            <span class="font-light link link-hover" (click)="openUserListModal('followed', userFollowed)">Seguidos</span>
-          </div>
-          <div class="flex flex-col items-center">
-            <span class="text-xl font-mono font-bold">{{userFollowers.length}}</span>
-            <span class="font-light link link-hover" (click)="openUserListModal('followers', userFollowers)">Seguidores</span>
+
+          <div class=" flex justify-center gap-3">
+            @if (!isLoggedUser) {
+            @if (!isFollowing) {
+            <button class="group btn btn-outline btn-primary font-normal" (click)="followUser()">
+              @if (isLoadingFollow_Unfollow) {
+              <span class="loading loading-spinner loading-sm text-primary group-hover:text-base-100"></span>
+              } @else {
+              <i class='bx bx-user-plus text-primary bx-sm group-hover:text-base-100'></i>
+              }
+              <span class="group-hover:text-neutral">Seguir</span>
+            </button>
+            } @else {
+            <button class="group btn btn-outline btn-primary font-normal" (click)="unfollowUser()">
+              @if (isLoadingFollow_Unfollow) {
+              <span class="loading loading-spinner loading-sm text-primary group-hover:text-base-100"></span>
+              } @else {
+              <i class='bx bx-user-minus text-primary bx-sm group-hover:text-base-100'></i>
+              }
+              <span class="group-hover:text-neutral">Dejar de seguir</span>
+            </button>
+            }
+            <button class="group btn btn-outline btn-secondary font-normal">
+              <i class='bx bx-chat text-secondary bx-sm group-hover:text-base-100'></i>
+              <span class="group-hover:text-neutral">Chat</span>
+            </button>
+            }
           </div>
         </div>
       </div>
@@ -91,47 +134,46 @@
   </div>
 
   <!-- Bio -->
-<div class="w-full dropdown dropdown-hover">
-  <div #bioDiv tabindex="0" role="button"
-    class="m-1 h-6 2xl:h-20 overflow-hidden text-ellipsis whitespace-nowrap font-normal"
-    [ngClass]="{'pointer-events-none': !isOverflow(bioDiv)}">
-    {{user.bio}}
-  </div>
-  @if (isOverflow(bioDiv)) {
-  <div tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-full border-neutral">
-    {{user.bio}}
-  </div>
-  }
-</div>
-  }
-
-
-<!-- Socials + tabs -->
-<div class="flex justify-between items-end">
-  <div class="flex gap-2">
-    <div role="tablist" class="tabs tabs-boxed w-1/3 min-w-80 h-min">
-      <a routerLink="gameStats" routerLinkActive="tab-active" role="tab" class="tab">Game Stats</a>
-      <a routerLink="myEvents" routerLinkActive="tab-active" role="tab" class="tab">My Events</a>
-      <a routerLink="participating" routerLinkActive="tab-active" role="tab" class="tab">Participating</a>
+  <div class="w-full dropdown dropdown-hover">
+    <div #bioDiv tabindex="0" role="button"
+      class="m-1 h-6 2xl:h-20 overflow-hidden text-ellipsis whitespace-nowrap font-normal"
+      [ngClass]="{'pointer-events-none': !isOverflow(bioDiv)}">
+      {{user.bio}}
     </div>
-
-    <button *ngIf="checkRoute()"
-      class="btn btn-primary text-neutral min-h-0 h-[40px] w-[40px] btn-square flex items-center justify-center">
-      <i class='bx bx-plus bx-sm'></i>
-    </button>
-  </div>
-  <div>
-    @if (isLoading) {
-
+    @if (isOverflow(bioDiv)) {
+    <div tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-full border-neutral">
+      {{user.bio}}
+    </div>
     }
-    <app-socials></app-socials>
   </div>
-</div>
 
-<div
-  class=" flex flex-col mt-2 bg-gradient-to-r from-primary to-secondary w-full h-full max-h-full rounded-box flex-grow overflow-y-scroll p-2 scrollbar-hidde">
-  <router-outlet></router-outlet>
-  <div class="mt-1 w-full"></div>
-</div>
+  <!-- Socials + tabs -->
+  <div class="flex justify-between items-end">
+    <div class="flex gap-2">
+      <div role="tablist" class="tabs tabs-boxed w-1/3 min-w-80 h-min">
+        <a routerLink="gameStats" routerLinkActive="tab-active" role="tab" class="tab">Game Stats</a>
+        @if (isLoggedUser) {
+        <a routerLink="myEvents" routerLinkActive="tab-active" role="tab" class="tab">My Events</a>
+        <a routerLink="participating" routerLinkActive="tab-active" role="tab" class="tab">Participating</a>
+        }
+      </div>
 
-<app-users-list/>
+      <button *ngIf="checkRoute()"
+        class="btn btn-primary text-neutral min-h-0 h-[40px] w-[40px] btn-square flex items-center justify-center">
+        <i class='bx bx-plus bx-sm'></i>
+      </button>
+    </div>
+    <div>
+      <app-socials></app-socials>
+    </div>
+  </div>
+
+  }
+
+  <div
+    class=" flex flex-col mt-2 bg-gradient-to-r from-primary to-secondary w-full h-full max-h-full rounded-box flex-grow overflow-y-scroll p-2 scrollbar-hidde">
+    <router-outlet></router-outlet>
+    <div class="mt-1 w-full"></div>
+  </div>
+
+  <app-users-list />

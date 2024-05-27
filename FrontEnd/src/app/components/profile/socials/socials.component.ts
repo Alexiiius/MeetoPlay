@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
+import { UserData } from '../../../interfaces/user-data';
 
 @Component({
   selector: 'app-socials',
@@ -9,4 +10,6 @@ import { Component } from '@angular/core';
 })
 export class SocialsComponent {
 
+  @Input() user: UserData;
+  @Input() isLoading: boolean;
 }

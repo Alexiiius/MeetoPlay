@@ -45,16 +45,20 @@ export class UserService implements OnInit {
     }
   }
 
-  getFollowers(): Observable<any> {
-    return this.http.get(`${this.backAPIUrl}/followers/${this.currentUser.value?.id}`);
+  isFollowing(id: number): Observable<any> {
+    return this.http.get(`${this.backAPIUrl}/isfollowing/${id}`);
   }
 
-  getFollowedUsers(): Observable<any>  {
-    return this.http.get(`${this.backAPIUrl}/following/${this.currentUser.value?.id}`);
+  getFollowers(userId: number): Observable<any> {
+    return this.http.get(`${this.backAPIUrl}/followers/${userId}`);
   }
 
-  getFriends(): Observable<any>{
-    return this.http.get(`${this.backAPIUrl}/friends/${this.currentUser.value?.id}`);
+  getFollowedUsers(userId: number): Observable<any>  {
+    return this.http.get(`${this.backAPIUrl}/following/${userId}`);
+  }
+
+  getFriends(userId: number): Observable<any>{
+    return this.http.get(`${this.backAPIUrl}/friends/${userId}`);
   }
 
   getUserById(id: number) {
@@ -63,6 +67,14 @@ export class UserService implements OnInit {
 
   getLogedUserData(): Observable<UserData> {
       return this.http.get<UserData>(this.backAPIUrl + '/user')
+  }
+
+  followUser(id: number): Observable<any> {
+    return this.http.post(`${this.backAPIUrl}/follow/${id}`,'');
+  }
+
+  unfollowUser(id: number): Observable<any> {
+    return this.http.post(`${this.backAPIUrl}/unfollow/${id}`,'');
   }
 }
 

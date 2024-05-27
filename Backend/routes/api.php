@@ -10,6 +10,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\FollowerController;
 use App\Http\Controllers\API\MessageController;
+use App\Http\Controllers\API\GameUserStatsController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']); //register a new user using name, email password and password_confirmation
@@ -22,21 +23,29 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // ------------------------------------------------------------------ USER ENDPOINTS ------------------------------------------------------------------
 
     Route::post('/logout', [AuthController::class, 'logout']); //logout the user authenticated
-    Route::get('/users', [UserController::class, 'index']); //return name, email and id from all users
 
-    Route::get('/user/{id}', [UserController::class, 'show']); //all data from specific user
+    Route::get('/user/{id}', [UserController::class, 'showNew']); //return id, name, email, tag, avatar, date_of_birth, bio and socials from a specific user by id
     Route::get('/user', [UserController::class, 'user']); //return all data from the authenticated user
+
+    Route::get('/user/search/{search}', [UserController::class, 'search'])->where('search', '.*'); //search users by name, tag and name#tag
 
     //WIP
     Route::post('/user/{id}', [UserController::class, 'update']);
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
+    //User Game and Gamemodes Stats
+    Route::get('/user/game-stats/search/{id}', [GameUserStatsController::class, 'index']); //return all game stats and gamemodes associated stats from a specific user id
+    Route::delete('/user/game-stats/delete/{gameStatID}', [GameUserStatsController::class, 'destroy']); //delete a specific game stats by game_id only if the user has permission to delete it
+    Route::put('/user/game-stats/update/{gameStatID}', [GameUserStatsController::class, 'update']); //update a specific game stats by game_id only if the user has permission to update it
+
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
     // ------------------------------------------------------------------ EVENT ENDPOINTS ------------------------------------------------------------------
 
-    Route::post('/create/event', [EventController::class, 'store']); //create a new event and its requirements
-    Route::put('event/update/{id}', [EventController::class, 'updateEvent']); //update a specific event by id only if the user has permission to update it
+    Route::post('/event/create', [EventController::class, 'store']); //create a new event and its requirements
+    Route::delete('/event/delete/{id}', [EventController::class, 'destroy']); //delete a specific event by id only if the user has permission to delete it
+    Route::put('/event/update/{id}', [EventController::class, 'updateEvent']); //update a specific event by id only if the user has permission to update it
+    
 
     Route::get('/event/{id}', [EventController::class, 'show']); //show a specific event with requirements by id only if the user has permission to see it
     Route::get('/events/public/{page}', [EventController::class, 'showPublicEvents']); //show all public events
@@ -46,14 +55,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/events/following/{page}', [EventController::class, 'showFollowingEvents']); //show all public and followers events of the users that auth user is following
     Route::get('/events/participating/{page}', [EventController::class, 'showParticipatingEvents']); //show all events that auth user is participating
 
-    Route::delete('/event/{id}', [EventController::class, 'destroy']); //delete a specific event by id only if the user has permission to delete it
-    Route::put('/event/{id}', [EventController::class, 'update']); //update a specific event by id only if the user has permission to update it
-
     Route::post('/event/{id}/join', [EventController::class, 'addParticipant']); //join a specific event by id only if the user has permission to join it
     Route::post('/event/{id}/leave', [EventController::class, 'removeParticipant']); //leave a specific event by id only if the user has permission to leave it
 
-    Route::get('events/search/{search}/{page}', [EventController::class, 'search']); //search events by title, game name, game mode, platform, date time begin, date time end, date time inscription begin, date time inscription end, max participants, privacy, event owner id, event requirement id
-
+    Route::get('/events/search/{search}/{group}/{page}', [EventController::class, 'searchNEW']); //search events by title, game name, game mode, platform, date time begin, date time end, date time inscription begin, date time inscription end, max participants, privacy, event owner id, event requirement id
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -85,7 +90,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 //Private routes for admin
 Route::middleware(['auth:sanctum' , 'admin'])->group(function () {
 
-    //
+    Route::get('/users', [UserController::class, 'index']); //return name, email and id from all users
 
 });
 
@@ -95,8 +100,6 @@ Route::get('health-check', function () {
 });
 
 //Pepazo endpoint for fun
-Route::get('pepazo', function () {
-    return response()->json([ 'pepazo' => 'pepazo' ]);
+Route::get('/pepazo', function () {
+    return response()->json(['pepazo' => 'pepazo']);
 });
-
-

@@ -31,7 +31,7 @@ export class MoreEventInfoModalComponent {
 
   eventDuration: string;
   eventParticipants: UserReduced[]
-  currentParticipants: number;
+  eventSlots: number;
 
   followedUsers: SocialUser[];
   friends: SocialUser[];
@@ -59,7 +59,7 @@ export class MoreEventInfoModalComponent {
   ngOnInit() {
     this.calculateEventDuration();
     this.eventParticipants = this.event.participants;
-    this.currentParticipants = this.eventParticipants.length;
+    this.eventSlots = this.event.max_participants - this.eventParticipants.length;
     this.filterParticipants();
   }
 
@@ -67,7 +67,7 @@ export class MoreEventInfoModalComponent {
     this.join_LeaveLoading = true;
     this.eventsService.joinEvent(this.event.id).subscribe(() => {
       this.toggleJoin();
-      this.currentParticipants++;
+      this.eventSlots--;
       this.join_LeaveLoading = false;
     });
   }
@@ -76,7 +76,7 @@ export class MoreEventInfoModalComponent {
     this.join_LeaveLoading = true;
     this.eventsService.leaveEvent(this.event.id).subscribe(() => {
       this.toggleJoin();
-      this.currentParticipants--;
+      this.eventSlots++;
       this.join_LeaveLoading = false;
     });
   }

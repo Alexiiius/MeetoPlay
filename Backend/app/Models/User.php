@@ -160,7 +160,9 @@ class User extends Authenticatable implements MustVerifyEmail
                 'id' => $follower->id,
                 'tag' => $follower->tag,
                 'name' => $follower->name,
-                'full_tag' => $follower->getFullNameAttribute()
+                'full_tag' => $follower->getFullNameAttribute(),
+                'profile_pic' => $follower->avatar,
+                'status' => $follower->status,
             ];
         });
     }
@@ -171,7 +173,9 @@ class User extends Authenticatable implements MustVerifyEmail
                 'id' => $following->id,
                 'tag' => $following->tag,
                 'name' => $following->name,
-                'full_tag' => $following->getFullNameAttribute()
+                'full_tag' => $following->getFullNameAttribute(),
+                'profile_pic' => $following->avatar,
+                'status' => $following->status,
             ];
         });
     }

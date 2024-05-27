@@ -8,6 +8,8 @@ use App\Models\EventRequirement;
 use App\Models\Follower;
 use App\Models\Participant;
 use App\Models\EventUser;
+use App\Models\GameUserStats;
+use App\Models\GamemodeStats;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -36,6 +38,8 @@ class DatabaseSeeder extends Seeder
         }
 
         EventUser::factory(50)->create();
+        GameUserStats::factory(50)->create();
+        GamemodeStats::factory(50)->create();
 
         
     }

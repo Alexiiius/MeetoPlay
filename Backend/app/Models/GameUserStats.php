@@ -24,4 +24,8 @@ class GameUserStats extends Model {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function gamemodeStats() {
+        return $this->hasMany(GamemodeStats::class, 'game_user_stats_id', 'id');
+    }
+
 }

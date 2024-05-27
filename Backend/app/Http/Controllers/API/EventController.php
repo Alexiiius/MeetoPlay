@@ -583,7 +583,7 @@ class EventController extends Controller
         // Filter the events
         $events = $events->filter(function ($event) use ($user) {
             return $this->canUserSeeThisEvent($event, $user);
-        });
+        })->values();
     
         $total = $events->count();
     

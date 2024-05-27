@@ -125,7 +125,12 @@ export class EventsFeedComponent implements OnInit {
           return this.eventService.getSearchedEvents(1, group.toLowerCase(), value).pipe(
             map((apiResponse: any) => {
               if (apiResponse.data) {
-                const events = apiResponse.data.events.map((event: Event) => this.eventService.transformToEvent(event));
+                let events;
+                if (Array.isArray(apiResponse.data.events)) {
+                  events = apiResponse.data.events.map((event: Event) => this.eventService.transformToEvent(event));
+                } else {
+                  events = [this.eventService.transformToEvent(apiResponse.data.events)];
+                }
                 if (events.length > 0) {
                   this.searchedEvents = events;  // Actualiza esto con el valor correcto
                   console.log('Searched events: ');
@@ -271,7 +276,6 @@ export class EventsFeedComponent implements OnInit {
       this.displayedEvents = this.publicEvents;
 
       this.isLoading = false;
-      this.firstLoad = false;
       console.log('Public events: ', this.publicEvents);
     }, error => {
       console.error('Error fetching public events: ', error)
@@ -314,6 +318,7 @@ export class EventsFeedComponent implements OnInit {
       }
 
       this.isLoading = false;
+      this.firstLoad = false;
       console.log('Following events: ', this.followingEvents);
     }, error => {
       console.error('Error fetching following events: ', error)

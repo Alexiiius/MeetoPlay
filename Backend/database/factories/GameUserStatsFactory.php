@@ -6,24 +6,16 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\GameUserStats;
 use App\Models\User;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\GameUserStats>
- */
-class GameUserStatsFactory extends Factory
-{
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+class GameUserStatsFactory extends Factory {
+
     public function definition(): array {
 
 
-        $game_id = $this->faker->numberBetween(1, 10);
+        $game_id = $this->faker->numberBetween(1, 100);
         $user_id = User::all()->random()->id;
         
         while (GameUserStats::where('game_id', $game_id)->where('user_id', $user_id)->exists()) {
-            $game_id = $this->faker->numberBetween(1, 10);
+            $game_id = $this->faker->numberBetween(1, 100);
             $user_id = User::all()->random()->id;
         }
         

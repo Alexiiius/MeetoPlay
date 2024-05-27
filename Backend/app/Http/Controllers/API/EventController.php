@@ -468,7 +468,7 @@ class EventController extends Controller
         ], 200);
     }
 
-    
+
     public function canUserSeeThisEvent(Event $event, User $user)
     {
 
@@ -543,16 +543,16 @@ class EventController extends Controller
 
         $userId = auth()->id();
         $idToSearch = null;
-        
+
         if ($group == 'followed'){
             $idToSearch = User::find($userId)->following()->pluck('users.id');
         } else if ($group == 'friends'){
             $idToSearch = User::find($userId)->friends();
         }
-        
+
         $perPage = 10;
         $skip = ($request->page - 1) * $perPage;
-        
+
         $events = Event::when($idToSearch, function ($query, $idToSearch) {
             return $query->whereIn('event_owner_id', $idToSearch);
         })
@@ -576,21 +576,22 @@ class EventController extends Controller
         ->skip($skip)
         ->take($perPage)
         ->get();
-    
+
         // Get the current authenticated user
         $user = auth()->user();
-    
+
         // Filter the events
+
         $events = $events->filter(function ($event) use ($user) {
             return $this->canUserSeeThisEvent($event, $user);
         })->values();
     
         $total = $events->count();
-    
+
         if ($events->isEmpty()) {
             return response()->json(['message' => 'No events found'], 200);
         }
-    
+
         return response()->json([
             'data' => [
                 'events' => $events,

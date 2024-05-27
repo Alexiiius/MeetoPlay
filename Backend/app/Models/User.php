@@ -160,9 +160,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 'id' => $follower->id,
                 'tag' => $follower->tag,
                 'name' => $follower->name,
-                'full_tag' => $follower->getFullNameAttribute(),
-                'profile_pic' => $follower->avatar,
-                'status' => $follower->status,
+                'full_tag' => $follower->getFullNameAttribute()
             ];
         });
     }
@@ -173,9 +171,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 'id' => $following->id,
                 'tag' => $following->tag,
                 'name' => $following->name,
-                'full_tag' => $following->getFullNameAttribute(),
-                'profile_pic' => $following->avatar,
-                'status' => $following->status,
+                'full_tag' => $following->getFullNameAttribute()
             ];
         });
     }
@@ -186,10 +182,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function receivedMessages(): HasMany {
         return $this->hasMany(Message::class, 'to_user_id');
-    }
-
-    public function gameStats() {
-        return $this->hasMany(GameUserStats::class, 'user_id', 'id');
     }
 
 }

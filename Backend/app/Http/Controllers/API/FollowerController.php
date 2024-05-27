@@ -234,9 +234,7 @@ class FollowerController extends Controller {
                 'id' => $friend->id,
                 'tag' => $friend->tag,
                 'name' => $friend->name,
-                'full_tag' => $friend->getFullNameAttribute(),
-                'profile_pic' => $friend->avatar,
-                'status' => $friend->status,
+                'full_tag' => $friend->getFullNameAttribute()
             ];
         });
     

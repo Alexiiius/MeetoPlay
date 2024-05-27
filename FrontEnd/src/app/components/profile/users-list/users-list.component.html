@@ -1,0 +1,29 @@
+<dialog id="my_modal_2" class="modal" #userListModal>
+  <div class="modal-box w-[400px] h-4/6 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-60 relative rounded-box p-6 bg-base-200 border border-primary/50">
+    <h3 class="font-smibold text-lg capitalize mb-3">{{list}}</h3>
+    <div class="w-full overflow-y-auto">
+      @for (user of userList; track user.id) {
+        <div class="flex items-center justify-between p-2 border-b border-primary/50">
+          <div class="flex items-center gap-2">
+            <div class="avatar">
+              <div class="w-10 h-10 rounded-full">
+                <img src="{{user.avatar}}" />
+              </div>
+            </div>
+            <div class="flex flex-col justify-center">
+              <h4 class="font-medium text-base leading-none">{{user.name}}</h4>
+              <span class="text-neutral/60 text-sm font-light">{{user.full_tag}}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button *ngIf="list === 'followers'" class="btn btn-sm btn-square btn-ghost"><i class='bx bx-user-plus bx-sm text-primary'></i></button>
+            <button class="btn btn-square btn-sm btn-ghost"><i class='bx bx-chat bx-sm text-secondary'></i></button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

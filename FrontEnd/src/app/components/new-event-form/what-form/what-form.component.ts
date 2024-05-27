@@ -128,7 +128,6 @@ export class WhatFormComponent implements OnInit {
   platformSelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const selectedPlatform = control.value;
-      console.log(selectedPlatform);
       if (!selectedPlatform) {
         return { 'platformNotSelected': { value: control.value } };
       }
@@ -140,7 +139,6 @@ export class WhatFormComponent implements OnInit {
   gameModeSelectedValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const selectedGameMode = control.value;
-      console.log(selectedGameMode);
       if (!selectedGameMode) {
         return { 'gameModeNotSelected': { value: control.value } };
       }

@@ -161,7 +161,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 'tag' => $follower->tag,
                 'name' => $follower->name,
                 'full_tag' => $follower->getFullNameAttribute(),
-                'profile_pic' => $follower->avatar,
+                'avatar' => $follower->avatar,
                 'status' => $follower->status,
             ];
         });
@@ -174,7 +174,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 'tag' => $following->tag,
                 'name' => $following->name,
                 'full_tag' => $following->getFullNameAttribute(),
-                'profile_pic' => $following->avatar,
+                'avatar' => $following->avatar,
                 'status' => $following->status,
             ];
         });
@@ -190,6 +190,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function gameStats() {
         return $this->hasMany(GameUserStats::class, 'user_id', 'id');
+    }
+
+    public function setStatus($status) {
+ 
+        if (!in_array($status, ['online', 'offline', 'afk', 'dnd', 'invisible'])) {
+            throw new \Exception('Invalid status.');
+        }
+ 
+        $this->status = $status;
+        $this->save();
     }
 
 }

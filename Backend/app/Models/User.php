@@ -14,6 +14,8 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Event;
 use App\Models\Message;
+use App\Models\GameUserStats;
+use App\Models\GameModeStats;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -190,6 +192,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function gameStats() {
         return $this->hasMany(GameUserStats::class, 'user_id', 'id');
+    }
+
+    public function gameModes() {
+        return $this->hasMany(GameModeStats::class, 'user_id', 'id');
     }
 
     public function setStatus($status) {

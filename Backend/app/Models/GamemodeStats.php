@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+
+use App\Models\GamemodeStats;
 
 class GamemodeStats extends Model {
     use HasFactory;
@@ -18,6 +21,10 @@ class GamemodeStats extends Model {
 
     public function gameUserStats() {
         return $this->belongsTo(GameUserStats::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 
 

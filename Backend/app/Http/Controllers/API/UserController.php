@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
+
 use App\Models\User;
 
 class UserController extends Controller
@@ -105,6 +108,54 @@ class UserController extends Controller
             return response()->json(['message' => 'Status change failed or already the same status.']);
         }
  
+    }
+
+    public function updateAvatar(Request $request) {
+
+        try { 
+            $request->validate([
+                'avatar' => 'required|image|max:2048',
+            ]);
+        
+            $user = auth()->user();
+        
+            $avatarName = $user->id.'_avatar.jpg';
+            $avatar = $request->file('avatar');
+
+            $image = Image::read($avatar);
+            $image->resize(400, 400);
+            $image->toPng()->save(storage_path('app/public/avatars/'.$avatarName));
+            $user->avatar = 'avatars/'.$avatarName;
+            $user->save();
+
+            return response()->json([
+                'data' => [
+                    'message'=>'You have successfully upload image.',
+                    'avatar' => $user->avatar,
+                    'Links' => [
+                        'self' => url('/api/user/avatar/update'),
+                    ],
+                ],
+                'meta' => [
+                    'timestamp' => now(),
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'data' => [
+                    'message'=>'Error uploading image.',
+                    'avatar' => $user->avatar,
+                    'Links' => [
+                        'self' => url('/api/user/avatar/update'),
+                    ],
+                ],
+                'meta' => [
+                    'timestamp' => now(),
+                ],
+            ], 500);
+        }
+            
     }
 
 }

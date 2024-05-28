@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('from_user_name');
             $table->string('to_user_name');
             $table->text('text')->nullable();
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
     }

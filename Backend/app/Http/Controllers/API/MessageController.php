@@ -54,8 +54,9 @@ class MessageController extends Controller {
         
 
         return response()->json([
-            'success' => true,
-            'message' => "Message created and job dispatched.",
+            'data' => [
+                'message' => 'Message sent successfully.',
+            ],
         ]);
 
     }
@@ -66,8 +67,9 @@ class MessageController extends Controller {
     
         if (User::find($id) == null) {
             return response()->json([
-                'success' => false,
-                'message' => "User with ID $id not found.",
+                'data' => [
+                    'message' => "User with ID $id not found.",
+                ],
             ]);
         }
     
@@ -86,10 +88,41 @@ class MessageController extends Controller {
         ->paginate(10);
     
         return response()->json([
-            'success' => true,
-            'messages' => $messages,
+            'data' => [
+                'messages' => $messages,
+            ],
         ]);
     
+    }
+
+    public function markAsRead(Request $request) {
+        $messageIds = $request->get('message_ID');
+    
+        $messages = Message::whereIn('id', $messageIds)
+                           ->where('to_user_id', auth()->user()->id)
+                           ->update(['read_at' => now()]);
+
+        return response()->json([
+            'data' => [
+                'message' => 'Messages marked as read.',
+                'messages_count' => $messages,
+            ],
+        ]);
+    }
+
+    public function getUnreadMessages() {
+
+        $userId = auth()->user()->id;
+
+        $unreadMessages = Message::where('to_user_id', $userId)
+                                 ->whereNull('read_at')
+                                 ->get();
+    
+        return response()->json([
+            'data' => [
+                'unread_messages' => $unreadMessages,
+            ],
+        ]);
     }
     
 

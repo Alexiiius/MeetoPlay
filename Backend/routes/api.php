@@ -34,6 +34,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/user/{id}', [UserController::class, 'update']);
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
+    Route::post('/user/avatar/update', [UserController::class, 'updateAvatar']); //update the avatar of the authenticated user
+
     //User Game and Gamemodes Stats
     Route::post('/user/game-stats/create', [GameUserStatsController::class, 'store']); //create a new game stats and associate it with a user
     Route::get('/user/game-stats/search/{id}', [GameUserStatsController::class, 'index']); //return all game stats and gamemodes associated stats from a specific user id
@@ -83,7 +85,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/message/send', [MessageController::class, 'sendMessage']); //send a message to a user
     Route::get('/message/get/{id}/{page}', [MessageController::class, 'getMessages']); //get all messages between auth user and id user
-
+    Route::get('message/get/unread', [MessageController::class, 'getUnreadMessages']); //get all unread messages from auth user
+    Route::put('/message/read', [MessageController::class, 'markAsRead']); //mark all messages from arrayID as read
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 

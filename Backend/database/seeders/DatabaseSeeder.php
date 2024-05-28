@@ -41,6 +41,6 @@ class DatabaseSeeder extends Seeder
         GameUserStats::factory(50)->create();
         GamemodeStats::factory(50)->create();
 
-        
+
     }
 }

@@ -585,7 +585,7 @@ class EventController extends Controller
         $events = $events->filter(function ($event) use ($user) {
             return $this->canUserSeeThisEvent($event, $user);
         })->values();
-    
+
         $total = $events->count();
 
         if ($events->isEmpty()) {

@@ -113,7 +113,6 @@ export class EventsFeedComponent implements OnInit {
     });
   }
 
-
   getFollowedUsers(userId: number): void {
     this.userService.getFollowedUsers(userId).subscribe(
       (response: FollowedUsersResponse) => {

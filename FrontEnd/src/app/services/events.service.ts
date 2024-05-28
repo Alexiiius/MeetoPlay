@@ -46,6 +46,11 @@ export class EventsService {
     return this.http.get<any[]>(`${this.backAPIUrl}/events/participating/${page}`);
   }
 
+  getSearchedEvents(page: number, group: string, search: string): Observable<{data: {events: any[]}}> {
+    console.log(`${this.backAPIUrl}/events/search/${search}/${group}/${page}`);
+    return this.http.get<{data: {events: any[]}}>(`${this.backAPIUrl}/events/search/${search}/${group}/${page}`);
+  }
+
   joinEvent(eventId: number) {
     return this.http.post(`${this.backAPIUrl}/event/${eventId}/join`, {});
   }

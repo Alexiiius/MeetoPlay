@@ -9,6 +9,7 @@ import { catchError, forkJoin, map, Observable, of, tap } from 'rxjs';
 import { UsersListComponent } from './users-list/users-list.component';
 
 import { UserReduceFollowing } from '../../interfaces/user-reduce-following';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-profile',
@@ -43,13 +44,15 @@ export class ProfileComponent {
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
-    private router: Router) { }
+    private router: Router,
+    private profileService: ProfileService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.isLoading = true;
       this.userService.getUserById(params['id']).subscribe(user => {
         this.user = user;
+        this.profileService.setUserProfileId(user.id);
         forkJoin([
           this.getUserRelations(this.user.id),
           this.checkIfLoggedUser(),

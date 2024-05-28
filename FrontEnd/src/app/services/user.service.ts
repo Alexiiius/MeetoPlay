@@ -61,6 +61,10 @@ export class UserService implements OnInit {
     return this.http.get(`${this.backAPIUrl}/friends/${userId}`);
   }
 
+  getUserGameStats(userId: number): Observable<any> {
+    return this.http.get(`${this.backAPIUrl}/user/game-stats/search/${userId}`);
+  }
+
   getUserById(id: number) {
     return this.http.get<UserData>(`${this.backAPIUrl}/user/${id}`);
   }

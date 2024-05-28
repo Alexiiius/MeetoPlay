@@ -14,7 +14,12 @@ window.Echo = new Echo({
 });
 
 
-// window.Echo.private(`App.Models.User.4`).listen('GotMessage', (e) => {
+// window.Echo.channel(`publico`).listen('GotMessage', (e) => {
+//     console.log("From public channel");
 //     console.log(e);
 // });
 
+// window.Echo.private(`App.Models.User.4`).listen('GotMessage', (e) => {
+//     console.log("From private channel");
+//     console.log(e);
+// });

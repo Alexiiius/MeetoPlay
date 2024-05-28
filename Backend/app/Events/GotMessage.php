@@ -32,6 +32,7 @@ class GotMessage implements ShouldBroadcast{
         
         return [
             new PrivateChannel('App.Models.User.' . $this->message['to_user_id']),
+            // new Channel('publico'),
         ];
 
     }

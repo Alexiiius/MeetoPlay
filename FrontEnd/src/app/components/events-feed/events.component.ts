@@ -158,8 +158,7 @@ export class EventsFeedComponent implements OnInit {
     this.getPublicEvents(this.publicPage);
     this.getFriendsEvents(this.friendsPage);
     this.getFollowingEvents(this.followingPage);
-    this.getFollowedUsers();
-    this.getFriends();
+    this.getLoggedUser();
   }
 
   searchValue = new Subject<string>();
@@ -178,8 +177,15 @@ export class EventsFeedComponent implements OnInit {
     return this.moreEventsLoaded[this.actualGroup];
   }
 
-  getFollowedUsers(): void {
-    this.userService.getFollowedUsers().subscribe(
+  getLoggedUser(): void {
+    this.userService.getLogedUserData().subscribe((user) => {
+      this.getFollowedUsers(user.id);
+      this.getFriends(user.id);
+    });
+  }
+
+  getFollowedUsers(userId: number): void {
+    this.userService.getFollowedUsers(userId).subscribe(
       (response: FollowedUsersResponse) => {
         this.followedUsers = response.data.following;
         this.userService.updateFollowedUsers(this.followedUsers);
@@ -192,8 +198,8 @@ export class EventsFeedComponent implements OnInit {
     );
   }
 
-  getFriends(): void {
-    this.userService.getFriends().subscribe(
+  getFriends(userId: number): void {
+    this.userService.getFriends(userId).subscribe(
       (response: FriendsResponse) => {
         this.friends = response.data.friends;
         this.userService.updateFriends(this.friends);

@@ -16,7 +16,7 @@ export class EventsService {
 
   private backAPIUrl = backAPIUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private userService: UserService) { }
 
   postNewEvent(newEvent: any) {
     return this.http.post(this.backAPIUrl + '/create/event', newEvent);
@@ -48,6 +48,10 @@ export class EventsService {
 
   getMyEvents(page: number) {
     return this.http.get<any[]>(`${this.backAPIUrl}/events/my/${page}`);
+  }
+
+  getParticipatingEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/participating/${page}`);
   }
 
   getSearchedEvents(page: number, group: string, search: string): Observable<{data: {events: any[]}}> {

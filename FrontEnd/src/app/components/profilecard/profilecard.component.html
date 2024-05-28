@@ -6,7 +6,7 @@
       <div class="avatar">
         <div class="w-12 rounded-full" [ngClass]="{'hidden': !userAvatarLoaded}">
           @if (!userAvatarLoaded) {
-          <div class="skeleton w-12 h-12 bg-accent/15 rounded-full shrink-0"></div>
+          <div class="skeleton w-12 h-12 rounded-full shrink-0"></div>
           }
           <img #avatar src="{{user?.avatar}}" (load)="onAvatarLoad()" />
         </div>

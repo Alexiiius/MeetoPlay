@@ -25,7 +25,7 @@
         </div>
         <div class="flex items-center gap-2">
 
-          <button *ngIf="!user.isFollowing" class="btn btn-sm btn-square btn-ghost hover:bg-base-200/70"
+          <button *ngIf="!user.isFollowing && !isLogedUser(user.id)" class="btn btn-sm btn-square btn-ghost hover:bg-base-200/70"
             (click)="followUser(user.id); $event.stopPropagation()">
             @if (isFollowingLoading[user.id]) {
               <span class="loading loading-spinner loading-sm text-primary"></span>

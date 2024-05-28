@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
 import { forkJoin } from 'rxjs';
@@ -29,6 +29,8 @@ export class UsersListComponent {
   isLoading: boolean = false;
   isFollowingLoading: { [userId: number]: boolean } = {};
 
+  @Input() logedUserId: number;
+
   @ViewChild('userListModal') modalDialog!: ElementRef<HTMLDialogElement>;
 
   @Output() userFollowed = new EventEmitter<any>();
@@ -39,6 +41,12 @@ export class UsersListComponent {
     this.modalDialog.nativeElement.showModal();
     this.list = list as 'friends' | 'followers' | 'followed';
     this.userList = userList;
+
+    // Si userList está vacío, establecer isLoading a false y retornar
+    if (userList.length === 0) {
+      this.isLoading = false;
+      return;
+    }
 
     this.isLoading = true;
 
@@ -55,7 +63,6 @@ export class UsersListComponent {
 
       this.isLoading = false;
     });
-
   }
 
   closeModal() {
@@ -74,5 +81,9 @@ export class UsersListComponent {
       // Emit the event with the list type
       this.userFollowed.emit();
     });
+  }
+
+  isLogedUser(userId: number): boolean {
+    return this.logedUserId === userId;
   }
 }

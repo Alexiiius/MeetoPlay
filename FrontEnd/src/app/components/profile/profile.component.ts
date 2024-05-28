@@ -33,6 +33,7 @@ export class ProfileComponent {
   userFollowed: UserReduceFollowing[] = [];
   userFollowers: UserReduceFollowing[] = [];
 
+  logedUser: UserData;
   isLoggedUser: boolean;
   isFollowing: boolean;
   isLoadingFollow_Unfollow: boolean = false;
@@ -106,6 +107,7 @@ export class ProfileComponent {
 
   checkIfLoggedUser(): Observable<boolean> {
     return this.userService.getLogedUserData().pipe(
+      tap(user => this.logedUser = user), // Almacena el usuario conectado en this.logedUser
       map(user => user.id === this.user.id)
     );
   }
@@ -139,6 +141,7 @@ export class ProfileComponent {
     this.isLoadingFollow_Unfollow = true;
     this.userService.unfollowUser(this.user.id).subscribe(() => {
       this.isFollowing = false;
+      this.getUserRelations(this.user.id).subscribe();
       this.isLoadingFollow_Unfollow = false;
     });
   }
@@ -147,6 +150,7 @@ export class ProfileComponent {
     this.isLoadingFollow_Unfollow = true;
     this.userService.followUser(this.user.id).subscribe(() => {
       this.isFollowing = true;
+      this.getUserRelations(this.user.id).subscribe();
       this.isLoadingFollow_Unfollow = false;
     });
   }

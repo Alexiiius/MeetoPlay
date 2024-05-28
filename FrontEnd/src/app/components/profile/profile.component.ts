@@ -28,7 +28,7 @@ export class ProfileComponent {
 
   user: UserData; //TODO create UserPublic interface
   isLoading = true;
-  
+
   userFriends: UserReduceFollowing[] = [];
   userFollowed: UserReduceFollowing[] = [];
   userFollowers: UserReduceFollowing[] = [];
@@ -44,58 +44,65 @@ export class ProfileComponent {
     private userService: UserService,
     private router: Router) { }
 
-    ngOnInit() {
-      this.route.params.subscribe(params => {
-        this.isLoading = true;
-        this.userService.getUserById(params['id']).subscribe(user => {
-          this.user = user;
-          forkJoin([
-            this.getUserRelations(this.user.id),
-            this.checkIfLoggedUser(),
-            this.checkIfFollowing()
-          ]).subscribe(([_, isLoggedUser, isFollowing]) => {
-            this.isLoggedUser = isLoggedUser;
-            this.isFollowing = isFollowing;
-            this.isLoading = false;
-          });
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.isLoading = true;
+      this.userService.getUserById(params['id']).subscribe(user => {
+        this.user = user;
+        forkJoin([
+          this.getUserRelations(this.user.id),
+          this.checkIfLoggedUser(),
+          this.checkIfFollowing()
+        ]).subscribe(([_, isLoggedUser, isFollowing]) => {
+          this.isLoggedUser = isLoggedUser;
+          this.isFollowing = isFollowing;
+          this.isLoading = false;
         });
       });
-    }
+    });
+  }
 
-    getUserRelations(userId: number): Observable<any> {
-      console.log('Hoal' + userId);
-      const friends$ = this.userService.getFriends(userId).pipe(
-        tap(response => {
-          this.userFriends = response.data.friends;
-        }),
-        catchError(error => {
-          console.error('Error getting friends:', error);
-          return of(null);
-        })
-      );
+  updateFollowCounts() {
+    this.checkIfLoggedUser().subscribe(isLoggedUser => {
+      if (isLoggedUser) {
+        this.getUserRelations(this.user.id).subscribe();
+      }
+    });
+  }
 
-      const followed$ = this.userService.getFollowedUsers(userId).pipe(
-        tap(response => {
-          this.userFollowed = response.data.following;
-        }),
-        catchError(error => {
-          console.error('Error getting followed users:', error);
-          return of(null);
-        })
-      );
+  getUserRelations(userId: number): Observable<any> {
+    const friends$ = this.userService.getFriends(userId).pipe(
+      tap(response => {
+        this.userFriends = response.data.friends;
+      }),
+      catchError(error => {
+        console.error('Error getting friends:', error);
+        return of(null);
+      })
+    );
 
-      const followers$ = this.userService.getFollowers(userId).pipe(
-        tap(response => {
-          this.userFollowers = response.data.followers;
-        }),
-        catchError(error => {
-          console.error('Error getting followers:', error);
-          return of(null);
-        })
-      );
+    const followed$ = this.userService.getFollowedUsers(userId).pipe(
+      tap(response => {
+        this.userFollowed = response.data.following;
+      }),
+      catchError(error => {
+        console.error('Error getting followed users:', error);
+        return of(null);
+      })
+    );
 
-      return forkJoin([friends$, followed$, followers$]);
-    }
+    const followers$ = this.userService.getFollowers(userId).pipe(
+      tap(response => {
+        this.userFollowers = response.data.followers;
+      }),
+      catchError(error => {
+        console.error('Error getting followers:', error);
+        return of(null);
+      })
+    );
+
+    return forkJoin([friends$, followed$, followers$]);
+  }
 
   checkIfLoggedUser(): Observable<boolean> {
     return this.userService.getLogedUserData().pipe(

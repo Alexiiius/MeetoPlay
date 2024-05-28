@@ -7,7 +7,7 @@
       <!-- Avatar -->
       <div class="w-full flex items-center">
         <div class="flex items-center">
-          <div class="skeleton w-[106px] h-[106px] min-w-[106px] min-h-[106px] rounded-full ">
+          <div class="skeleton w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full ">
 
           </div>
           <!-- UserName -->
@@ -70,7 +70,7 @@
       <div class="w-full flex items-center">
         <div class="flex items-center">
           <div
-            class="avatar w-[106px] h-[106px] min-w-[106px] min-h-[106px] rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+            class="avatar w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
             <div class="w-24 h-24 rounded-full border border-base-200">
               <img src="{{user.avatar}}" />
             </div>
@@ -171,9 +171,9 @@
   }
 
   <div
-    class=" flex flex-col mt-2 bg-gradient-to-r from-primary to-secondary w-full h-full max-h-full rounded-box flex-grow overflow-y-scroll p-2 scrollbar-hidde">
+    class="flex flex-col mt-2 bg-gradient-to-r from-primary to-secondary w-full h-full max-h-full rounded-box flex-grow overflow-y-scroll p-2 scrollbar-hidde">
     <router-outlet></router-outlet>
     <div class="mt-1 w-full"></div>
   </div>
 
-  <app-users-list />
+  <app-users-list (userFollowed)="updateFollowCounts()"/>

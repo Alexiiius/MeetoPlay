@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
 import { forkJoin } from 'rxjs';
@@ -16,8 +16,6 @@ import { RouterLink } from '@angular/router';
   styleUrl: './users-list.component.css'
 })
 
-//TODO hacer un emiter para que cuando se siga a un usuario se actualice la lista de seguidos
-
 export class UsersListComponent {
 
   listTranslations = {
@@ -32,6 +30,8 @@ export class UsersListComponent {
   isFollowingLoading: { [userId: number]: boolean } = {};
 
   @ViewChild('userListModal') modalDialog!: ElementRef<HTMLDialogElement>;
+
+  @Output() userFollowed = new EventEmitter<any>();
 
   constructor(private userService: UserService) { }
 
@@ -70,6 +70,9 @@ export class UsersListComponent {
         user.isFollowing = true;
       }
       this.isFollowingLoading[userId] = false;
+
+      // Emit the event with the list type
+      this.userFollowed.emit();
     });
   }
 }

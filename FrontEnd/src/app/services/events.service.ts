@@ -3,7 +3,7 @@ import { FormatedNewEvent } from '../interfaces/formated-new-event';
 import { HttpClient } from '@angular/common/http';
 import { backAPIUrl } from '../config';
 import { UserService } from './user.service';
-import { first } from 'rxjs';
+import { first, Observable } from 'rxjs';
 import { UserReduced } from '../interfaces/user-reduced';
 import { Owner } from '../models/owner';
 import { EventRequirments } from '../models/eventRequirments';
@@ -20,6 +20,14 @@ export class EventsService {
 
   postNewEvent(newEvent: any) {
     return this.http.post(this.backAPIUrl + '/create/event', newEvent);
+  }
+
+  updateEvent(eventId: number, updatedEvent: any) {
+    return this.http.put(this.backAPIUrl + '/event/update/' + eventId, updatedEvent);
+  }
+
+  deleteEvent(eventId: number) {
+    return this.http.delete(this.backAPIUrl + '/event/delete/' + eventId);
   }
 
   getPublicEvents(page: number) {

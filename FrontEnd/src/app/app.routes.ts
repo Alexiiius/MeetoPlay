@@ -13,7 +13,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' },
   {
     path: 'main', component: MainComponent, canActivate: [authGuard], children: [
-      { path: '', redirectTo: 'profile/1', pathMatch: 'full' },
+      { path: '', component: EventsFeedComponent },
       {
         path: 'profile/:id', component: ProfileComponent, children: [
           { path: '', redirectTo: 'gameStats', pathMatch: 'full' },
@@ -21,12 +21,12 @@ export const routes: Routes = [
           { path: 'myEvents', component: MyEventsComponent },
           { path: 'participating', component: ParticipatingEventsComponent },
         ]
-      },
-      // otras rutas hijas aquí
+      }
     ]
   },
   { path: 'login', component: LoginRegisterComponent, canActivate: [loggedGuard], data: { mode: 'login' } },
   { path: 'register', component: LoginRegisterComponent, canActivate: [loggedGuard], data: { mode: 'register' } },
+
   // otras rutas aquí
   { path: '**', redirectTo: 'main' },
 ];

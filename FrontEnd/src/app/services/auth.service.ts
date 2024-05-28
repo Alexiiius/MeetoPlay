@@ -17,6 +17,8 @@ export class AuthService {
 
   public userData = new BehaviorSubject<UserData | null>(null);
 
+  public currentUserSafe: UserData | null;
+
   constructor(private http: HttpClient, private router: Router) {
     this.autoLogin();
   }
@@ -38,10 +40,7 @@ export class AuthService {
         return token;
       }),
       catchError(errorResponse => {
-        // Access the error object
         const error = errorResponse.error;
-        // Now you can access error.data, error.meta, etc.
-        // For example, convert the error into a user-friendly format
         return throwError({ error: true, message: error.data.message });
       })
     );
@@ -55,10 +54,7 @@ export class AuthService {
         return token;
       }),
       catchError(errorResponse => {
-        // Access the error object
         const error = errorResponse.error;
-        // Now you can access error.data, error.meta, etc.
-        // For example, convert the error into a user-friendly format
         if (error.data && error.data.errors) {
           return throwError({ error: true, message: error.data.message, errors: error.data.errors });
         } else {
@@ -69,9 +65,12 @@ export class AuthService {
   }
 
   storeToken(token: string, rememberMe: boolean): Promise<void> {
+    localStorage.removeItem('access_token');
+    sessionStorage.removeItem('access_token');
     return new Promise((resolve, reject) => {
       if (rememberMe) {
         localStorage.setItem('access_token', token);
+        sessionStorage.setItem('access_token', token);
       } else {
         sessionStorage.setItem('access_token', token);
       }
@@ -99,6 +98,12 @@ export class AuthService {
     return userData ? JSON.parse(userData) : null;
   }
 
+  getUserDataSafe(): void {
+    this.http.get<UserData>(this.backAPIUrl + '/user').subscribe(userData => {
+      this.currentUserSafe = userData;
+    });
+  }
+
   getUserData(): Observable<UserData> {
     const storedUserData = this.retrieveUserData();
     if (storedUserData) {
@@ -109,7 +114,7 @@ export class AuthService {
         tap(userData => {
           this.userData.next(userData);
           this.storeUserData(userData);
-          console.log('User data fetched');
+          this.getUserDataSafe();
         })
       );
     }

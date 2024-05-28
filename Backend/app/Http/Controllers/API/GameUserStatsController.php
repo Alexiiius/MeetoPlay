@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\GameUserStats;
+use App\Models\GamemodeStats;
 
 class GameUserStatsController extends Controller {
 
@@ -115,5 +116,82 @@ class GameUserStatsController extends Controller {
         }
 
     }
+
+    public function gamemodeCreate(Request $request) {
+        $request->validate([
+            'game_user_stats_id' => 'required|int',
+            'gamemode_name' => 'required|string|max:20|min:2',
+            'gamemodes_rank' => 'required|string|max:20|min:2',
+        ]);
+
+        $dataToInsert = $request->all();
+        $dataToInsert['user_id'] = auth()->id();
+
+        $GameUserStats = GameUserStats::where('id', $dataToInsert['game_user_stats_id'])->first();
+
+        if (!$GameUserStats) {
+            return $this->responseDataFormat($request, null, 'Game stats not found');
+        }
+
+        if ($GameUserStats->user_id != $dataToInsert['user_id']) {
+            return $this->responseDataFormat($request, null, 'Unauthorized', 401);
+        }
+
+        $GameUserStats->gamemodeStats()->create($dataToInsert);
+
+        return $this->responseDataFormat($request, $dataToInsert, 'Gamemode stats created successfully', 201);
+    }
+
+    public function gamemodeUpdate($gamemodeStatID, Request $request){
+
+        $request->validate([
+            'gamemodes_rank' => 'required|string|max:20|min:2',
+        ]);
+
+        $user = auth()->user();
+
+        $GameMode = GameModeStats::where('id', $gamemodeStatID)->first();
+
+        if (!$GameMode) {
+            return $this->responseDataFormat($request, $GameUserStats, 'Game stats not found');
+        }
+
+        if ($GameMode->user_id != $user->id && $user->is_admin != true) {
+            return $this->responseDataFormat($request, null, 'Unauthorized', 401);
+        }
+
+        $dataToUpdate = $request->all();
+        $dataToUpdate['user_id'] = $user->id;
+
+        if ($GameMode->update($dataToUpdate)) {
+            return $this->responseDataFormat($request, $GameMode, 'Game stats updated successfully');
+        }else{
+            return $this->responseDataFormat($request, [], 'Game stats not updated');
+        }
+
+    }
+
+    public function gamemodeDestroy($gamemodeStatID, Request $request){
+
+        $user = auth()->user();
+
+        $GameMode = GameModeStats::where('id', $gamemodeStatID)->first();
+
+        if (!$GameMode) {
+            return $this->responseDataFormat($request, $GameUserStats, 'Game stats not found');
+        }
+
+        if ($GameMode->user_id != $user->id && $user->is_admin != true) {
+            return $this->responseDataFormat($request, null, 'Unauthorized', 401);
+        }
+
+        if ($GameMode->delete()) {
+            return $this->responseDataFormat($request, $GameMode, 'Game stats deleted successfully');
+        }else{
+            return $this->responseDataFormat($request, [], 'Game stats not deleted');
+        }
+
+    }
+
 
 }

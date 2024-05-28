@@ -15,8 +15,9 @@ class GamemodeStatsFactory extends Factory {
         //keep generating random if the combination already exists 3 times
         //because a game id can have multiple gamemodes
         do {
-            $game_user_stats_id = GameUserStats::all()->random()->id;
-            $user_id = User::all()->random()->id;
+            $game_stats = GameUserStats::all()->random();
+            $game_user_stats_id = $game_stats->id;
+            $user_id = $game_stats->user_id;
             $count = GamemodeStats::where('game_user_stats_id', $game_user_stats_id)->where('user_id', $user_id)->count();
         } while ($count >= 3);
     

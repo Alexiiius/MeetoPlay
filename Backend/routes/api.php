@@ -35,9 +35,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
     //User Game and Gamemodes Stats
+    Route::post('/user/game-stats/create', [GameUserStatsController::class, 'store']); //create a new game stats and associate it with a user
     Route::get('/user/game-stats/search/{id}', [GameUserStatsController::class, 'index']); //return all game stats and gamemodes associated stats from a specific user id
     Route::delete('/user/game-stats/delete/{gameStatID}', [GameUserStatsController::class, 'destroy']); //delete a specific game stats by game_id only if the user has permission to delete it
     Route::put('/user/game-stats/update/{gameStatID}', [GameUserStatsController::class, 'update']); //update a specific game stats by game_id only if the user has permission to update it
+
+    
+    Route::patch('/user/game-stats/gamemode/update/{gamemodeStatID}', [GameUserStatsController::class, 'gamemodeUpdate']); //update a specific gamemode stats by gamemode_id only if the user has permission to update it
+    Route::delete('/user/game-stats/gamemode/delete/{gamemodeStatID}', [GameUserStatsController::class, 'gamemodeDestroy']); //delete a specific gamemode stats by gamemode_id only if the user has permission to delete it
+    Route::post('/user/game-stats/gamemode/create', [GameUserStatsController::class, 'gamemodeCreate']); //create a new gamemode stats and associate it with a game stats
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 

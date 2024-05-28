@@ -5,7 +5,7 @@ import { Event } from '../../../models/event';
 import { format } from 'date-fns';
 import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EventOptionsComponent } from './event-options/event-options.component';
+import { EditEventFormComponent } from '../../profile/edit-event-form/edit-event-form.component';
 
 @Component({
   selector: 'app-event-card',
@@ -14,7 +14,7 @@ import { EventOptionsComponent } from './event-options/event-options.component';
     CommonModule,
     FormsModule,
     MoreEventInfoModalComponent,
-    EventOptionsComponent
+    EditEventFormComponent
   ],
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.css'

@@ -1,42 +1,33 @@
 <div class="w-full h-full max-h-full flex flex-col">
-  <app-nav-bar [isLoading]="isLoading" [isSearchLoading]="isSearchLoading"
-    (searchEventInput)="handleSearchInput($event)" [firstLoad]="firstLoad"/>
+  <app-nav-bar [isLoading]="isLoading"></app-nav-bar>
   <div #scrollContainer id="scrollContainer"
     class="shadow-inner p-2 mt-4 w-full h-full rounded-box space-y-4 flex flex-col justify-start overflow-y-scroll overflow-x-hidden scrollbar-hidde bg-gradient-to-r from-primary to-secondary">
 
     @if (isLoading) {
     <div *ngFor="let i of [].constructor(10)" class="skeleton bg-neutral/25 w-full h-[88px] min-h-[88px] shadow-lg">
     </div>
-    } @else {
-    @for (event of displayedEvents; track $index) {
-    <app-event-card [event]="event" />
-    } @empty {
-    <div class="bg-base-100/25 w-full h-[88px] min-h-[88px] shadow-lg rounded-box">
-      <div class="flex flex-col justify-center items-center h-full">
-        <p class="text-lg text-neutral-content">No events found</p>
-      </div>
-    </div>
     }
 
+    @for (event of displayedEvents; track $index) {
+    <app-event-card [event]="event" />
+    }
     <div class="flex space-x-1">
-      @if (displayedEvents.length !== 0 && searchedEvents.length === 0) {
-        @if (!isLoading && showScrolltoTopBtn()) {
-          <button (click)="smoothScrollToTop()" class="scroll-to-top btn font-normal bg-base-200/60 btn-ghost rounded-box"
-            [ngClass]="showMoreEventsBtn() ? 'w-1/2' : 'w-full'"><i class='bx bxs-to-top bx-sm text-secondary'></i></button>
+
+      @if (!isLoading && showScrolltoTopBtn()) {
+      <button (click)="smoothScrollToTop()" class="scroll-to-top btn font-normal bg-base-200/60 btn-ghost rounded-box"
+        [ngClass]="showMoreEventsBtn() ? 'w-1/2' : 'w-full'"><i class='bx bxs-to-top bx-sm text-secondary'></i></button>
+      }
+      @if (showMoreEventsBtn()) {
+      <button class="btn btn-ghost rounded-box font-normal bg-base-200/60" (click)="loadMoreEvents()"
+        [ngClass]="!isLoading && showScrolltoTopBtn() ? 'w-1/2' : 'w-full'">
+        @if (isLoading) {
+        <span class="loading loading-infinity text-primary w-10"></span>
+        } @else {
+        <i class='bx bxs-plus-square bx-sm text-primary'></i>
         }
-        @if (showMoreEventsBtn()) {
-        <button class="btn btn-ghost rounded-box font-normal bg-base-200/60" (click)="loadMoreEvents()"
-          [ngClass]="!isLoading && showScrolltoTopBtn() ? 'w-1/2' : 'w-full'">
-          @if (isLoading) {
-          <span class="loading loading-infinity text-primary w-10"></span>
-          } @else {
-          <i class='bx bxs-plus-square bx-sm text-primary'></i>
-          }
-        </button>
-        }
+      </button>
       }
     </div>
-    }
   </div>
 
 </div>

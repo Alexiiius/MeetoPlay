@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { FormatedNewGameStat } from '../interfaces/formated-new-game-stat';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +11,7 @@ export class ProfileService {
   private userProfileId = new BehaviorSubject<number | null>(null);
 
   eventDeleted = new Subject<void>();
+  gameStatCreated = new Subject<void>();
 
   setUserProfileId(id: number) {
     this.userProfileId.next(id);

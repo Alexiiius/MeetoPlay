@@ -35,6 +35,7 @@ export class MyEventsComponent implements OnInit {
     this.getMyEvents(this.page);
     this.profileService.eventDeleted.subscribe(() => {
       this.getMyEvents(this.page);
+      this.myEvents = []
       console.log('Evento eliminado');
     });
   }

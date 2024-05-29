@@ -21,12 +21,8 @@
     </div>
   </div>
   } @else {
-  @for (gameStat of stats; track $index) {
-  <app-game-stat-card [gameStat]="gameStat" />
-  } @empty {
-  <div class="w-full h-full flex items-center justify-center">
-    <span class="text-lg font-medium">No hay estadisticas de juegos 😯</span>
-  </div>
-  }
-  }
+    @for (gameStat of stats; track $index) {
+      <app-game-stat-card [gameStat]="gameStat" />
+    }
+}
 </div>

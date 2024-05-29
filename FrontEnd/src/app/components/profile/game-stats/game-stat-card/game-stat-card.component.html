@@ -17,8 +17,15 @@
 
   </div>
   <div class="collapse-content">
-    <h3 class="font-medium text-base">Gamemode Stats</h3>
-    <table class="table table-zebra">
+    <div class="w-full flex items-center justify-between">
+      <h3 class="font-medium text-base">Gamemode Stats</h3>
+
+      <button class="btn btn-sm btn-square btn-secondary" (click)="addGamemodeRankLvlComponent($event)">
+        <i class='bx bx-plus bx-sm text-base-200'></i>
+      </button>
+
+    </div>
+    <table class="table">
       <thead>
         <tr>
           <th class="font-light">Modo de juego</th>
@@ -26,19 +33,32 @@
           <th class="font-light">Acción</th>
         </tr>
       </thead>
-      @for (gamemodeStat of gameStat.gamemode_stats; track $index) {
-      <tr class="hover">
-        <td class=" p-2 pl-4">{{gamemodeStat.gamemode_name}}</td>
-        <td class=" p-2 pl-4">{{gamemodeStat.gamemodes_rank}}</td>
-        <td class="flex gap-2 p-2 pl-4">
-          <button class="btn btn-ghost btn-sm hover:bg-base-200"><i class='bx bx-edit-alt text-secondary'></i></button>
-          <button class="btn btn-ghost btn-sm hover:bg-base-200"><i class='bx bx-trash text-error'></i></button>
-        </td>
-      </tr>
-      } @empty {
-      <tr>
-        <td colspan="3">No hay estadisticas para los modos de juego de {{gameStat.game_name}} 😯</td>
-      </tr>}
+      <tbody>
+
+        <tr app-select-gamemode-rank-lvl *ngFor="let component of gamemodeRankLvlComponents; let i = index"
+          [gamemodes]="gamemodes" (deleteRequest)="deleteGamemodeRankLvlComponent(i)"></tr>
+
+        @for (gamemodeStat of gameStat.gamemode_stats; track gameStat.id;) {
+        <tr class="hover border-b-neutral">
+          <td class=" p-2 pl-4">{{gamemodeStat.gamemode_name}}</td>
+          <td class=" p-2 pl-4">{{gamemodeStat.gamemodes_rank}}</td>
+          <td class="flex gap-2 p-2 pl-4">
+            <button class="btn btn-ghost btn-sm btn-square hover:bg-base-300"><i
+                class='bx bx-edit-alt bx-sm text-secondary'></i>
+              </button>
+            <button class="btn btn-ghost btn-sm btn-square hover:bg-base-300">
+              <i class='bx bx-trash bx-sm text-error'></i>
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="3" class="text-center"><span>No hay estadisticas para los modos de juego de
+              {{gameStat.game_name}}
+              😯</span></td>
+        </tr>
+        }
+      </tbody>
     </table>
   </div>
 </div>

@@ -10,6 +10,7 @@ import { FormatedNewGameStat } from '../../../interfaces/formated-new-game-stat'
 import { UserService } from '../../../services/user.service';
 import { AlertService } from '../../../services/alert.service';
 import { Router } from '@angular/router';
+import { ProfileService } from '../../../services/profile.service';
 
 @Component({
   selector: 'app-game-stat-form',
@@ -42,6 +43,7 @@ export class GameStatFormComponent implements OnInit {
 
   userService = inject(UserService);
   alertService = inject(AlertService);
+  profileService = inject(ProfileService);
 
   ngOnInit(): void {
     this.isUpdating = !!this.gameStat;
@@ -97,8 +99,7 @@ export class GameStatFormComponent implements OnInit {
       (response) => {
         this.isFormSubmmiting = false;
         this.alertService.showAlert('success', 'GameStat creado con éxito! 😄');
-        console.log(newGameStat)
-        console.log(response);
+        this.profileService.gameStatCreated.next();
         this.closeModal();
       },
       (error) => {

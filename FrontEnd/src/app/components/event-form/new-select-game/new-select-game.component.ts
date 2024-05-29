@@ -34,13 +34,16 @@ export class NewSelectGameComponent implements OnInit, OnDestroy, ControlValueAc
 
   isOpen = false;
   hasBeenTouched = false;
-  selectedGame: Game | undefined = { id: -1, name: 'Seleccione un juego', image: '' };
+  selectedGame: Game | undefined = { id: -1, name: '👾 Seleccione un juego', image: '' };
+
   @Output() gameSelected = new EventEmitter<Game>();
   @Output() gamesEmitter = new EventEmitter<Game[]>();
   @Output() selectGameTouched = new EventEmitter<void>();
 
   @Input() isInvalid: boolean = false;
   @Input() event: Event;
+  @Input() optionsLimit: number = 5;
+  @Input() gameId: number | undefined = undefined;
 
   private subscriptions: Subscription[] = [];
 
@@ -57,6 +60,15 @@ export class NewSelectGameComponent implements OnInit, OnDestroy, ControlValueAc
         // Si hay un evento, selecciona el juego correspondiente
         if (this.event && this.event.game_id) {
           const game = this.games.find(game => game.id == this.event.game_id);
+          if (game) {
+            this.toggle();
+            this.onOptionSelected(game);
+          }
+        }
+
+        //Si hay gameId, selecciona el juego correspondiente
+        if (this.gameId) {
+          const game = this.games.find(game => game.id == this.gameId);
           if (game) {
             this.toggle();
             this.onOptionSelected(game);

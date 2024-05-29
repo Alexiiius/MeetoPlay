@@ -10,6 +10,7 @@ import { UsersListComponent } from './users-list/users-list.component';
 
 import { UserReduceFollowing } from '../../interfaces/user-reduce-following';
 import { ProfileService } from '../../services/profile.service';
+import { GameStatFormComponent } from './game-stat-form/game-stat-form.component';
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +21,8 @@ import { ProfileService } from '../../services/profile.service';
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
-    UsersListComponent
+    UsersListComponent,
+    GameStatFormComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
@@ -37,9 +39,11 @@ export class ProfileComponent {
   logedUser: UserData;
   isLoggedUser: boolean;
   isFollowing: boolean;
+  isRelationsLoading: boolean;
   isLoadingFollow_Unfollow: boolean = false;
 
   @ViewChild(UsersListComponent) usersListComponent!: UsersListComponent;
+  @ViewChild(GameStatFormComponent) gameStatFormComponent!: GameStatFormComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,24 +51,29 @@ export class ProfileComponent {
     private router: Router,
     private profileService: ProfileService) { }
 
-  ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.isLoading = true;
-      this.userService.getUserById(params['id']).subscribe(user => {
-        this.user = user;
-        this.profileService.setUserProfileId(user.id);
-        forkJoin([
-          this.getUserRelations(this.user.id),
-          this.checkIfLoggedUser(),
-          this.checkIfFollowing()
-        ]).subscribe(([_, isLoggedUser, isFollowing]) => {
-          this.isLoggedUser = isLoggedUser;
-          this.isFollowing = isFollowing;
-          this.isLoading = false;
+    ngOnInit() {
+      this.route.params.subscribe(params => {
+        this.isLoading = true;
+        this.userService.getUserById(params['id']).subscribe(user => {
+          this.user = user;
+          this.profileService.setUserProfileId(user.id);
+
+          this.isRelationsLoading = true;
+          this.getUserRelations(this.user.id).subscribe(() => {
+            this.isRelationsLoading = false;
+          });
+
+          forkJoin([
+            this.checkIfLoggedUser(),
+            this.checkIfFollowing()
+          ]).subscribe(([isLoggedUser, isFollowing]) => {
+            this.isLoggedUser = isLoggedUser;
+            this.isFollowing = isFollowing;
+            this.isLoading = false;
+          });
         });
       });
-    });
-  }
+    }
 
   updateFollowCounts() {
     this.checkIfLoggedUser().subscribe(isLoggedUser => {
@@ -128,6 +137,10 @@ export class ProfileComponent {
 
   openUserListModal(list: string, userList: UserReduceFollowing[]) {
     this.usersListComponent.openModal(list, userList);
+  }
+
+  openGameStatFormModal() {
+    this.gameStatFormComponent.openModal();
   }
 
   closeuserListModal() {

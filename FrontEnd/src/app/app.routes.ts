@@ -13,6 +13,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' },
   {
     path: 'main', component: MainComponent, canActivate: [authGuard], children: [
+      { path: '', redirectTo: 'profile/1', pathMatch: 'full' }, //Todo borrar
       { path: '', component: EventsFeedComponent },
       {
         path: 'profile/:id', component: ProfileComponent, children: [

@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { backAPIUrl } from '../config';
 import { HttpClient } from '@angular/common/http';
 import { SocialUser } from '../interfaces/social-user';
+import { FormatedNewGameStat } from '../interfaces/formated-new-game-stat';
 
 
 @Injectable({
@@ -79,6 +80,10 @@ export class UserService implements OnInit {
 
   unfollowUser(id: number): Observable<any> {
     return this.http.post(`${this.backAPIUrl}/unfollow/${id}`,'');
+  }
+
+  postGameStat(gameStat: FormatedNewGameStat): Observable<any> {
+    return this.http.post(`${this.backAPIUrl}/user/game-stats/create`, gameStat);
   }
 }
 

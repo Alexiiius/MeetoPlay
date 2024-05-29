@@ -1,19 +1,44 @@
-<div tabindex="0" class="collapse collapse-arrow bg-base-200 hover:shadow-lg">
+<div tabindex="0" class="collapse collapse-arrow bg-base-200/80 hover:bg-base-200 hover:shadow-lg"
+  [ngClass]="{'bg-base-200': isOpen, 'bg-base-200/80': !isOpen}" (click)="toggleOpen()">
   <input type="checkbox" />
-  <div class="collapse-title grid grid-rows-1 grid-cols-3">
-    <div class="flex space-x-3 items-center"><img class="w-14 h-auto"
-        src="https://meetoplay-api-assets-bucket.s3.amazonaws.com/gameLogos/Grand_Theft_Auto_V.png" alt="">
-      <span>Grand Theft Auto V</span>
+  <div class="collapse-title grid grid-rows-1 grid-cols-4">
+    <div class="flex space-x-3 items-center"><img class="w-14 h-auto" src="{{gameStat.game_pic}}" alt="">
+      <span>{{gameStat.game_name}}</span>
     </div>
     <div class="flex items-center justify-center ">
-      <span>Nickname: <span class="font-medium">Vaker0</span></span>
+      <span>Nickname: <span class="font-medium">{{gameStat.nickname_game}}</span></span>
     </div>
     <div class="flex items-center justify-center ">
-      <span>Nivel: <span class="font-medium">300</span></span>
+      <span>Nivel: <span class="font-medium">{{gameStat.lv_account}}</span></span>
+    </div>
+    <div class="flex items-center justify-center ">
+      <span>Tiempo jugado: <span class="font-medium">{{gameStat.hours_played}}</span></span>
     </div>
 
   </div>
   <div class="collapse-content">
-    <p>tabindex="0" attribute is necessary to make the div focusable</p>
+    <h3 class="font-medium text-base">Gamemode Stats</h3>
+    <table class="table table-zebra">
+      <thead>
+        <tr>
+          <th class="font-light">Modo de juego</th>
+          <th class="font-light">Rango/Nivel</th>
+          <th class="font-light">Acción</th>
+        </tr>
+      </thead>
+      @for (gamemodeStat of gameStat.gamemode_stats; track $index) {
+      <tr class="hover">
+        <td class=" p-2 pl-4">{{gamemodeStat.gamemode_name}}</td>
+        <td class=" p-2 pl-4">{{gamemodeStat.gamemodes_rank}}</td>
+        <td class="flex gap-2 p-2 pl-4">
+          <button class="btn btn-ghost btn-sm hover:bg-base-200"><i class='bx bx-edit-alt text-secondary'></i></button>
+          <button class="btn btn-ghost btn-sm hover:bg-base-200"><i class='bx bx-trash text-error'></i></button>
+        </td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="3">No hay estadisticas para los modos de juego de {{gameStat.game_name}} 😯</td>
+      </tr>}
+    </table>
   </div>
 </div>

@@ -26,7 +26,7 @@ class GameUserStatsController extends Controller {
             ],
         ], $code);
     }
-    
+
     //return all game stats and gamemodes associated stats from a specific user id
     public function index($id, Request $request) {
         $data = GameUserStats::where('user_id', $id)
@@ -56,6 +56,17 @@ class GameUserStatsController extends Controller {
 
         $dataToInsert = $request->all();
         $dataToInsert['user_id'] = auth()->id();
+
+        $exist = GameUserStats::where('game_id', $dataToInsert['game_id'])
+            ->where('user_id', $dataToInsert['user_id'])
+            ->get()
+            ->first();
+
+        if ($exist) {
+            return $this->responseDataFormat($request, $exist, 'Game stats already exist', 409);
+        }
+
+
 
         GameUserStats::create($dataToInsert);
 

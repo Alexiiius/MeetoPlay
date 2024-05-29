@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { EventCardComponent } from '../../events-feed/event-card/event-card.component';
 
 import { Event } from '../../../models/event';
 import { EventsService } from '../../../services/events.service';
 import { CommonModule } from '@angular/common';
+import { ProfileService } from '../../../services/profile.service';
 
 @Component({
   selector: 'app-my-events',
@@ -28,8 +29,14 @@ export class MyEventsComponent implements OnInit {
 
   constructor(private eventService: EventsService) { }
 
+  profileService = inject(ProfileService);
+
   ngOnInit(): void {
     this.getMyEvents(this.page);
+    this.profileService.eventDeleted.subscribe(() => {
+      this.getMyEvents(this.page);
+      console.log('Evento eliminado');
+    });
   }
 
   loadMoreEvents(): void {

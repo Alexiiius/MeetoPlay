@@ -423,7 +423,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
           (response) => {
             this.isFormSubmmiting = false;
             this.alertService.showAlert('success', 'Evento actualizado con éxito! 😄');
-            this.router.navigate(['/main']);
+            this.closeModal();
 
             console.log(response);
           },
@@ -438,7 +438,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
           (response) => {
             this.isFormSubmmiting = false;
             this.alertService.showAlert('success', 'Evento creado con éxito! 😄');
-            this.router.navigate(['/main']);
+            this.closeModal();
 
             console.log(response);
           },

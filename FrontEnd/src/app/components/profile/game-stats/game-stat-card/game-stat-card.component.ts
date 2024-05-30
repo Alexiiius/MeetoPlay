@@ -10,6 +10,8 @@ import { GameStatFormComponent } from '../../game-stat-form/game-stat-form.compo
 import { GamemodeStatsComponent } from './gamemode-stats/gamemode-stats.component';
 import { GamemodeStat } from '../../../../interfaces/gamemode-stat';
 import { NewFullGame } from '../../../../interfaces/new-fullGame';
+import { FormsModule } from '@angular/forms';
+import { AlertService } from '../../../../services/alert.service';
 
 @Component({
   selector: 'app-game-stat-card',
@@ -19,6 +21,7 @@ import { NewFullGame } from '../../../../interfaces/new-fullGame';
     SelectGamemodeRankLvlComponent,
     GamemodeStatsComponent,
     GameStatFormComponent,
+    FormsModule
   ],
   templateUrl: './game-stat-card.component.html',
   styleUrl: './game-stat-card.component.css'
@@ -35,27 +38,43 @@ export class GameStatCardComponent implements OnInit {
 
   apiService = inject(APIService);
   profileService = inject(ProfileService);
+  userService = inject(UserService);
+  alertService = inject(AlertService);
 
   gamemodeRankLvlComponents: {}[] = [];
 
   editingGamemodeStat: GamemodeStat;
 
   isDataLoading: boolean = true;
+  isDeleting: boolean = false;
+
+  defaultGamemodeStat: GamemodeStat = {
+    id: -1,
+    game_user_stats_id: -1,
+    gamemode_name: 'deafult',
+    gamemodes_rank: '',
+  }
 
   ngOnInit(): void {
     this.getGamemodes();
     this.getFullGame();
 
     this.profileService.gamemodeStatCreated.subscribe(newGamemodeStat => {
+      console.log(newGamemodeStat);
+      if (!this.gameStat.gamemode_stats) {
+        this.gameStat.gamemode_stats = [];
+      }
       this.gameStat.gamemode_stats.push(newGamemodeStat);
     });
 
     this.profileService.gamemodeStatEdited.subscribe(editedGamemodeStat => {
       this.gameStat.gamemode_stats.push(editedGamemodeStat);
+      this.editingGamemodeStat = this.defaultGamemodeStat;
     });
 
-    this.profileService.gamemodeStatEditCancelled.subscribe(() => {
-      this.gameStat.gamemode_stats.push(this.editingGamemodeStat);
+    this.profileService.gamemodeStatEditCancelled.subscribe(restoredGamemodeStat => {
+      this.gameStat.gamemode_stats.push(restoredGamemodeStat);
+      this.editingGamemodeStat = this.defaultGamemodeStat;
     });
 
     this.profileService.gamemodeStatDeleted.subscribe(gamemodeStatId => {
@@ -98,7 +117,7 @@ export class GameStatCardComponent implements OnInit {
   }
 
   addGamemodeRankLvlComponentForEdit() {
-    this.gamemodeRankLvlComponents.push(this.editingGamemodeStat);
+    this.gamemodeRankLvlComponents.push({});
   }
 
   addGamemodeRankLvlComponent(event: Event) {
@@ -116,5 +135,13 @@ export class GameStatCardComponent implements OnInit {
 
   openEditGameStatForm() {
     this.gameStatForm.openModal();
+  }
+
+  deleteGamemodeStat() {
+    this.isDeleting = true;
+    this.userService.deleteGameStat(this.gameStat.id).subscribe( () => {
+      this.isDeleting = false;
+      this.profileService.gameStatDeleted.next(this.gameStat.id);
+    });
   }
 }

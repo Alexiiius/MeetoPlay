@@ -27,6 +27,21 @@ class GameUserStatsController extends Controller {
         ], $code);
     }
 
+    public function responseDataFormat2(Request $request, $data, $message, $code = 200) {
+        return response()->json([
+            'data' => [
+                'message' => $message,
+                'GamemodeStats' => $data,
+                'Links' => [
+                    'self' => url($request->path())
+                ],
+            ],
+            'meta' => [
+                'timestamp' => now(),
+            ],
+        ], $code);
+    }
+
     //return all game stats and gamemodes associated stats from a specific user id
     public function index($id, Request $request) {
         $data = GameUserStats::where('user_id', $id)
@@ -70,7 +85,13 @@ class GameUserStatsController extends Controller {
 
         GameUserStats::create($dataToInsert);
 
-        return $this->responseDataFormat($request, $dataToInsert, 'Game stats created successfully', 201);
+        //Recolect gameStat inserted
+        $createdGameStat = GameUserStats::where('game_id', $dataToInsert['game_id'])
+            ->where('user_id', $dataToInsert['user_id'])
+            ->get()
+            ->first();
+
+        return $this->responseDataFormat($request, $createdGameStat, 'Game stats created successfully', 201);
     }
 
     //destroy a specific game stats by game_id only if the user has permission to delete it
@@ -155,12 +176,16 @@ class GameUserStatsController extends Controller {
 
         $GameUserStats->gamemodeStats()->create($dataToInsert);
 
-        return $this->responseDataFormat($request, $dataToInsert, 'Gamemode stats created successfully', 201);
+        //Recolect gamemodeStat inserted
+        $createdGamemodeStat = $GameUserStats->gamemodeStats()->where('gamemode_name', $dataToInsert['gamemode_name'])->first();
+
+        return $this->responseDataFormat2($request, $createdGamemodeStat, 'Gamemode stats created successfully', 201);
     }
 
     public function gamemodeUpdate($gamemodeStatID, Request $request){
 
         $request->validate([
+            'gamemode_name' => 'required|string|max:20|min:2',
             'gamemodes_rank' => 'required|string|max:20|min:1',
         ]);
 
@@ -176,11 +201,20 @@ class GameUserStatsController extends Controller {
             return $this->responseDataFormat($request, null, 'Unauthorized', 401);
         }
 
-        $dataToUpdate = $request->all();
+        $Gamemode_NameExist = GameModeStats::where('gamemode_name', $request->gamemode_name)
+            ->where('game_user_stats_id', $GameMode->game_user_stats_id)
+            ->get()
+            ->first();
+
+        if ($Gamemode_NameExist && $Gamemode_NameExist->gamemodes_rank == $request->gamemodes_rank) {
+            return $this->responseDataFormat($request, null, 'Gamemode name already exist', 409);
+        }
+
+        $dataToUpdate = $request->only('gamemode_name', 'gamemode_rank');
         $dataToUpdate['user_id'] = $user->id;
 
         if ($GameMode->update($dataToUpdate)) {
-            return $this->responseDataFormat($request, $GameMode, 'Game stats updated successfully');
+            return $this->responseDataFormat2($request, $GameMode, 'Game stats updated successfully');
         }else{
             return $this->responseDataFormat($request, [], 'Game stats not updated');
         }

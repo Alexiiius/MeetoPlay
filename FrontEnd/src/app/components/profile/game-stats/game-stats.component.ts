@@ -43,5 +43,15 @@ export class GameStatsComponent implements OnInit {
       console.log(newGameStat);
       this.stats.push(newGameStat);
     });
+
+    this.profileService.gameStatEdited.subscribe(editedGameStat => {
+      const index = this.stats.findIndex(stat => stat.id === editedGameStat.id);
+      this.stats[index] = editedGameStat;
+    });
+
+    this.profileService.gameStatDeleted.subscribe(id => {
+      const index = this.stats.findIndex(stat => stat.id === id);
+      this.stats.splice(index, 1);
+    });
   }
 }

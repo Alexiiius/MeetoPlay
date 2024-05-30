@@ -87,6 +87,10 @@ export class UserService implements OnInit {
     return this.http.post(`${this.backAPIUrl}/user/game-stats/create`, gameStat);
   }
 
+  editGameStat(gameStat: FormatedNewGameStat, gameStatId: number): Observable<any> {
+    return this.http.put(`${this.backAPIUrl}/user/game-stats/update/${gameStatId}`, gameStat);
+  }
+
   deleteGameStat(gameStatId: number): Observable<any> {
     return this.http.delete(`${this.backAPIUrl}/user/game-stats/delete/${gameStatId}`);
   }

@@ -49,10 +49,10 @@ export class GameStatFormComponent implements OnInit {
     this.isUpdating = !!this.gameStat;
 
     this.gameStatForm = this.formBuilder.group({
-      nickname: ['', [Validators.required]],
+      nickname: [this.isUpdating ? this.gameStat?.nickname_game : '', [Validators.required]],
       game: [{ id: -1, name: '👾 Seleccione un juego', image: '' }, [Validators.required, this.gameExists.bind(this)]],
-      level: ['', [Validators.required]],
-      hours_played: ['', [Validators.required]],
+      level: [this.isUpdating ? this.gameStat?.lv_account : '', [Validators.required]],
+      hours_played: [this.isUpdating ? this.gameStat?.hours_played : '', [Validators.required]],
     });
   }
 
@@ -95,24 +95,46 @@ export class GameStatFormComponent implements OnInit {
       game_pic: this.gameStatForm?.get('game')?.value.image
     };
 
-    this.userService.postGameStat(newGameStat).subscribe(
-      (response) => {
-        console.log(response)
-        this.isFormSubmmiting = false;
-        this.alertService.showAlert('success', 'GameStat creado con éxito! 😄');
-        this.profileService.gameStatCreated.next(response.data.GameUserStats);
-        this.closeModal();
-      },
-      (error) => {
-        this.isFormSubmmiting = false;
-        if (error.status === 409) {
-          this.alertService.showAlert('warning', `Ya tienes un GameStat para ${this.gameStatForm?.get('game')?.value.name}. 👻`);
+    if (this.isUpdating) {
+      if (this.gameStat) {
+        this.userService.editGameStat(newGameStat, this.gameStat?.id).subscribe(
+          (response) => {
+            console.log(response)
+            this.isFormSubmmiting = false;
+            this.alertService.showAlert('success', 'GameStat actualizado con éxito! 😄');
+            this.profileService.gameStatEdited.next(response.data.GameUserStats);
+            console.log(response);
+            this.closeModal();
+          },
+          (error) => {
+            this.isFormSubmmiting = false;
+            this.alertService.showAlert('error', 'Error! Algo ha fallado al actualizar el GameStat. 😓');
+            console.error(error);
+          });
+      }
+
+    } else {
+
+      this.userService.postGameStat(newGameStat).subscribe(
+        (response) => {
+          console.log(response)
+          this.isFormSubmmiting = false;
+          this.alertService.showAlert('success', 'GameStat creado con éxito! 😄');
+          this.profileService.gameStatCreated.next(response.data.GameUserStats);
+          console.log(response);
           this.closeModal();
-        } else {
-          this.alertService.showAlert('error', 'Error! Algo ha fallado al crear el GameStat. 😓');
-        }
-        console.error(error);
-      });
+        },
+        (error) => {
+          this.isFormSubmmiting = false;
+          if (error.status === 409) {
+            this.alertService.showAlert('warning', `Ya tienes un GameStat para ${this.gameStatForm?.get('game')?.value.name}. 👻`);
+            this.closeModal();
+          } else {
+            this.alertService.showAlert('error', 'Error! Algo ha fallado al crear el GameStat. 😓');
+          }
+          console.error(error);
+        });
+    }
   }
 }
 

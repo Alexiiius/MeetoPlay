@@ -54,10 +54,10 @@ export class SelectGamemodeRankLvlComponent {
   initializeForm() {
     let initialGamemodeValue: string | number = 'default';
 
-    if (this.gamemodeStatToEdit) {
+    if (this.gamemodeStatToEdit && this.gamemodeStatToEdit.id !== -1) {
       this.isEditing = true;
       console.log('Se está editando un gamemodeStat');
-      this.selectedGamemode = this.gamemodes ? this.gamemodes.find(gamemode => gamemode.name == this.gamemodeStatToEdit.gamemode_name) : undefined;
+      this.selectedGamemode = this.gamemodes ? this.gamemodes.find(gamemode => gamemode.name == this.gamemodeStatToEdit?.gamemode_name) : undefined;
       if (this.selectedGamemode) {
         initialGamemodeValue = this.selectedGamemode.id;
       }
@@ -124,7 +124,7 @@ export class SelectGamemodeRankLvlComponent {
   }
 
   cancelEdit() {
-    this.profileService.gamemodeStatEditCancelled.next();
+    this.profileService.gamemodeStatEditCancelled.next(this.gamemodeStatToEdit);
     this.deleteRequest.emit();
   }
 
@@ -134,7 +134,9 @@ export class SelectGamemodeRankLvlComponent {
     const gamemode = this.gamemodes.find(gamemode => gamemode.id == this.gamemodeStatForm.value.gamemode);
     console.log('Gamemode:', gamemode);
 
+
     if (gamemode) {
+
       const formatedNewGamemodeStat: FormatedNewGamemodeStat = {
         game_user_stats_id: this.gameUserStatsId,
         gamemode_name: gamemode.name,
@@ -143,29 +145,36 @@ export class SelectGamemodeRankLvlComponent {
 
       if (this.isEditing) {
 
-        this.userService.editGamemodeStat(formatedNewGamemodeStat, this.gamemodeStatToEdit.id).subscribe(
-          (response) => {
-            console.log(response);
-            this.alertService.showAlert('success', 'GameStat editado con éxito! 😄');
-            this.profileService.gamemodeStatEdited.next(response.data.GameUserStats);
-            this.deleteRequest.emit();
-            this.isSaving = false;
-          },
+        if (this.gamemodeStatForm.touched) {
+          this.userService.editGamemodeStat(formatedNewGamemodeStat, this.gamemodeStatToEdit.id).subscribe(
+            (response) => {
+              this.alertService.showAlert('success', 'GamemodeStat editado con éxito! 😄');
+              this.profileService.gamemodeStatEdited.next(response.data.GamemodeStats);
+              this.deleteRequest.emit();
+              this.isSaving = false;
+            },
 
-          (error) => {
-            this.alertService.showAlert('error', 'Error! Algo ha fallado al editar el GameStat. 😓');
-            this.isSaving = false;
-            console.error(error);
-          });
+            (error) => {
+              this.isSaving = false;
+              if (error.status === 409) {
+                this.alertService.showAlert('warning', 'Ya existe un GamemodeStat para este gamemode. 👻');
+              } else {
+                this.alertService.showAlert('error', 'Error! Algo ha fallado al editar el GameStat. 😓');
+              }
+              console.error(error);
+            }
+          );
+        } else {
+          this.isSaving = false;
+          this.alertService.showAlert('info', 'No se ha hecho ningún cambio en el GamemodeStat 😵‍💫');
+        }
 
       } else {
 
         this.userService.postGamemodeStat(formatedNewGamemodeStat).subscribe(
           (response) => {
-            console.log(response);
             this.alertService.showAlert('success', 'GameStat creado con éxito! 😄');
-            this.profileService.gameStatCreated.next(response.data.GameUserStats);
-            this.profileService.gamemodeStatCreated.next(response.data.GameUserStats);
+            this.profileService.gamemodeStatCreated.next(response.data.GamemodeStats);
             this.deleteRequest.emit();
             this.isSaving = false;
           },
@@ -173,7 +182,7 @@ export class SelectGamemodeRankLvlComponent {
           (error) => {
 
             if (error.status === 409) {
-              this.alertService.showAlert('warning', 'Ya tienes un GameStat creado para ese gamemode. 😅');
+              this.alertService.showAlert('warning', 'Ya tienes un GameStat creado para ese gamemode. 👻');
               this.isSaving = false;
             } else {
               this.alertService.showAlert('error', 'Error! Algo ha fallado al crear el GameStat. 😓');

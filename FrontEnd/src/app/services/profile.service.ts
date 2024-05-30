@@ -15,10 +15,12 @@ export class ProfileService {
 
   eventDeleted = new Subject<void>();
   gameStatCreated = new Subject<GameStat>();
+  gameStatEdited = new Subject<GameStat>();
+  gameStatDeleted = new Subject<number>();
 
   gamemodeStatCreated = new Subject<GamemodeStat>();
   gamemodeStatEdited = new Subject<GamemodeStat>();
-  gamemodeStatEditCancelled = new Subject<void>();
+  gamemodeStatEditCancelled = new Subject<GamemodeStat>();
   gamemodeStatDeleted = new Subject<number>();
 
   setUserProfileId(id: number) {

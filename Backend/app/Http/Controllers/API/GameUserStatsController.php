@@ -132,13 +132,18 @@ class GameUserStatsController extends Controller {
         $request->validate([
             'game_user_stats_id' => 'required|int',
             'gamemode_name' => 'required|string|max:20|min:2',
-            'gamemodes_rank' => 'required|string|max:20|min:2',
+            'gamemodes_rank' => 'required|string|max:20|min:1',
         ]);
 
         $dataToInsert = $request->all();
         $dataToInsert['user_id'] = auth()->id();
 
         $GameUserStats = GameUserStats::where('id', $dataToInsert['game_user_stats_id'])->first();
+
+        //check if gamemode_name already exist inside $gameuserStats gamemodes relation
+        if ($GameUserStats->gamemodeStats()->where('gamemode_name', $dataToInsert['gamemode_name'])->exists()) {
+            return $this->responseDataFormat($request, null, 'Gamemode stats already exist', 409);
+        }
 
         if (!$GameUserStats) {
             return $this->responseDataFormat($request, null, 'Game stats not found');
@@ -156,7 +161,7 @@ class GameUserStatsController extends Controller {
     public function gamemodeUpdate($gamemodeStatID, Request $request){
 
         $request->validate([
-            'gamemodes_rank' => 'required|string|max:20|min:2',
+            'gamemodes_rank' => 'required|string|max:20|min:1',
         ]);
 
         $user = auth()->user();

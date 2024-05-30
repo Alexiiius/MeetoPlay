@@ -97,9 +97,10 @@ export class GameStatFormComponent implements OnInit {
 
     this.userService.postGameStat(newGameStat).subscribe(
       (response) => {
+        console.log(response)
         this.isFormSubmmiting = false;
         this.alertService.showAlert('success', 'GameStat creado con éxito! 😄');
-        this.profileService.gameStatCreated.next();
+        this.profileService.gameStatCreated.next(response.data.GameUserStats);
         this.closeModal();
       },
       (error) => {

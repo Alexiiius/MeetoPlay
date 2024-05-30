@@ -5,7 +5,6 @@ import { UserService } from '../../../services/user.service';
 import { GameStat } from '../../../interfaces/game-stat';
 import { CommonModule } from '@angular/common';
 import { GameStatFormComponent } from '../game-stat-form/game-stat-form.component';
-import { merge, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-game-stats',
@@ -20,37 +19,29 @@ import { merge, of, switchMap, tap } from 'rxjs';
 })
 export class GameStatsComponent implements OnInit {
 
-  stats: GameStat[];
-  isLoading: boolean;
-  currentProfileId: number | null = null;
+  stats: GameStat[] = [];
+  isLoading: boolean = true;
 
   constructor(
     private profileService: ProfileService,
-    private userService: UserService,
-  ) {}
+    private userService: UserService
+  ) { }
 
   ngOnInit() {
-    this.isLoading = true;
-    merge(
-      this.profileService.getUserProfileId().pipe(tap(() => this.isLoading = true)),
-      this.profileService.gameStatCreated
-    ).pipe(
-      switchMap(id => {
-        if (id !== null && id !== undefined) {
-          this.currentProfileId = id;
-        }
-        if (this.currentProfileId !== null) {
-          return this.userService.getUserGameStats(this.currentProfileId);
-        } else {
-          return of(null);
-        }
-      })
-    ).subscribe(response => {
-      if (response) {
-        this.stats = response.data.GameUserStats;
-        console.log(this.stats);
+    this.profileService.getUserProfileId().subscribe(id => {
+      this.isLoading = true;
+      if (id !== null) {
+        this.userService.getUserGameStats(id).subscribe(response => {
+          this.stats = response.data.GameUserStats;
+          console.log(this.stats);
+          this.isLoading = false;
+        });
       }
-      this.isLoading = false;
+    });
+
+    this.profileService.gameStatCreated.subscribe(newGameStat => {
+      console.log(newGameStat);
+      this.stats.push(newGameStat);
     });
   }
 }

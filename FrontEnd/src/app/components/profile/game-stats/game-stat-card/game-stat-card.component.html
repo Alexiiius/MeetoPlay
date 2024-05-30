@@ -20,36 +20,34 @@
     <div class="w-full flex items-center justify-between">
       <h3 class="font-medium text-base">Gamemode Stats</h3>
 
-      <button class="btn btn-sm btn-square btn-secondary" (click)="addGamemodeRankLvlComponent($event)">
-        <i class='bx bx-plus bx-sm text-base-200'></i>
-      </button>
+      @if (isDataLoading) {
+        <button class="btn btn-sm btn-square btn-secondary cursor-wait">
+          <span class="loading loading-spinner text-base-200"></span>
+        </button>
+      } @else {
+        <button class="btn btn-sm btn-square btn-secondary" (click)="addGamemodeRankLvlComponent($event)">
+          <i class='bx bx-plus bx-sm text-base-200'></i>
+        </button>
+      }
 
     </div>
     <table class="table">
       <thead>
-        <tr>
-          <th class="font-light">Modo de juego</th>
-          <th class="font-light">Rango/Nivel</th>
-          <th class="font-light">Acción</th>
+        <tr class="border-b-primary/20">
+          <th class="font-light w-2/5">Modo de juego</th>
+          <th class="font-light w-2/5">Rango/Nivel</th>
+          <th class="font-light w-1/5">Acción</th>
         </tr>
       </thead>
       <tbody>
 
-        <tr app-select-gamemode-rank-lvl *ngFor="let component of gamemodeRankLvlComponents; let i = index"
-          [gamemodes]="gamemodes" (deleteRequest)="deleteGamemodeRankLvlComponent(i)"></tr>
+        <tr class="bg-base-300" app-select-gamemode-rank-lvl *ngFor="let component of gamemodeRankLvlComponents; let i = index"
+          [gamemodes]="gamemodes" (deleteRequest)="deleteGamemodeRankLvlComponent(i)" [gamemodeStatToEdit]="editingGamemodeStat"
+          [gameId]="gameStat.game_id" [gameUserStatsId]="gameStat.id" [fullGame]="fullGame" [isLoading]="isDataLoading"></tr>
 
         @for (gamemodeStat of gameStat.gamemode_stats; track gameStat.id;) {
-        <tr class="hover border-b-neutral">
-          <td class=" p-2 pl-4">{{gamemodeStat.gamemode_name}}</td>
-          <td class=" p-2 pl-4">{{gamemodeStat.gamemodes_rank}}</td>
-          <td class="flex gap-2 p-2 pl-4">
-            <button class="btn btn-ghost btn-sm btn-square hover:bg-base-300"><i
-                class='bx bx-edit-alt bx-sm text-secondary'></i>
-              </button>
-            <button class="btn btn-ghost btn-sm btn-square hover:bg-base-300">
-              <i class='bx bx-trash bx-sm text-error'></i>
-            </button>
-          </td>
+        <tr class="hover border-b-neutral/20" app-gamemode-stats [gamemodeStat]="gamemodeStat"
+          (gamemodeStatEditing)="onGamemodeStatEditing(gamemodeStat)" [isLoading]="isDataLoading">
         </tr>
         } @empty {
         <tr>
@@ -62,3 +60,5 @@
     </table>
   </div>
 </div>
+
+<app-game-stat-form [gameStat]="gameStat"/>

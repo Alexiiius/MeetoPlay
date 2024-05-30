@@ -6,6 +6,7 @@ import { backAPIUrl } from '../config';
 import { HttpClient } from '@angular/common/http';
 import { SocialUser } from '../interfaces/social-user';
 import { FormatedNewGameStat } from '../interfaces/formated-new-game-stat';
+import { FormatedNewGamemodeStat } from '../interfaces/formated-new-gamemode-stat';
 
 
 @Injectable({
@@ -84,6 +85,22 @@ export class UserService implements OnInit {
 
   postGameStat(gameStat: FormatedNewGameStat): Observable<any> {
     return this.http.post(`${this.backAPIUrl}/user/game-stats/create`, gameStat);
+  }
+
+  deleteGameStat(gameStatId: number): Observable<any> {
+    return this.http.delete(`${this.backAPIUrl}/user/game-stats/delete/${gameStatId}`);
+  }
+
+  postGamemodeStat(gameStat: FormatedNewGamemodeStat): Observable<any> {
+    return this.http.post(`${this.backAPIUrl}/user/game-stats/gamemode/create`, gameStat);
+  }
+
+  editGamemodeStat(gamemodeStat: FormatedNewGamemodeStat, gamemodeStatId: number): Observable<any> {
+    return this.http.patch(`${this.backAPIUrl}/user/game-stats/gamemode/update/${gamemodeStatId}`, gamemodeStat);
+  }
+
+  deleteGamemodeStat(gamemodeStatId: number): Observable<any> {
+    return this.http.delete(`${this.backAPIUrl}/user/game-stats/gamemode/delete/${gamemodeStatId}`);
   }
 }
 

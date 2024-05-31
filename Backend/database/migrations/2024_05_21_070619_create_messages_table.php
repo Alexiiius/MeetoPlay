@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('from_user_name');
             $table->string('to_user_name');
             $table->text('text')->nullable();
+            $table->string('group_name')->default('private'); //remember to send to global user any public message
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });

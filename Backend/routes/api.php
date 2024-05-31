@@ -32,8 +32,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //WIP
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
+
+    Route::patch('/user/password/update', [UserController::class, 'updatePassword']); //update the password of the authenticated user
+
+    
+
+    //Done
     Route::patch('/user/bio/update', [UserController::class, 'updateBio']); //update the bio of the authenticated user
     Route::patch('/user/socials/update', [UserController::class, 'updateSocials']); //update the socials of the authenticated user
+    Route::get('/user/send/email-verification', [UserController::class, 'resendEmailVerification']); //send an email verification to the authenticated user
+    Route::patch('/user/email/update', [UserController::class, 'updateEmail']); //update the authenticated user email
 
     Route::post('/user/avatar/update', [UserController::class, 'updateAvatar']); //update the avatar of the authenticated user
 

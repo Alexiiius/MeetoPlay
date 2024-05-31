@@ -10,6 +10,8 @@ use Intervention\Image\Laravel\Facades\Image;
 
 use App\Models\User;
 use App\Rules\SocialsRule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -199,6 +201,83 @@ class UserController extends Controller
             'socials' => $user->socials,
             'Links' => [
                 'self' => url('/api/user/socials/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function updatePassword(Request $request) {
+        
+        $request->validate([
+            'password' => 'required|string|min:3',
+            'new_password' => 'required|string|min:3',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Password incorrect.'], 401);
+        }
+
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+
+        return response()->json(['data' => [
+            'message' => 'Password updated successfully',
+            'Links' => [
+                'self' => url('/api/user/password/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function resendEmailVerification(Request $request) {
+        $user = auth()->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['error' => 'Email already verified.'], 401);
+        }
+
+        $user->sendEmailVerificationNotification();
+        return response()->json(['data' => [
+            'message' => 'Email verification sent successfully',
+            'Links' => [
+                'self' => url('/api/user/send/email-verification'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function updateEmail(Request $request) {
+        
+        $request->validate([
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string|min:3',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Password incorrect.'], 401);
+        }
+
+        $user->email = $request->email;
+        $user->email_verified_at = null;
+        $user->sendEmailVerificationNotification();
+        $user->tokens()->delete();
+        $user->save();
+
+        return response()->json(['data' => [
+            'message' => 'Email updated successfully, please verify your email. Token deleted.',
+            'email' => $user->email,
+            'Links' => [
+                'self' => url('/api/user/email/update'),
             ],
             'meta' => [
                 'timestamp' => now()->format('d-m-Y\TH:i:s. T'),

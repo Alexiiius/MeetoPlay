@@ -31,8 +31,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user/search/{search}', [UserController::class, 'search'])->where('search', '.*'); //search users by name, tag and name#tag
 
     //WIP
-    Route::post('/user/{id}', [UserController::class, 'update']);
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
+    Route::patch('/user/bio/update', [UserController::class, 'updateBio']); //update the bio of the authenticated user
+    Route::patch('/user/socials/update', [UserController::class, 'updateSocials']); //update the socials of the authenticated user
 
     Route::post('/user/avatar/update', [UserController::class, 'updateAvatar']); //update the avatar of the authenticated user
 

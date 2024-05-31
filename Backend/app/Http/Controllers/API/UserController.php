@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 
 use App\Models\User;
+use App\Rules\SocialsRule;
 
 class UserController extends Controller
 {
@@ -137,7 +138,7 @@ class UserController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'timestamp' => now(),
+                    'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
                 ],
             ]);
 
@@ -151,11 +152,58 @@ class UserController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'timestamp' => now(),
+                    'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
                 ],
             ], 500);
         }
             
+    }
+
+    public function updateBio(Request $request) {
+
+        $request->validate([
+            'bio' => 'required|string|max:150',
+        ]);
+
+        $user = auth()->user();
+        $user->bio = $request->bio;
+        $user->save();
+        return response()->json(['data' => [
+            'message' => 'Bio updated successfully',
+            'bio' => $user->bio,
+            'Links' => [
+                'self' => url('/api/user/bio/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function updateSocials(Request $request) {
+
+        //validate using SocialsRule
+        $request->validate([
+            'socials' => ['required', new SocialsRule],
+        ]);
+
+        $user = auth()->user();
+
+        //parse json to string
+        $string = json_encode($request->socials);
+
+        $user->socials = $string;
+        $user->save();
+        return response()->json(['data' => [
+            'message' => 'Socials updated successfully',
+            'socials' => $user->socials,
+            'Links' => [
+                'self' => url('/api/user/socials/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
     }
 
 }

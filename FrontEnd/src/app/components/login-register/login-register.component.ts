@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { loginAnimation, registerAnimation } from './login-register-animation';
 
 @Component({
@@ -27,10 +27,13 @@ export class LoginRegisterComponent implements OnInit {
   fieldErrors: any = {};
   objectKeys = Object.keys;
 
+  redirectUrl = '/main';
+
   constructor
     (private formBuilder: FormBuilder,
       private authService: AuthService,
-      private router: Router) {
+      private router: Router,
+      private route: ActivatedRoute) {
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -40,6 +43,21 @@ export class LoginRegisterComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl') ?? '/main';
+
+    this.authService.isAuth$.subscribe({
+      next: (loggedIn) => {
+        if (loggedIn) {
+          console.log(this.redirectUrl);
+          this.router.navigate([this.redirectUrl]);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+
+
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -66,7 +84,8 @@ export class LoginRegisterComponent implements OnInit {
       token => {
         this.authService.storeToken(token, this.loginForm.value.rememberMe).then(() => {
           this.authService.getUserData().subscribe(() => {
-            this.router.navigate(['/main']);
+            this.router.navigate([this.redirectUrl]);
+            this.logingIn = false;
           })
         });
 

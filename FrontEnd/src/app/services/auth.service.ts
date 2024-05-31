@@ -14,21 +14,28 @@ export class AuthService {
   private backAPIUrl = backAPIUrl;
 
   public isAuth = new BehaviorSubject<boolean>(false);
+  public isAuth$ = this.isAuth.asObservable();
 
   public userData = new BehaviorSubject<UserData | null>(null);
 
   public currentUserSafe: UserData | null;
 
   constructor(private http: HttpClient, private router: Router) {
-    this.autoLogin();
+
   }
 
-  autoLogin() { //TODO: Add a check to see if the token is still valid
-    const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
-    if (token) {
-      this.isAuth.next(true);
-      this.router.navigate(['/main']);
-    }
+  checkToken(): Observable<any> {
+    return new Observable<any>(observer => {
+      const subscription = this.http.get(`${this.backAPIUrl}/check-token`).subscribe(
+        (response: any) => {
+          console.log(response);
+          observer.next(response);
+          observer.complete();
+          subscription.unsubscribe();
+        },
+      );
+  });
+
   }
 
   login(credentials: any): Observable<any> {

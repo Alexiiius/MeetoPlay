@@ -7,6 +7,7 @@ import { UserReduced } from '../../../../interfaces/user-reduced';
 import { SocialUser } from '../../../../interfaces/social-user';
 import { EventsService } from '../../../../services/events.service';
 import { filter } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
@@ -14,7 +15,8 @@ import { filter } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './more-event-info-modal.component.html',
   styleUrl: './more-event-info-modal.component.css'

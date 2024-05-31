@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Event } from '../../../models/event';
 import { format } from 'date-fns';
 import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EventOptionsComponent } from './event-options/event-options.component';
 
 @Component({

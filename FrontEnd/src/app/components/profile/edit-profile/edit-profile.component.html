@@ -1,0 +1,122 @@
+<!-- <dialog class="modal" #editProfileModal> -->
+
+<div class="modal-box relative">
+
+  <header class="text-base w-full text-right absolute top-7 right-10">
+    <span>Editando perfil</span>
+  </header>
+
+  <div role="tablist" class="tabs tabs-lifted">
+
+    <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Perfil" />
+    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+      <div class="flex justify-between items-center">
+        @if (showDropzone) {
+        <div class="relative w-min">
+          <div appDnd (fileDropped)="onFileDropped($event)" [ngClass]="{'border-2': !newAvatarUrl}"
+            class="border-dashed border-neutral/40 w-32 h-32 rounded-full flex items-center justify-center text-neutral/60 p-4 hover:border-neutral/80 transition-colors duration-300">
+
+            <input type="file" #fileDropRef id="fileDropRef" multiple (change)="onFileSelected($event)" accept="image/*"
+              class="absolute z-20 opacity-0 w-32 h-32 rounded-full top-0 left-0 cursor-pointer">
+
+            @if (newAvatarUrl) {
+            <div class="avatar">
+              <div class="w-32 rounded-full">
+                <img [src]="newAvatarUrl" alt="New Avatar"> />
+              </div>
+            </div>
+            } @else {
+            <span class="font-mono text-center text-sm">Suelta aquí la imagen o <div
+                class="badge badge-primary cursor-pointer mt-1 font-medium">pulsa</div></span>
+            }
+          </div>
+
+          <button [disabled]="isSavingAvatar" [ngClass]="{'opacity-20': isSavingAvatar}"
+            class="button btn btn-ghost btn-circle btn-sm absolute -top-3 -right-3 flex items-center z-30"
+            (click)="toggleDropzone()">
+            <i class='bx bx-x bx-sm text-error'></i>
+          </button>
+
+          <button (click)="saveNewAvatar()" [disabled]="!newAvatar" [ngClass]="{'opacity-20': !newAvatar}"
+            class="button btn btn-ghost btn-circle btn-sm absolute -bottom-3 -right-3 flex items-center z-30">
+            @if (isSavingAvatar) {
+            <span class="loading loading-spinner text-success"></span>
+            } @else {
+            <i class='bx bx-check bx-sm text-success'></i>
+            }
+          </button>
+        </div>
+        } @else {
+        <div class="flex">
+
+          <div class="avatar placeholder cursor-pointer" (click)="toggleDropzone()">
+            <div class="bg-neutral text-neutral-content rounded-full border-4 border-base-200 w-32 relative group">
+              <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="userAvatar">
+              <div
+                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-opacity duration-300">
+                <span
+                  class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs font-semibold">
+                  CAMBIAR FOTO</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+
+
+        <div class="form-control relative">
+          <label class="label">
+            <span class="label-text">Nickname</span>
+          </label>
+          <div class="flex items-center gap-2">
+            <label class="input input-bordered flex items-center gap-2">
+              <input type="text" class="grow" placeholder="Nuevo nickname" [(ngModel)]="newNickname" />
+              <button [ngClass]="newNickname !== originalNickname ? 'opacity-100' : 'opacity-0'"
+                [disabled]="newNickname === originalNickname"
+                class="button btn btn-ghost btn-square btn-sm flex items-center -mr-2 transition-opacity duration-300">
+                <i class='bx bx-check bx-sm text-success'></i>
+              </button>
+            </label>
+          </div>
+          <span class="font-mono mt-2 absolute text-neutral/50 -bottom-7 left-3">{{newNickname}}#tag</span>
+        </div>
+      </div>
+
+      <div class="form-control flex">
+        <label class="label">
+          <span class="label-text">Bio</span>
+        </label>
+        <div class="flex items-center gap-2 relative">
+          <textarea class="textarea text-base textarea-bordered h-24 max-h-32 w-full" placeholder="Bio"
+            [(ngModel)]="newBio"></textarea>
+          <button [ngClass]="newBio !== originalBio ? 'opacity-100' : 'opacity-0'" [disabled]="newBio === originalBio"
+            class="button btn btn-ghost btn-square btn-sm flex items-center transition-opacity duration-300 absolute bottom-2 right-2">
+            <i class='bx bx-check bx-sm text-success'></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Socials" checked />
+    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+
+      <div class="flex flex-col gap-4">
+        <app-social-link-input socialNetwork="Discord" />
+        <app-social-link-input socialNetwork="Instagram" />
+        <app-social-link-input socialNetwork="Twitter" />
+        <app-social-link-input socialNetwork="Steam" />
+        <app-social-link-input socialNetwork="Twitch" />
+        <app-social-link-input socialNetwork="YouTube" />
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+
+</div>
+
+<!-- </dialog> -->

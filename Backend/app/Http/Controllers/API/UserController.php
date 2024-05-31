@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 
 use App\Models\User;
+use App\Rules\SocialsRule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -55,15 +58,22 @@ class UserController extends Controller
         }
     }
 
-    //delete a user by id
-    public function destroy(string $id) {
-        $user = User::find($id);
-        $user->delete();
-        if ($user->trashed()) {
-            return response()->json(['message' => 'User deleted successfully']);
-        }else{
-            return response()->json(['message' => 'User deletion failed']);
+    public function destroy(Request $request) {
+
+        $user = auth()->user();
+
+        $request->validate([
+            'password' => 'required|string|min:3',
+        ]);
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Password incorrect.'], 401);
         }
+
+        $user->delete();
+        return response()->json(['message' => 'User deleted successfully']);
+ 
+
     }
 
 
@@ -137,7 +147,7 @@ class UserController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'timestamp' => now(),
+                    'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
                 ],
             ]);
 
@@ -151,11 +161,163 @@ class UserController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'timestamp' => now(),
+                    'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
                 ],
             ], 500);
         }
             
+    }
+
+    public function updateBio(Request $request) {
+
+        $request->validate([
+            'bio' => 'required|string|max:150',
+        ]);
+
+        $user = auth()->user();
+        $user->bio = $request->bio;
+        $user->save();
+        return response()->json(['data' => [
+            'message' => 'Bio updated successfully',
+            'bio' => $user->bio,
+            'Links' => [
+                'self' => url('/api/user/bio/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function updateSocials(Request $request) {
+
+        //validate using SocialsRule
+        $request->validate([
+            'socials' => ['required', new SocialsRule],
+        ]);
+
+        $user = auth()->user();
+
+        //parse json to string
+        $string = json_encode($request->socials);
+
+        $user->socials = $string;
+        $user->save();
+        return response()->json(['data' => [
+            'message' => 'Socials updated successfully',
+            'socials' => $user->socials,
+            'Links' => [
+                'self' => url('/api/user/socials/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function updatePassword(Request $request) {
+        
+        $request->validate([
+            'password' => 'required|string|min:3',
+            'new_password' => 'required|string|min:3',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Password incorrect.'], 401);
+        }
+
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+
+        return response()->json(['data' => [
+            'message' => 'Password updated successfully',
+            'Links' => [
+                'self' => url('/api/user/password/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function resendEmailVerification(Request $request) {
+        $user = auth()->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['error' => 'Email already verified.'], 401);
+        }
+
+        $user->sendEmailVerificationNotification();
+        return response()->json(['data' => [
+            'message' => 'Email verification sent successfully',
+            'Links' => [
+                'self' => url('/api/user/send/email-verification'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function updateEmail(Request $request) {
+        
+        $request->validate([
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string|min:3',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Password incorrect.'], 401);
+        }
+
+        $user->email = $request->email;
+        $user->email_verified_at = null;
+        $user->sendEmailVerificationNotification();
+        $user->tokens()->delete();
+        $user->save();
+
+        return response()->json(['data' => [
+            'message' => 'Email updated successfully, please verify your email. Token deleted.',
+            'email' => $user->email,
+            'Links' => [
+                'self' => url('/api/user/email/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function updateName(Request $request) {
+        
+        $request->validate([
+            'name' => 'required|string|min:3',
+            'password' => 'required|string|min:3',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Password incorrect.'], 401);
+        }
+
+        $user->name = $request->name;
+        $user->save();
+
+        return response()->json(['data' => [
+            'message' => 'Name updated successfully',
+            'name' => $user->name,
+            'Links' => [
+                'self' => url('/api/user/name/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
     }
 
 }

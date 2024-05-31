@@ -51,7 +51,7 @@ class MessageController extends Controller {
                 'text' => $request->get('text'),
                 'from_user_name' => auth()->user()->getFullNameAttribute(),
                 'to_user_name' => "Public",
-                'time' => now()->format('d M Y, H:i:s'),
+                'time' => now()->format('d-m-Y\TH:i:s. T'),
             ]);
 
             // Dispatch the GlobalMessage job
@@ -64,7 +64,7 @@ class MessageController extends Controller {
                 'text' => $request->get('text'),
                 'from_user_name' => auth()->user()->getFullNameAttribute(),
                 'to_user_name' => User::find($request->get('to_user_id'))->getFullNameAttribute(),
-                'time' => now()->format('d M Y, H:i:s'),
+                'time' => now()->format('d-m-Y\TH:i:s. T'),
             ]);
 
                 // Dispatch the SendMessage job

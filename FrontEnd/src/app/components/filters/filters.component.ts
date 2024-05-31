@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { RouterLink } from '@angular/router';
-import { MoreEventInfoModalComponent } from '../events-feed/event-card/more-event-info-modal/more-event-info-modal.component';
 import { AlertService } from '../../services/alert.service';
 import { EventFormComponent } from '../event-form/event-form.component';
 
@@ -17,10 +16,16 @@ import { EventFormComponent } from '../event-form/event-form.component';
 })
 export class FiltersComponent {
 
+  @ViewChild (EventFormComponent) eventForm: EventFormComponent
+
   constructor(private authService: AuthService,
     private alert: AlertService
   ) {
 
+  }
+
+  openNewEventModal() {
+    this.eventForm.openModal()
   }
 
   logout() {

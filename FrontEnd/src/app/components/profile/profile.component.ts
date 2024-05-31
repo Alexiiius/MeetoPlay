@@ -130,7 +130,7 @@ export class ProfileComponent {
 
   checkRoute() {
     const url = this.router.url; // obtiene la URL actual
-    const pattern = /^\/main\/profile\/[^\/]+\/gameStats$/; // patrón para verificar la URL
+    const pattern = /^\/profile\/[^\/]+\/gameStats$/;// patrón para verificar la URL
 
     return pattern.test(url); // devuelve true si la URL coincide con el patrón, false en caso contrario
   }

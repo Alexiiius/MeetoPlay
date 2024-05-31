@@ -94,6 +94,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('message/get/unread', [MessageController::class, 'getUnreadMessages']); //get all unread messages from auth user
     Route::put('/message/read', [MessageController::class, 'markAsRead']); //mark all messages from arrayID as read
 
+    Route::get('/message/get/conversations', [MessageController::class, 'getConversations']); //get all conversations from auth user
+
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
     Route::get('/check-token', function () {

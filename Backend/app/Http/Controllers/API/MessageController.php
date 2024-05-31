@@ -149,6 +149,26 @@ class MessageController extends Controller {
             ],
         ]);
     }
+
+    public function getConversations() {
+        $userId = auth()->user()->id;
+
+        $conversations = Message::select('from_user_id', 'to_user_id')
+        ->where('from_user_id', $userId)
+        ->where('to_user_id', '<>', 1)
+        ->orWhere(function ($query) use ($userId) {
+            $query->where('to_user_id', $userId)
+                  ->where('from_user_id', '<>', 1);
+        })
+        ->groupBy('from_user_id', 'to_user_id')
+        ->get();
+    
+        return response()->json([
+            'data' => [
+                'conversations' => $conversations,
+            ],
+        ]);
+    }
     
 
 }

@@ -4,7 +4,7 @@
   <ul tabindex="0" class="dropdown-content fixed z-20 menu p-2 shadow bg-base-100 rounded-box w-52">
 
     <li>
-      <button (click)="deleteEventModal.showModal()"><i class='bx bx-trash text-error'></i>Borrar evento</button>
+      <button (click)="openDeleteModal()"><i class='bx bx-trash text-error'></i>Borrar evento</button>
     </li>
 
     <li>
@@ -21,11 +21,15 @@
     <p class="py-4 font-normal">Esta acción es irreversible</p>
 
     <div class="modal-action">
-      <form method="dialog">
         <!-- if there is a button in form, it will close the modal -->
-        <button class="btn btn-ghost font-medium mr-2 text-neutral/90">Cancelar</button>
-        <button (click)="deleteEvent()" class="btn btn-error font-medium">Borrar</button>
-      </form>
+        <button class="btn btn-ghost font-medium mr-2 text-neutral/90" (click)="closeDeleteModal()">Cancelar</button>
+        <button (click)="deleteEvent()" class="btn btn-error font-medium">
+          @if (deletingEvent) {
+            <span class="loading loading-spinner loading-md"></span>
+          } @else {
+            Borrar
+          }
+        </button>
     </div>
   </div>
 </dialog>

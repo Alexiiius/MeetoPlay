@@ -5,6 +5,8 @@ import { AuthService } from './auth.service';
 import { backAPIUrl } from '../config';
 import { HttpClient } from '@angular/common/http';
 import { SocialUser } from '../interfaces/social-user';
+import { FormatedNewGameStat } from '../interfaces/formated-new-game-stat';
+import { FormatedNewGamemodeStat } from '../interfaces/formated-new-gamemode-stat';
 
 
 @Injectable({
@@ -61,6 +63,10 @@ export class UserService implements OnInit {
     return this.http.get(`${this.backAPIUrl}/friends/${userId}`);
   }
 
+  getUserGameStats(userId: number): Observable<any> {
+    return this.http.get(`${this.backAPIUrl}/user/game-stats/search/${userId}`);
+  }
+
   getUserById(id: number) {
     return this.http.get<UserData>(`${this.backAPIUrl}/user/${id}`);
   }
@@ -75,6 +81,30 @@ export class UserService implements OnInit {
 
   unfollowUser(id: number): Observable<any> {
     return this.http.post(`${this.backAPIUrl}/unfollow/${id}`,'');
+  }
+
+  postGameStat(gameStat: FormatedNewGameStat): Observable<any> {
+    return this.http.post(`${this.backAPIUrl}/user/game-stats/create`, gameStat);
+  }
+
+  editGameStat(gameStat: FormatedNewGameStat, gameStatId: number): Observable<any> {
+    return this.http.put(`${this.backAPIUrl}/user/game-stats/update/${gameStatId}`, gameStat);
+  }
+
+  deleteGameStat(gameStatId: number): Observable<any> {
+    return this.http.delete(`${this.backAPIUrl}/user/game-stats/delete/${gameStatId}`);
+  }
+
+  postGamemodeStat(gameStat: FormatedNewGamemodeStat): Observable<any> {
+    return this.http.post(`${this.backAPIUrl}/user/game-stats/gamemode/create`, gameStat);
+  }
+
+  editGamemodeStat(gamemodeStat: FormatedNewGamemodeStat, gamemodeStatId: number): Observable<any> {
+    return this.http.patch(`${this.backAPIUrl}/user/game-stats/gamemode/update/${gamemodeStatId}`, gamemodeStat);
+  }
+
+  deleteGamemodeStat(gamemodeStatId: number): Observable<any> {
+    return this.http.delete(`${this.backAPIUrl}/user/game-stats/gamemode/delete/${gamemodeStatId}`);
   }
 }
 

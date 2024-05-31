@@ -5,6 +5,12 @@
   @for (event of myEvents; track event.id) {
   <app-event-card [event]="event" />
 
+  } @empty {
+  <div class="flex flex-col items-center justify-center space-y-2 mt-12">
+    <i class='bx bxs-calendar-x bx-lg text-base-100'></i>
+    <p class="text-md font-medium text-base-100">No has creado ningún evento 🤨</p>
+    <p class="text-md font-semibold text-base-100">¿A qué esperas?</p>
+  </div>
   }
 
   <div class="flex space-x-1">

@@ -82,8 +82,27 @@
           </div>
         </div>
 
-        <!-- Follow Followers Friends -->
+
+
         <div class="w-80 flex flex-col gap-3 mx-auto mt-8">
+
+          <!-- Follow Followers Friends -->
+          @if (isRelationsLoading) {
+            <div class="w-80 flex justify-around mx-auto">
+              <div class="flex flex-col items-center gap-1">
+                <span class="text-xl font-mono font-bold skeleton w-7 h-6"></span>
+                <span class="font-light skeleton w-16 h-3"></span>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <span class="text-xl font-mono font-bold skeleton w-7 h-6"></span>
+                <span class="font-light skeleton w-16 h-3"></span>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <span class="text-xl font-mono font-bold skeleton w-7 h-6"></span>
+                <span class="font-light skeleton w-16 h-3"></span>
+              </div>
+            </div>
+          } @else {
           <div class="w-full flex justify-around ">
             <div class="flex flex-col items-center">
               <span class="text-xl font-mono font-bold">{{userFriends.length}}</span>
@@ -100,6 +119,8 @@
                 (click)="openUserListModal('followers', userFollowers)">Seguidores</span>
             </div>
           </div>
+          }
+
 
           <div class=" flex justify-center gap-3">
             @if (!isLoggedUser) {
@@ -159,7 +180,8 @@
       </div>
 
       <button *ngIf="checkRoute()"
-        class="btn btn-primary text-neutral min-h-0 h-[40px] w-[40px] btn-square flex items-center justify-center">
+        class="btn btn-primary text-neutral min-h-0 h-[40px] w-[40px] btn-square flex items-center justify-center"
+        (click)="openGameStatFormModal()">
         <i class='bx bx-plus bx-sm'></i>
       </button>
     </div>
@@ -171,9 +193,11 @@
   }
 
   <div
-    class="flex flex-col mt-2 bg-gradient-to-r from-primary to-secondary w-full h-full max-h-full rounded-box flex-grow overflow-y-scroll p-2 scrollbar-hidde">
+    class="flex flex-col mt-3 bg-gradient-to-r from-primary to-secondary w-full h-full max-h-full rounded-box flex-grow overflow-y-scroll p-2 scrollbar-hidde">
     <router-outlet></router-outlet>
     <div class="mt-1 w-full"></div>
   </div>
 
-  <app-users-list (userFollowed)="updateFollowCounts()" [logedUserId]="logedUser.id"/>
+  <app-users-list *ngIf="!isLoading" (userFollowed)="updateFollowCounts()" [logedUserId]="logedUser.id" />
+
+  <app-game-stat-form />

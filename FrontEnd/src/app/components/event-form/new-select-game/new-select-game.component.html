@@ -14,7 +14,7 @@
       </svg>
     </label>
     <app-option *ngIf="isLoading" [isLoading]="isLoading" [game]="{ id: -2, name: 'Cargando juegos...', image: '' }" />
-    <app-option *ngFor="let game of filteredGames | async" [game]="game"
+    <app-option *ngFor="let game of (filteredGames | async | slice:0:optionsLimit)" [game]="game"
       (optionSelected)="onOptionSelected($event)" />
   </div>
 </div>

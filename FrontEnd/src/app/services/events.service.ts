@@ -16,10 +16,10 @@ export class EventsService {
 
   private backAPIUrl = backAPIUrl;
 
-  constructor(private http: HttpClient, private userService: UserService) { }
+  constructor(private http: HttpClient) { }
 
   postNewEvent(newEvent: any) {
-    return this.http.post(this.backAPIUrl + '/create/event', newEvent);
+    return this.http.post(this.backAPIUrl + '/event/create', newEvent);
   }
 
   updateEvent(eventId: number, updatedEvent: any) {

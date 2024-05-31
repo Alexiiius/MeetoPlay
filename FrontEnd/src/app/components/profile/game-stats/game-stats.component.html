@@ -1,10 +1,28 @@
 <div class="w-full h-full flex flex-col justify-start space-y-3 rounded-lg">
-  <app-game-stat-card />
-  <app-game-stat-card />
-  <app-game-stat-card />
-  <app-game-stat-card />
-  <app-game-stat-card />
-  <app-game-stat-card />
-  <app-game-stat-card />
-  <app-game-stat-card />
+
+  @if (isLoading) {
+  <div *ngFor="let i of [].constructor(10)"
+    class="rounded-box bg-base-200 shadow-md hover:shadow-lg transition-all duration-300 w-full h-[88px] min-h-[88px] grid grid-rows-1 grid-cols-4 px-6">
+    <div class="flex space-x-3 items-center">
+      <div class="rounded-box w-14 h-14 skeleton"></div>
+      <div class="flex flex-col gap-1">
+        <span class="skeleton w-20 h-3"></span>
+        <span class="skeleton w-16 h-3"></span>
+      </div>
+    </div>
+    <div class="flex items-center justify-center ">
+      <span class="skeleton w-32 h-3"></span>
+    </div>
+    <div class="flex items-center justify-center ">
+      <span class="skeleton w-20 h-3"></span>
+    </div>
+    <div class="flex items-center justify-center ">
+      <span class="skeleton w-24 h-3"></span>
+    </div>
+  </div>
+  } @else {
+    @for (gameStat of stats; track $index) {
+      <app-game-stat-card [gameStat]="gameStat" />
+    }
+}
 </div>

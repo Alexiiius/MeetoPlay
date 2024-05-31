@@ -9,6 +9,13 @@ import { GameStatsComponent } from './components/profile/game-stats/game-stats.c
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';
 import { ParticipatingEventsComponent } from './components/profile/participating-events/participating-events.component';
 
+// export const routes: Routes = [
+//   {
+//     path: '', component: MainComponent,
+//   }
+
+// ];
+
 export const routes: Routes = [
   {
     path: '', component: MainComponent, canActivate: [authGuard],
@@ -21,15 +28,14 @@ export const routes: Routes = [
           { path: 'gameStats', component: GameStatsComponent },
           { path: 'myEvents', component: MyEventsComponent },
           { path: 'participating', component: ParticipatingEventsComponent },
-          { path: '**', redirectTo: 'gameStats' }
+
         ]
       },
-      { path: '**', redirectTo: 'main' }
+
     ]
   },
   { path: 'login', title: 'Meetoplay | Login', component: LoginRegisterComponent, canActivate: [loggedGuard], data: { mode: 'login' } },
-  { path: 'register', title: 'Meetoplay | Register', component: LoginRegisterComponent, canActivate: [loggedGuard], data: { mode: 'register' } }
-
-  // otras rutas aquí
+  { path: 'register', title: 'Meetoplay | Register', component: LoginRegisterComponent, canActivate: [loggedGuard], data: { mode: 'register' } },
+  { path: '**', redirectTo: ''}
 
 ];

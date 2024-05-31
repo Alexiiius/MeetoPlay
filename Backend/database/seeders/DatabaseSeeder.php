@@ -21,13 +21,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(30)->create();
+        User::factory()->create([
+            'name' => 'admin',
+            'email' => 'admin2@admin.com',
+            'password' => bcrypt('password'),
+            'is_Admin' => true,
+        ]);
         User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@admin.com',
             'password' => bcrypt('password'),
             'is_Admin' => true,
         ]);
+        User::factory(30)->create();
 
         Follower::factory(30)->create();
         $events = Event::factory(50)->create(['event_requirement_id' => null]);

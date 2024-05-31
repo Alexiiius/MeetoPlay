@@ -1,5 +1,5 @@
-<router-outlet></router-outlet>
-
 @if (splashScreenVisible) {
   <app-splash-screen></app-splash-screen>
+} @else {
+  <router-outlet></router-outlet>
 }

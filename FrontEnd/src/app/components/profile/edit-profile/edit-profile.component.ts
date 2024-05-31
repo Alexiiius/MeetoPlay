@@ -77,6 +77,8 @@ export class EditProfileComponent {
           console.error('Error updating avatar:', error);
           this.isSavingAvatar = false;
           this.alertService.showAlert('error', 'Error actualizando avatar 😢');
+          this.newAvatar = null;
+          this.newAvatarUrl = null;
         });
 
     } else {

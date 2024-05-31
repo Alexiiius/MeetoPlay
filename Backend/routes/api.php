@@ -31,13 +31,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user/search/{search}', [UserController::class, 'search'])->where('search', '.*'); //search users by name, tag and name#tag
 
     //WIP
-    Route::delete('/user/{id}', [UserController::class, 'destroy']);
+    Route::delete('/user/delete', [UserController::class, 'destroy']);
 
+    Route::patch('/user/name/update', [UserController::class, 'updateName']); // update the name of the authenticated user
     Route::patch('/user/password/update', [UserController::class, 'updatePassword']); //update the password of the authenticated user
-
-    
-
-    //Done
     Route::patch('/user/bio/update', [UserController::class, 'updateBio']); //update the bio of the authenticated user
     Route::patch('/user/socials/update', [UserController::class, 'updateSocials']); //update the socials of the authenticated user
     Route::get('/user/send/email-verification', [UserController::class, 'resendEmailVerification']); //send an email verification to the authenticated user

@@ -58,15 +58,22 @@ class UserController extends Controller
         }
     }
 
-    //delete a user by id
-    public function destroy(string $id) {
-        $user = User::find($id);
-        $user->delete();
-        if ($user->trashed()) {
-            return response()->json(['message' => 'User deleted successfully']);
-        }else{
-            return response()->json(['message' => 'User deletion failed']);
+    public function destroy(Request $request) {
+
+        $user = auth()->user();
+
+        $request->validate([
+            'password' => 'required|string|min:3',
+        ]);
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Password incorrect.'], 401);
         }
+
+        $user->delete();
+        return response()->json(['message' => 'User deleted successfully']);
+ 
+
     }
 
 
@@ -278,6 +285,34 @@ class UserController extends Controller
             'email' => $user->email,
             'Links' => [
                 'self' => url('/api/user/email/update'),
+            ],
+            'meta' => [
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+            ]
+        ]]);
+    }
+
+    public function updateName(Request $request) {
+        
+        $request->validate([
+            'name' => 'required|string|min:3',
+            'password' => 'required|string|min:3',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Password incorrect.'], 401);
+        }
+
+        $user->name = $request->name;
+        $user->save();
+
+        return response()->json(['data' => [
+            'message' => 'Name updated successfully',
+            'name' => $user->name,
+            'Links' => [
+                'self' => url('/api/user/name/update'),
             ],
             'meta' => [
                 'timestamp' => now()->format('d-m-Y\TH:i:s. T'),

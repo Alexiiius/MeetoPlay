@@ -1,3 +1,5 @@
+import { UserSocials } from "./user-socials";
+
 export interface UserData {
   id: number;
   name: string;
@@ -9,15 +11,7 @@ export interface UserData {
   status: string;
   is_admin: boolean;
   bio: string;
-  socials: {
-    github: string;
-    twitter: string;
-    website: string;
-    facebook: string;
-    linkedin: string;
-    instagram: string;
-    discord: string;
-  }
+  socials: UserSocials
   email_verification_token: string;
   created_at: string;
   updated_at: string;

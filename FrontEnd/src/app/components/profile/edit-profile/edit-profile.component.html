@@ -1,4 +1,4 @@
-<!-- <dialog class="modal" #editProfileModal> -->
+<dialog class="modal" #editProfileModal>
 
 <div class="modal-box relative">
 
@@ -8,7 +8,7 @@
 
   <div role="tablist" class="tabs tabs-lifted">
 
-    <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Perfil" />
+    <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Perfil" checked />
     <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
       <div class="flex justify-between items-center">
         @if (showDropzone) {
@@ -51,7 +51,7 @@
 
           <div class="avatar placeholder cursor-pointer" (click)="toggleDropzone()">
             <div class="bg-neutral text-neutral-content rounded-full border-4 border-base-200 w-32 relative group">
-              <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="userAvatar">
+              <img src="{{originalAvatar}}" alt="userAvatar">
               <div
                 class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-opacity duration-300">
                 <span
@@ -70,9 +70,11 @@
           </label>
           <div class="flex items-center gap-2">
             <label class="input input-bordered flex items-center gap-2">
+
               <input type="text" class="grow" placeholder="Nuevo nickname" [(ngModel)]="newNickname" />
+
               <button [ngClass]="newNickname !== originalNickname ? 'opacity-100' : 'opacity-0'"
-                [disabled]="newNickname === originalNickname"
+                [disabled]="newNickname === originalNickname" (click)="openPassConfirmationModal()"
                 class="button btn btn-ghost btn-square btn-sm flex items-center -mr-2 transition-opacity duration-300">
                 <i class='bx bx-check bx-sm text-success'></i>
               </button>
@@ -88,35 +90,85 @@
         </label>
         <div class="flex items-center gap-2 relative">
           <textarea class="textarea text-base textarea-bordered h-24 max-h-32 w-full" placeholder="Bio"
-            [(ngModel)]="newBio"></textarea>
-          <button [ngClass]="newBio !== originalBio ? 'opacity-100' : 'opacity-0'" [disabled]="newBio === originalBio"
+            [(ngModel)]="newBio" maxlength="150"></textarea>
+          <button [ngClass]="newBio !== originalBio ? 'opacity-100' : 'opacity-0'" [disabled]="newBio === originalBio" (click)="saveNewBio()"
             class="button btn btn-ghost btn-square btn-sm flex items-center transition-opacity duration-300 absolute bottom-2 right-2">
+            @if (isSavingBio) {
+            <span class="loading loading-spinner text-success"></span>
+            } @else {
             <i class='bx bx-check bx-sm text-success'></i>
+            }
           </button>
         </div>
       </div>
     </div>
 
-    <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Socials" checked />
+    <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Socials" />
     <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
 
       <div class="flex flex-col gap-4">
-        <app-social-link-input socialNetwork="Discord" />
-        <app-social-link-input socialNetwork="Instagram" />
-        <app-social-link-input socialNetwork="Twitter" />
-        <app-social-link-input socialNetwork="Steam" />
-        <app-social-link-input socialNetwork="Twitch" />
-        <app-social-link-input socialNetwork="YouTube" />
-
+        <app-social-link-input socialNetwork="Discord" [socialLink]="socials.Discord"
+          (socialLinkUpdated)="saveNewSocials($event)" />
+        <app-social-link-input socialNetwork="Instagram" [socialLink]="socials.Instagram"
+          (socialLinkUpdated)="saveNewSocials($event)" />
+        <app-social-link-input socialNetwork="Twitter" [socialLink]="socials.X"
+          (socialLinkUpdated)="saveNewSocials($event)" />
+        <app-social-link-input socialNetwork="Steam" [socialLink]="socials.Steam"
+          (socialLinkUpdated)="saveNewSocials($event)" />
+        <app-social-link-input socialNetwork="Twitch" [socialLink]="socials.Twitch"
+          (socialLinkUpdated)="saveNewSocials($event)" />
+        <app-social-link-input socialNetwork="YouTube" [socialLink]="socials.Youtube"
+          (socialLinkUpdated)="saveNewSocials($event)" />
       </div>
 
     </div>
 
   </div>
-
-
-
-
 </div>
 
-<!-- </dialog> -->
+<form method="dialog" class="modal-backdrop">
+  <button>close</button>
+</form>
+
+</dialog>
+
+<dialog id="pass_confirmation_modal" #pass_confirmation_modal class="modal">
+  <div class="modal-box w-min">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-semibold text-lg">Confirmación</h3>
+    <label class="form-control w-full max-w-xs">
+      <div class="label">
+        <span class="label-text">Introduce tu contraseña</span>
+      </div>
+      <label class="input input-bordered flex items-center gap-2" [ngClass]="{'input-error': showWrongPassword}">
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
+          <path fill-rule="evenodd"
+            d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+            clip-rule="evenodd" />
+        </svg>
+
+        <input type="password" class="grow" value="password" [(ngModel)]="password" />
+
+        <button [ngClass]="password !== '' ? 'opacity-100' : 'opacity-0'" [disabled]="password === ''"
+          (click)="saveNewNickname()"
+          class="button btn btn-ghost btn-square btn-sm flex items-center -mr-2 transition-opacity duration-300">
+          @if (isCheckingPassword) {
+          <span class="loading loading-spinner text-success"></span>
+          } @else {
+          <i class='bx bx-check bx-sm text-success'></i>
+          }
+        </button>
+
+      </label>
+      @if (showWrongPassword) {
+      <div class="label">
+        <span class="label-text font-light text-error">La contraseña no es correcta</span>
+      </div>
+      }
+    </label>
+
+  </div>
+</dialog>

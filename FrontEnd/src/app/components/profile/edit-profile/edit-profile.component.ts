@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { DndDirective } from './dnd.directive';
 import { ProfileService } from '../../../services/profile.service';
 
@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { AlertService } from '../../../services/alert.service';
 import { FormsModule } from '@angular/forms';
 import { SocialLinkInputComponent } from './social-link-input/social-link-input.component';
+import { UserSocials } from '../../../interfaces/user-socials';
+import { UserData } from '../../../interfaces/user-data';
 
 @Component({
   selector: 'app-edit-profile',
@@ -19,23 +21,75 @@ import { SocialLinkInputComponent } from './social-link-input/social-link-input.
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.css'
 })
-export class EditProfileComponent {
+export class EditProfileComponent{
+
+  @ViewChild('editProfileModal') modalDialogEdit!: ElementRef<HTMLDialogElement>;
+  @ViewChild('pass_confirmation_modal') modalDialog!: ElementRef<HTMLDialogElement>;
+
+  socials: UserSocials = {
+    Discord: '',
+    Instagram: '',
+    X: '',
+    Steam: '',
+    Twitch: '',
+    Youtube: ''
+  };
+
+  @Input() user: UserData;
 
   showDropzone: boolean = false;
 
+  originalAvatar: string;
   newAvatar: File | null = null;
   newAvatarUrl: string | null = null;
 
-  originalNickname: string = 'Vaker0';
-  newNickname: string = this.originalNickname;
+  originalNickname: string;
+  newNickname: string;
 
-  originalBio: string = 'I love coding!';
-  newBio: string = this.originalBio;
+  originalBio: string;
+  newBio: string;
 
   isSavingAvatar: boolean = false;
 
+  isCheckingPassword: boolean = false;
+  password: string = '';
+  showWrongPassword: boolean = false;
+
+  isSavingBio: boolean = false;
+
   profileService = inject(ProfileService);
   alertService = inject(AlertService);
+
+  constructor() { }
+
+  openEditProfileModal() {
+    this.modalDialogEdit.nativeElement.showModal();
+
+    this.originalNickname = this.user.name;
+    this.newNickname = this.originalNickname;
+
+    this.originalBio = this.user.bio;
+    this.newBio = this.originalBio;
+
+    this.originalAvatar = this.user.avatar;
+
+    if (this.user.socials) {
+      this.socials = this.user.socials;
+      console.log('Socials:', this.socials);
+    }
+  }
+
+  closeEditProfileModal() {
+    this.modalDialogEdit.nativeElement.close();
+  }
+
+  openPassConfirmationModal() {
+    this.modalDialog.nativeElement.showModal();
+  }
+
+  closePassConfirmationModal() {
+    this.modalDialog.nativeElement.close();
+  }
 
   toggleDropzone() {
     this.showDropzone = !this.showDropzone;
@@ -58,6 +112,59 @@ export class EditProfileComponent {
       this.newAvatarUrl = URL.createObjectURL(this.newAvatar);
     }
   }
+
+  saveNewNickname() {
+    this.isCheckingPassword = true;
+    if (this.newNickname !== this.originalNickname) {
+      this.profileService.updateName(this.newNickname, this.password).subscribe(
+        (response) => {
+          console.log('Name updated:', response);
+          this.alertService.showAlert('success', 'Nickname actualizado correctamente 🎉');
+          this.originalNickname = this.newNickname;
+          this.isCheckingPassword = false;
+          this.closePassConfirmationModal();
+        },
+        (error) => {
+          console.error('Error updating name:', error);
+          this.alertService.showAlert('error', 'Error al actualizar tu nickname 😢');
+          this.isCheckingPassword = false;
+          this.showWrongPassword =  true;
+        });
+    }
+  }
+
+  saveNewBio() {
+    this.isSavingBio = true;
+    if (this.newBio !== this.originalBio) {
+      this.profileService.updateBio(this.newBio).subscribe(
+        (response) => {
+          console.log('Bio updated:', response);
+          this.alertService.showAlert('success', 'Biografía actualizada correctamente 🎉');
+          this.originalBio = this.newBio;
+          this.isSavingBio = false;
+        },
+        (error) => {
+          console.error('Error updating bio:', error);
+          this.alertService.showAlert('error', 'Error al actualizar tu biografía 😢');
+          this.isSavingBio = false;
+        });
+    }
+  }
+
+  saveNewSocials(event: { socialNetwork: string, newSocialLink: string }) {
+    this.socials[event.socialNetwork] = event.newSocialLink;
+
+    this.profileService.updateSocials(this.socials).subscribe(
+      (response) => {
+        console.log('Socials updated:', response);
+        this.alertService.showAlert('success', 'Redes sociales actualizadas correctamente 🎉');
+      },
+      (error) => {
+        console.error('Error updating socials:', error);
+        this.alertService.showAlert('error', 'Error actualizando redes sociales 😢');
+      });
+  }
+
 
   saveNewAvatar() {
     this.isSavingAvatar = true;

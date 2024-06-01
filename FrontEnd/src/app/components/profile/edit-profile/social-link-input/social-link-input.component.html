@@ -3,7 +3,7 @@
     @case ('Instagram') {
       <i class='bx bxl-instagram bx-md'></i>
     }
-    
+
     @case ('Discord') {
       <i class='bx bxl-discord-alt bx-md'></i>
     }
@@ -30,9 +30,15 @@
 
   }
   <label class="input input-bordered flex items-center gap-2 w-full">
-    <input type="text" class="grow" [placeholder]="socialNetwork" />
-    <button class="button btn btn-ghost btn-square btn-sm flex items-center -mr-2 transition-opacity duration-300">
+
+    <input type="text" class="grow" [placeholder]="socialNetwork" [(ngModel)]="newSocialLink"/>
+
+    <button
+      [ngClass]="newSocialLink !== socialLink ? 'opacity-100' : 'opacity-0'"
+      [disabled]="newSocialLink === socialLink" (click)="updateSocialLink(socialNetwork, newSocialLink)"
+      class="button btn btn-ghost btn-square btn-sm flex items-center -mr-2 transition-opacity duration-300">
       <i class='bx bx-check bx-sm text-success'></i>
     </button>
+
   </label>
 </div>

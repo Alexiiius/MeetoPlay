@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    
+
     //return all users id, name and email
     public function index() {
         $users = User::select('id', 'name', 'email', 'tag')->get();
@@ -67,19 +67,19 @@ class UserController extends Controller
         ]);
 
         if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Password incorrect.'], 401);
+            return response()->json(['error' => 'Password incorrect.'], 403);
         }
 
         $user->delete();
         return response()->json(['message' => 'User deleted successfully']);
- 
+
 
     }
 
 
     public function search(string $search) {
         $parts = explode('#', $search);
-    
+
         if (count($parts) == 2) {
             // Buscar por name y tag
             $users = User::where('name', 'like', '%'.$parts[0].'%')
@@ -93,21 +93,21 @@ class UserController extends Controller
                 ->select('id', 'name', 'tag', 'avatar')
                 ->get();
         }
-    
+
         return $users;
     }
 
     public function changeStatus(Request $request, string $status) {
-       
+
         $user = auth()->user();
         $userOldStatus = $user->status;
- 
+
         try {
             $user->setStatus($status);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
- 
+
         if ($user->wasChanged()) {
             return response()->json([
                 'message' => 'Status changed successfully',
@@ -117,18 +117,18 @@ class UserController extends Controller
         }else{
             return response()->json(['message' => 'Status change failed or already the same status.']);
         }
- 
+
     }
 
     public function updateAvatar(Request $request) {
 
-        try { 
+        try {
             $request->validate([
                 'avatar' => 'required|image|max:2048',
             ]);
-        
+
             $user = auth()->user();
-        
+
             $avatarName = $user->id.'_avatar.jpg';
             $avatar = $request->file('avatar');
 
@@ -165,7 +165,7 @@ class UserController extends Controller
                 ],
             ], 500);
         }
-            
+
     }
 
     public function updateBio(Request $request) {
@@ -216,7 +216,7 @@ class UserController extends Controller
     }
 
     public function updatePassword(Request $request) {
-        
+
         $request->validate([
             'password' => 'required|string|min:3',
             'new_password' => 'required|string|min:3',
@@ -225,7 +225,7 @@ class UserController extends Controller
         $user = auth()->user();
 
         if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Password incorrect.'], 401);
+            return response()->json(['error' => 'Password incorrect.'], 403);
         }
 
         $user->password = bcrypt($request->new_password);
@@ -246,7 +246,7 @@ class UserController extends Controller
         $user = auth()->user();
 
         if ($user->hasVerifiedEmail()) {
-            return response()->json(['error' => 'Email already verified.'], 401);
+            return response()->json(['error' => 'Email already verified.'], 403);
         }
 
         $user->sendEmailVerificationNotification();
@@ -262,7 +262,7 @@ class UserController extends Controller
     }
 
     public function updateEmail(Request $request) {
-        
+
         $request->validate([
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:3',
@@ -271,7 +271,7 @@ class UserController extends Controller
         $user = auth()->user();
 
         if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Password incorrect.'], 401);
+            return response()->json(['error' => 'Password incorrect.'], 403);
         }
 
         $user->email = $request->email;
@@ -293,7 +293,7 @@ class UserController extends Controller
     }
 
     public function updateName(Request $request) {
-        
+
         $request->validate([
             'name' => 'required|string|min:3',
             'password' => 'required|string|min:3',
@@ -302,7 +302,7 @@ class UserController extends Controller
         $user = auth()->user();
 
         if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Password incorrect.'], 401);
+            return response()->json(['error' => 'Password incorrect.'], 403);
         }
 
         $user->name = $request->name;

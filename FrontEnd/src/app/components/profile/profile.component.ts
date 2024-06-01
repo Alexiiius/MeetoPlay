@@ -11,6 +11,7 @@ import { UsersListComponent } from './users-list/users-list.component';
 import { UserReduceFollowing } from '../../interfaces/user-reduce-following';
 import { ProfileService } from '../../services/profile.service';
 import { GameStatFormComponent } from './game-stat-form/game-stat-form.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 
 @Component({
   selector: 'app-profile',
@@ -22,12 +23,15 @@ import { GameStatFormComponent } from './game-stat-form/game-stat-form.component
     RouterLinkActive,
     RouterOutlet,
     UsersListComponent,
-    GameStatFormComponent
+    GameStatFormComponent,
+    EditProfileComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
+
+  @ViewChild(EditProfileComponent) editProfileComponent!: EditProfileComponent;
 
   user: UserData; //TODO create UserPublic interface
   isLoading = true;
@@ -74,6 +78,10 @@ export class ProfileComponent {
         });
       });
     }
+
+  openEditProfileModal() {
+    this.editProfileComponent.openEditProfileModal();
+  }
 
   updateFollowCounts() {
     this.checkIfLoggedUser().subscribe(isLoggedUser => {

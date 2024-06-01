@@ -9,6 +9,13 @@ import { GameStatsComponent } from './components/profile/game-stats/game-stats.c
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';
 import { ParticipatingEventsComponent } from './components/profile/participating-events/participating-events.component';
 
+// export const routes: Routes = [
+//   {
+//     path: '', component: MainComponent,
+//   }
+
+// ];
+
 export const routes: Routes = [
   {
     path: '', component: MainComponent, canActivate: [authGuard],
@@ -31,5 +38,6 @@ export const routes: Routes = [
   { path: '**', redirectTo: 'main' }
 
   // otras rutas aquí
+
 
 ];

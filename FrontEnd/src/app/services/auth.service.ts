@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { LoginResponse, RegisterResponse } from '../interfaces/back-end-api-response';
 import { UserData } from '../interfaces/user-data';
 import { UserReduced } from '../interfaces/user-reduced';
+import { ProfileService } from './profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,18 @@ export class AuthService {
 
   public currentUserSafe: UserData | null;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private profileService: ProfileService) {
+    this.profileService.profileAvatarUpdated.subscribe(newAvatar => {
+      let userData = JSON.parse(sessionStorage.getItem('user_data') || '{}');
+      userData.avatar = newAvatar;
+      sessionStorage.setItem('user_data', JSON.stringify(userData));
+    });
 
+    this.profileService.profileNameUpdated.subscribe(newName => {
+      let userData = JSON.parse(sessionStorage.getItem('user_data') || '{}');
+      userData.name = newName;
+      sessionStorage.setItem('user_data', JSON.stringify(userData));
+    });
   }
 
   checkToken(): Observable<any> {
@@ -85,6 +96,21 @@ export class AuthService {
   }
 
   storeUserData(userData: UserData): Promise<void> {
+    return new Promise((resolve, reject) => {
+      let storedData: UserReduced = {
+        id: userData.id,
+        name: userData.name,
+        tag: userData.tag,
+        full_tag: `${userData.name}#${userData.tag}`,
+        avatar: userData.avatar,
+        status: 'Online'
+      };
+      sessionStorage.setItem('user_data', JSON.stringify(storedData));
+      resolve();
+    });
+  }
+
+  updateUserData(userData: UserData): Promise<void> {
     return new Promise((resolve, reject) => {
       let storedData: UserReduced = {
         id: userData.id,

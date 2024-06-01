@@ -280,9 +280,12 @@ class UserController extends Controller
         $user->tokens()->delete();
         $user->save();
 
+        $token = $request->user()->createToken('auth_token')->plainTextToken;
+
         return response()->json(['data' => [
             'message' => 'Email updated successfully, please verify your email. Token deleted.',
             'email' => $user->email,
+            'token' => $token,
             'Links' => [
                 'self' => url('/api/user/email/update'),
             ],

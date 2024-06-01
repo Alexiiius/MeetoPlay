@@ -29,6 +29,8 @@ export class ProfileService {
   gamemodeStatDeleted = new Subject<number>();
 
   profileAvatarUpdated = new Subject<string>();
+  profileNameUpdated = new Subject<string>();
+  profileBioUpdated = new Subject<string>();
 
   setUserProfileId(id: number) {
     this.userProfileId.next(id);
@@ -56,6 +58,10 @@ export class ProfileService {
 
   updateBio(bio: string): Observable<any> {
     return this.http.patch(`${this.backAPIUrl}/user/bio/update`, { bio: bio });
+  }
+
+  updateEmail(email: string, password: string): Observable<any> {
+    return this.http.patch(`${this.backAPIUrl}/user/email/update`, { email: email, password: password });
   }
 }
 

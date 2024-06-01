@@ -21,7 +21,7 @@ import { UserData } from '../../../interfaces/user-data';
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.css'
 })
-export class EditProfileComponent{
+export class EditProfileComponent implements OnInit{
 
   @ViewChild('editProfileModal') modalDialogEdit!: ElementRef<HTMLDialogElement>;
   @ViewChild('pass_confirmation_modal') modalDialog!: ElementRef<HTMLDialogElement>;
@@ -61,6 +61,12 @@ export class EditProfileComponent{
   alertService = inject(AlertService);
 
   constructor() { }
+
+  ngOnInit() {
+    this.profileService.profileAvatarUpdated.subscribe((newAvatarUrl: string) => {
+      this.originalAvatar = newAvatarUrl;
+    });
+  }
 
   openEditProfileModal() {
     this.modalDialogEdit.nativeElement.showModal();
@@ -121,6 +127,7 @@ export class EditProfileComponent{
           console.log('Name updated:', response);
           this.alertService.showAlert('success', 'Nickname actualizado correctamente 🎉');
           this.originalNickname = this.newNickname;
+          this.profileService.profileNameUpdated.next(this.newNickname);
           this.isCheckingPassword = false;
           this.closePassConfirmationModal();
         },
@@ -141,6 +148,7 @@ export class EditProfileComponent{
           console.log('Bio updated:', response);
           this.alertService.showAlert('success', 'Biografía actualizada correctamente 🎉');
           this.originalBio = this.newBio;
+          this.profileService.profileBioUpdated.next(this.newBio);
           this.isSavingBio = false;
         },
         (error) => {
@@ -192,5 +200,4 @@ export class EditProfileComponent{
       console.error('No new avatar selected');
     }
   }
-
 }

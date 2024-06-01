@@ -12,7 +12,7 @@
     <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
       <div class="flex justify-between items-center">
         @if (showDropzone) {
-        <div class="relative w-min">
+        <div class="relative w-min lg:tooltip lg:tooltip-right" data-tip="Se recomienda el uso de imagenes con resolución 1:1 (cuadradas) 🤖">
           <div appDnd (fileDropped)="onFileDropped($event)" [ngClass]="{'border-2': !newAvatarUrl}"
             class="border-dashed border-neutral/40 w-32 h-32 rounded-full flex items-center justify-center text-neutral/60 p-4 hover:border-neutral/80 transition-colors duration-300">
 

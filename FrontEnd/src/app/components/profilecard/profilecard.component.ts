@@ -49,6 +49,12 @@ export class ProfilecardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.user.avatar = newAvatarUrl + '?t=' + Date.now();
       }
     });
+
+    this.profileService.profileNameUpdated.subscribe((newName: string) => {
+      if (this.user) {
+        this.user.name = newName;
+      }
+    });
   }
 
   ngOnDestroy(): void {

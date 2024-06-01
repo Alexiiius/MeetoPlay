@@ -77,6 +77,24 @@ export class ProfileComponent {
           });
         });
       });
+
+      this.profileService.profileAvatarUpdated.subscribe((newAvatarUrl: string) => {
+        if (this.user) {
+          this.user.avatar = newAvatarUrl + '?t=' + Date.now();
+        }
+      });
+
+      this.profileService.profileNameUpdated.subscribe((newName: string) => {
+        if (this.user) {
+          this.user.name = newName;
+        }
+      });
+
+      this.profileService.profileBioUpdated.subscribe((newBio: string) => {
+        if (this.user) {
+          this.user.bio = newBio;
+        }
+      });
     }
 
   openEditProfileModal() {

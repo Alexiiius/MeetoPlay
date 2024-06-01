@@ -61,7 +61,7 @@ class EventController extends Controller
                 ],
             ],
             'meta' => [
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ], 201);
     }
@@ -100,7 +100,7 @@ class EventController extends Controller
                 'event' => $event,
             ],
             'meta' => [
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ]);
     }
@@ -131,7 +131,7 @@ class EventController extends Controller
                 'current_page' => $page,
                 'total_pages' => ceil($total / $perPage),
                 'total_events' => $total,
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ]);
     }
@@ -166,7 +166,7 @@ class EventController extends Controller
                 'current_page' => $page,
                 'total_pages' => ceil($total / $perPage),
                 'total_events' => $total,
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ]);
     }
@@ -198,7 +198,7 @@ class EventController extends Controller
                 'current_page' => $page,
                 'total_pages' => ceil($total / $perPage),
                 'total_events' => $total,
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ]);
     }
@@ -234,7 +234,7 @@ class EventController extends Controller
                 'current_page' => $page,
                 'total_pages' => ceil($total / $perPage),
                 'total_events' => $total,
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ]);
     }
@@ -270,7 +270,7 @@ class EventController extends Controller
                 'current_page' => $request->page,
                 'total_pages' => ceil($total / $perPage),
                 'total_events' => $total,
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ]);
     }
@@ -303,7 +303,7 @@ class EventController extends Controller
                 'current_page' => $request->page,
                 'total_pages' => ceil($total / $perPage),
                 'total_events' => $total,
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ]);
     }
@@ -368,7 +368,7 @@ class EventController extends Controller
                 ],
             ],
             'meta' => [
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ], 200);
     }
@@ -397,7 +397,7 @@ class EventController extends Controller
                 ],
             ],
             'meta' => [
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ], 200);
     }
@@ -430,7 +430,7 @@ class EventController extends Controller
                 ],
             ],
             'meta' => [
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ], 200);
     }
@@ -463,7 +463,7 @@ class EventController extends Controller
                 ],
             ],
             'meta' => [
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ], 200);
     }
@@ -529,7 +529,7 @@ class EventController extends Controller
                 'current_page' => $request->page,
                 'total_pages' => ceil($total / $perPage),
                 'total_events' => $total,
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ]);
     }
@@ -600,7 +600,7 @@ class EventController extends Controller
                 'current_page' => $request->page,
                 'total_pages' => ceil($total / $perPage),
                 'total_events' => $total,
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ]);
     }

@@ -45,7 +45,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     ],
                 ],
                 'meta' => [
-                    'timestamp' => now(),
+                    'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
                 ],
             ], 401);
         });
@@ -56,7 +56,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'errors' => $e->getMessage(),
                 ],
                 'meta' => [
-                    'timestamp' => now(),
+                    'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
                 ],
             ], 405);
         });
@@ -67,7 +67,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'errors' => $e->getMessage(),
                 ],
                 'meta' => [
-                    'timestamp' => now(),
+                    'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
                 ],
             ], 404);
         });

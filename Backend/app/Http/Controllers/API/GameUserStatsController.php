@@ -22,7 +22,7 @@ class GameUserStatsController extends Controller {
                 ],
             ],
             'meta' => [
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ], $code);
     }
@@ -37,7 +37,7 @@ class GameUserStatsController extends Controller {
                 ],
             ],
             'meta' => [
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ], $code);
     }

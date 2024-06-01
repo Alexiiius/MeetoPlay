@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Events\GotMessage;
-use App\Jobs\SendMessage;
 use Illuminate\Http\Request;
+
 use App\Models\Message;
 use App\Models\User;
+
+//private smg
+use App\Jobs\SendMessage;
+use App\Events\GotMessage;
+
+//public msg
+use App\Jobs\SendPublicMessage;
+use App\Events\GlobalMessage;
+
 use Illuminate\Support\Facades\Log as Logger;
 use Illuminate\Pagination\Paginator;
 
@@ -36,20 +44,37 @@ class MessageController extends Controller {
             ]);
         }
 
-        $message = Message::create([
-            'from_user_id' => auth()->user()->id,
-            'to_user_id' => $request->get('to_user_id'),
-            'text' => $request->get('text'),
-            'from_user_name' => auth()->user()->getFullNameAttribute(),
-            'to_user_name' => User::find($request->get('to_user_id'))->getFullNameAttribute(),
-            'time' => now()->format('d M Y, H:i:s'),
-        ]);
+        if ($request->get('group_name') != "private"){
+            $message = Message::create([
+                'from_user_id' => auth()->user()->id,
+                'to_user_id' => 1,
+                'text' => $request->get('text'),
+                'from_user_name' => auth()->user()->getFullNameAttribute(),
+                'to_user_name' => "Public",
+                'time' => now()->format('d-m-Y\TH:i:s. T'),
+            ]);
 
-        // Dispatch the SendMessage job
-        SendMessage::dispatch($message);
+            // Dispatch the GlobalMessage job
+            GlobalMessage::dispatch($message);
 
-        // Broadcast the GotMessage event
-        // event(new GotMessage($message));
+        }else{
+            $message = Message::create([
+                'from_user_id' => auth()->user()->id,
+                'to_user_id' => $request->get('to_user_id'),
+                'text' => $request->get('text'),
+                'from_user_name' => auth()->user()->getFullNameAttribute(),
+                'to_user_name' => User::find($request->get('to_user_id'))->getFullNameAttribute(),
+                'time' => now()->format('d-m-Y\TH:i:s. T'),
+            ]);
+
+                // Dispatch the SendMessage job
+                SendMessage::dispatch($message);
+
+                // Broadcast the GotMessage event
+                // event(new GotMessage($message));
+        }
+
+
 
         
 
@@ -121,6 +146,26 @@ class MessageController extends Controller {
         return response()->json([
             'data' => [
                 'unread_messages' => $unreadMessages,
+            ],
+        ]);
+    }
+
+    public function getConversations() {
+        $userId = auth()->user()->id;
+
+        $conversations = Message::select('from_user_id', 'to_user_id')
+        ->where('from_user_id', $userId)
+        ->where('to_user_id', '<>', 1)
+        ->orWhere(function ($query) use ($userId) {
+            $query->where('to_user_id', $userId)
+                  ->where('from_user_id', '<>', 1);
+        })
+        ->groupBy('from_user_id', 'to_user_id')
+        ->get();
+    
+        return response()->json([
+            'data' => [
+                'conversations' => $conversations,
             ],
         ]);
     }

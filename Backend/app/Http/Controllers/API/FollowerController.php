@@ -262,7 +262,7 @@ class FollowerController extends Controller {
                 'Links' => $links,
             ], $extraData),
             'meta' => [
-                'timestamp' => now(),
+                'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
             ],
         ], $status);
     }

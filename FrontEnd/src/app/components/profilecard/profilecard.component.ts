@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SettingsComponent } from './settings/settings.component';
 import { ExtraComponent } from './extra/extra.component';
@@ -8,6 +8,8 @@ import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import {  Subscription } from 'rxjs';
 import { HomeComponent } from './home/home.component';
+import { ProfileService } from '../../services/profile.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-profilecard',
@@ -34,9 +36,18 @@ export class ProfilecardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private userService: UserService, private cdRef: ChangeDetectorRef) { }
 
+  profileService = inject(ProfileService);
+  authService = inject(AuthService);
+
   ngOnInit(): void {
     this.userSubscription = this.userService.currentUser.subscribe(user => {
       this.user = user;
+    });
+
+    this.profileService.profileAvatarUpdated.subscribe((newAvatarUrl: string) => {
+      if (this.user) {
+        this.user.avatar = newAvatarUrl + '?t=' + Date.now();
+      }
     });
   }
 

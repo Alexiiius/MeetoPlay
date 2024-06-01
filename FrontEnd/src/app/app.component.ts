@@ -12,6 +12,7 @@ import { SplashScreenComponent } from './components/splash-screen/splash-screen.
 import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -21,7 +22,6 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     EventsFeedComponent,
     FiltersComponent,
     ProfilecardComponent,
-    NewEventFormComponent,
     HttpClientModule,
     SplashScreenComponent,
     CommonModule

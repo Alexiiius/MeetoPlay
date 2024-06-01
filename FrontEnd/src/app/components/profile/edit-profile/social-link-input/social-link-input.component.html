@@ -1,0 +1,38 @@
+<div class="flex items-center gap-4 w-full">
+  @switch (socialNetwork) {
+    @case ('Instagram') {
+      <i class='bx bxl-instagram bx-md'></i>
+    }
+    
+    @case ('Discord') {
+      <i class='bx bxl-discord-alt bx-md'></i>
+    }
+
+    @case ('Steam') {
+      <i class='bx bxl-steam bx-md'></i>
+    }
+
+    @case ('Twitch') {
+      <i class='bx bxl-twitch bx-md'></i>
+    }
+
+    @case ('YouTube') {
+      <i class='bx bxl-youtube bx-md'></i>
+    }
+
+    @case ('Twitter') {
+      <i class='bx bxl-twitter bx-md'></i>
+    }
+
+    @case ('Discord') {
+      <i class='bx bxl-discord-alt bx-md'></i>
+    }
+
+  }
+  <label class="input input-bordered flex items-center gap-2 w-full">
+    <input type="text" class="grow" [placeholder]="socialNetwork" />
+    <button class="button btn btn-ghost btn-square btn-sm flex items-center -mr-2 transition-opacity duration-300">
+      <i class='bx bx-check bx-sm text-success'></i>
+    </button>
+  </label>
+</div>

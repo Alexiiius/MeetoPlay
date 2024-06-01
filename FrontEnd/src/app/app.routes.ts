@@ -8,6 +8,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { GameStatsComponent } from './components/profile/game-stats/game-stats.component';
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';
 import { ParticipatingEventsComponent } from './components/profile/participating-events/participating-events.component';
+import { EditProfileComponent } from './components/profile/edit-profile/edit-profile.component';
 
 // export const routes: Routes = [
 //   {

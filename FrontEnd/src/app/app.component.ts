@@ -9,6 +9,8 @@ import { NewEventFormComponent } from './components/new-event-form/new-event-for
 import { AuthService } from './services/auth.service';
 import { connect } from 'rxjs';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
+import { CommonModule } from '@angular/common';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
@@ -21,10 +23,22 @@ import { SplashScreenComponent } from './components/splash-screen/splash-screen.
     ProfilecardComponent,
     NewEventFormComponent,
     HttpClientModule,
-    SplashScreenComponent
+    SplashScreenComponent,
+    CommonModule
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
+  animations: [
+    trigger('fade', [
+      state('visible', style({
+        opacity: 1
+      })),
+      state('hidden', style({
+        opacity: 0
+      })),
+      transition('visible => hidden', animate('2000ms ease-out')),
+    ])
+  ]
 })
 export class AppComponent implements OnInit {
   title = 'MeetoPlay';
@@ -34,7 +48,7 @@ export class AppComponent implements OnInit {
 
   authService = inject(AuthService);
 
-  splashScreenVisible: boolean = true;
+  splashScreenVisible = 'visible';
 
   ngOnInit(): void {
     console.log('Checking token');
@@ -43,20 +57,21 @@ export class AppComponent implements OnInit {
       this.authService.checkToken().subscribe({
         next: (response) => {
           if (response) {
-            console.log('Token is valid');
             this.authService.isAuth.next(true);
-            this.splashScreenVisible = false;
+            setTimeout(() => {
+              this.splashScreenVisible = 'hidden';
+            }, 100);
           }
         },
         error: (error) => {
           this.authService.isAuth.next(false);
-          this.splashScreenVisible = false;
+          this.splashScreenVisible = 'hidden';
           console.log(error);
         }
       });
     } else {
       this.authService.isAuth.next(false);
-      this.splashScreenVisible = false;
+      this.splashScreenVisible = 'hidden';
     }
   }
 }

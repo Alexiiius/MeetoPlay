@@ -28,7 +28,6 @@ export class AuthService {
     return new Observable<any>(observer => {
       const subscription = this.http.get(`${this.backAPIUrl}/check-token`).subscribe(
         (response: any) => {
-          console.log(response);
           observer.next(response);
           observer.complete();
           subscription.unsubscribe();

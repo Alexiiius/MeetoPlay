@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { loginAnimation, registerAnimation } from './login-register-animation';
+import { set } from 'date-fns';
 
 @Component({
   selector: 'app-login-register',
@@ -47,8 +48,8 @@ export class LoginRegisterComponent implements OnInit {
 
     this.authService.isAuth$.subscribe({
       next: (loggedIn) => {
+        console.log('Logged in: ', loggedIn);
         if (loggedIn) {
-          console.log(this.redirectUrl);
           this.router.navigate([this.redirectUrl]);
         }
       },

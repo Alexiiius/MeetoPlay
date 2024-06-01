@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { EventsFeedComponent } from './components/events-feed/events.component';
 import { LoginRegisterComponent } from './components/login-register/login-register.component';
 import { MainComponent } from './components/main/main.component';
-import { authGuard, loggedGuard } from './auth.guard';
+import { authGuard } from './auth.guard';
 import { ProfileComponent } from './components/profile/profile.component';
 import { GameStatsComponent } from './components/profile/game-stats/game-stats.component';
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';

@@ -1,0 +1,29 @@
+<div class="collapse collapse-arrow bg-base-100">
+  <input type="radio" name="aside-accordion" />
+  <div class="collapse-title text-lg font-normal">
+    Buscador usuarios
+  </div>
+  <div class="collapse-content">
+    <app-users-searcher/>
+  </div>
+</div>
+<div class="collapse collapse-arrow bg-base-100">
+  <input type="radio" name="aside-accordion" checked="checked" />
+  <div class="collapse-title text-xl font-medium">
+    Click to open this one and close others
+  </div>
+  <div class="collapse-content">
+    <p>hello</p>
+  </div>
+</div>
+<div class="collapse collapse-arrow bg-base-100">
+  <input type="radio" name="aside-accordion" />
+  <div class="collapse-title text-xl font-medium">
+    Click to open this one and close others
+  </div>
+  <div class="collapse-content">
+    <p>hello</p>
+  </div>
+</div>
+
+<button class="btn" (click)="openNewEventModal()">New Event</button>

@@ -33,7 +33,7 @@ export class ProfileComponent {
 
   @ViewChild(EditProfileComponent) editProfileComponent!: EditProfileComponent;
 
-  user: UserData; //TODO create UserPublic interface
+  user: UserData;
   isLoading = true;
 
   userFriends: UserReduceFollowing[] = [];
@@ -93,6 +93,13 @@ export class ProfileComponent {
       this.profileService.profileBioUpdated.subscribe((newBio: string) => {
         if (this.user) {
           this.user.bio = newBio;
+        }
+      });
+
+      this.profileService.userFollowed.subscribe(userId => {
+        if (userId === this.user.id) {
+          this.getUserRelations(this.user.id).subscribe();
+          this.isFollowing = true;
         }
       });
     }
@@ -183,6 +190,7 @@ export class ProfileComponent {
     this.isLoadingFollow_Unfollow = true;
     this.userService.unfollowUser(this.user.id).subscribe(() => {
       this.isFollowing = false;
+      this.profileService.userUnFollowed.next(this.user.id);
       this.getUserRelations(this.user.id).subscribe();
       this.isLoadingFollow_Unfollow = false;
     });
@@ -192,6 +200,7 @@ export class ProfileComponent {
     this.isLoadingFollow_Unfollow = true;
     this.userService.followUser(this.user.id).subscribe(() => {
       this.isFollowing = true;
+      this.profileService.userFollowed.next(this.user.id);
       this.getUserRelations(this.user.id).subscribe();
       this.isLoadingFollow_Unfollow = false;
     });

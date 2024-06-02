@@ -151,15 +151,27 @@ export class AuthService {
       );
     }
   }
+  clientLogout(): void {
+    this.router.navigate(['/login']).then(() => {
+      localStorage.removeItem('access_token');
+      sessionStorage.removeItem('access_token');
+      sessionStorage.removeItem('user_data');
+      this.isAuth.next(false);
+      this.currentUserSafe = null;
+      this.userData.next(null);
+    });
+  }
 
   logout(): Observable<any> {
     return this.http.post(this.backAPIUrl + '/logout', '').pipe(
       tap(() => {
-        this.isAuth.next(false);
-        this.router.navigate(['/login']);
         localStorage.removeItem('access_token');
         sessionStorage.removeItem('access_token');
         sessionStorage.removeItem('user_data');
+        this.isAuth.next(false);
+        this.router.navigate(['/login']);
+        this.currentUserSafe = null;
+        this.userData.next(null);
       }),
       catchError(error => {
         console.log(error);

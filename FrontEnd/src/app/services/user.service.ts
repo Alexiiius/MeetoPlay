@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { UserData } from '../interfaces/user-data';
 import { AuthService } from './auth.service';
 import { backAPIUrl } from '../config';
@@ -23,7 +23,6 @@ export class UserService implements OnInit {
   constructor(private authService: AuthService, private http: HttpClient) {
     this.currentUser = new BehaviorSubject<UserData | null>(null);
     this.authService.userData.subscribe(user => this.currentUser.next(user));
-
   }
 
   ngOnInit(): void {
@@ -73,6 +72,12 @@ export class UserService implements OnInit {
 
   getLogedUserData(): Observable<UserData> {
       return this.http.get<UserData>(this.backAPIUrl + '/user')
+  }
+
+  getCurrentEmail(): Observable<string> {
+    return this.http.get<UserData>(this.backAPIUrl + '/user').pipe(
+      map(user => user.email)
+    );
   }
 
   followUser(id: number): Observable<any> {

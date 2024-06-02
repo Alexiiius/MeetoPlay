@@ -63,5 +63,9 @@ export class ProfileService {
   updateEmail(email: string, password: string): Observable<any> {
     return this.http.patch(`${this.backAPIUrl}/user/email/update`, { email: email, password: password });
   }
+
+  updatePassword(newPassword: string, password: string): Observable<any> {
+    return this.http.patch(`${this.backAPIUrl}/user/password/update`, { password: password, new_password: newPassword });
+  }
 }
 

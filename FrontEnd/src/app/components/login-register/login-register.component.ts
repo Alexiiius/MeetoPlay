@@ -92,8 +92,6 @@ export class LoginRegisterComponent implements OnInit {
       },
       error => {
         if (error.error) {
-          // Handle the error here
-          // For example, show the error message
           this.loginErrorMessage = error.message;
           this.logingIn = false;
         } else {
@@ -127,20 +125,6 @@ export class LoginRegisterComponent implements OnInit {
     );
   }
 
-  // register() {
-  //   this.logingIn = true;
-  //   this.authService.register(this.registerForm.value).subscribe(
-  //     response => {
-  //       console.log(response);
-  //       const token = response.data.access_token.split('|')[1];
-  //       sessionStorage.setItem('access_token', token);
-  //     },
-  //     error => {
-  //       console.log(error);
-  //     }
-  //   );
-  // }
-
   isInvalid(form: FormGroup, fieldName: string) {
     const field = form.get(fieldName);
     return field?.invalid && field?.touched;
@@ -159,7 +143,7 @@ export class LoginRegisterComponent implements OnInit {
   get passwordConfirmationError() {
     const errors = this.registerForm.get('password_confirmation')?.errors;
     if (errors) {
-      return errors['notSame'] ? 'Password and confirmation do not match' : '';
+      return errors['notSame'] ? 'Las contraseñas no coinciden' : '';
     }
     return '';
   }
@@ -182,7 +166,7 @@ export class LoginRegisterComponent implements OnInit {
   get strongPasswordError() {
     const errors = this.registerForm.get('password')?.errors;
     if (errors) {
-      return errors['weakPassword'] ? 'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.' : '';
+      return errors['weakPassword'] ? 'La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número, un carácter especial y tener al menos 8 caracteres de longitud.' : '';
     }
     return '';
   }

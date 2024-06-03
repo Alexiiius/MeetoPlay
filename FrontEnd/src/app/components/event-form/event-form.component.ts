@@ -66,6 +66,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
   closeModal() {
     this.modalDialog.nativeElement.close();
+    this.eventForm.get('whatForm')?.get('title')?.markAsUntouched()
   }
 
   constructor(
@@ -74,8 +75,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private userService: UserService,
     private eventService: EventsService,
-    private alertService: AlertService,
-    private router: Router) { }
+    private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.isUpdating = !!this.event;

@@ -210,7 +210,7 @@ class GameUserStatsController extends Controller {
             return $this->responseDataFormat($request, null, 'Gamemode name already exist', 409);
         }
 
-        $dataToUpdate = $request->only('gamemode_name', 'gamemode_rank');
+        $dataToUpdate = $request->only('gamemode_name', 'gamemodes_rank');
         $dataToUpdate['user_id'] = $user->id;
 
         if ($GameMode->update($dataToUpdate)) {

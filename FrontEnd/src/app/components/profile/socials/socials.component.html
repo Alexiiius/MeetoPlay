@@ -1,9 +1,9 @@
 <div class="flex space-x-1">
   @if (isLoading) {
-  <div class="btn btn-square btn-ghost skeleton"></div>
-  <div class="btn btn-square btn-ghost skeleton"></div>
-  <div class="btn btn-square btn-ghost skeleton"></div>
-  <div class="btn btn-square btn-ghost skeleton"></div>
+  <div class="btn btn-square btn-ghost skeleton bg-base-200"></div>
+  <div class="btn btn-square btn-ghost skeleton bg-base-200"></div>
+  <div class="btn btn-square btn-ghost skeleton bg-base-200"></div>
+  <div class="btn btn-square btn-ghost skeleton bg-base-200"></div>
   } @else {
     @if (socials) {
       <a *ngIf="socials.Discord" href="{{socials.Discord}}" target="_blank" class="btn btn-square btn-ghost"><i class='bx bxl-discord-alt bx-md'></i></a>

@@ -6,8 +6,14 @@ import { UserService } from '../../../../services/user.service';
 import { UserReduced } from '../../../../interfaces/user-reduced';
 import { SocialUser } from '../../../../interfaces/social-user';
 import { EventsService } from '../../../../services/events.service';
-import { filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
+import { GameStat } from '../../../../interfaces/game-stat';
+import { APIService } from '../../../../services/api.service';
+import { ProfileService } from '../../../../services/profile.service';
+import { AlertService } from '../../../../services/alert.service';
+import { AlertComponent } from '../../../main/alert/alert.component';
+import { set } from 'date-fns';
 
 
 @Component({
@@ -16,12 +22,13 @@ import { RouterLink } from '@angular/router';
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink
+    RouterLink,
+    AlertComponent
   ],
   templateUrl: './more-event-info-modal.component.html',
   styleUrl: './more-event-info-modal.component.css'
 })
-export class MoreEventInfoModalComponent implements OnDestroy{
+export class MoreEventInfoModalComponent implements OnDestroy {
   @ViewChild('moreEventInfo') modalDialog!: ElementRef<HTMLDialogElement>;
 
   @Input() event: Event;
@@ -44,7 +51,9 @@ export class MoreEventInfoModalComponent implements OnDestroy{
   logedUserParticipating: SocialUser;
 
   isParticipantsLoading: boolean;
-  join_LeaveLoading:boolean;
+  join_LeaveLoading: boolean;
+
+  userGameStats: GameStat[];
 
   private currentUserSubscription: Subscription;
 
@@ -54,7 +63,13 @@ export class MoreEventInfoModalComponent implements OnDestroy{
   @Output() friendsParticipatingChange = new EventEmitter<boolean>();
   friendsParticipating: boolean;
 
-  constructor(private userService: UserService, private eventsService: EventsService) {
+  constructor(
+    private userService: UserService,
+    private eventsService: EventsService,
+    private apiService: APIService,
+    private profileService: ProfileService,
+    private alertService: AlertService
+  ) {
     setInterval(() => {
       this.decrementCountdown();
     }, 1000);
@@ -67,13 +82,83 @@ export class MoreEventInfoModalComponent implements OnDestroy{
     this.filterParticipants();
   }
 
-  joinEvent() {
+  async joinEvent() {
     this.join_LeaveLoading = true;
+
+    const canJoin = await this.checkRequirements();
+
+    if (!canJoin) {
+      this.alertService.showAlert('warning', 'No cumples con los requisitos para unirte a este evento.');
+      this.join_LeaveLoading = false;
+      return;
+    }
+
     this.eventsService.joinEvent(this.event.id).subscribe(() => {
       this.toggleJoin();
       this.currentParticipants++;
       this.join_LeaveLoading = false;
     });
+  }
+
+  async checkRequirements(): Promise<boolean> {
+
+    //Si no hay requisitos, se puede unir
+    if (this.noRequirments()) {
+      return true;
+    }
+
+    //Comprueba si el usuario tiene un GameStat registrado para el juego del evento
+    const userGameStat = this.userGameStats.find(gameStat => gameStat.game_id == this.event.game_id);
+    if (!userGameStat) {
+      console.log('No game stats found');
+      setTimeout(() => {
+        this.alertService.showAlert('info', `No tienes un GameStat registado para ${this.event.game_name}.`)
+      }, 4500);
+      return false;
+    } else {
+      console.log('Game stats found');
+    }
+
+    //Comprueba si el usuario tiene un GamemodeStat registrado para el modo de juego del evento
+    const gamemodeStats = userGameStat.gamemode_stats.find(gamemode => gamemode.gamemode_name == this.event.game_mode);
+    if (!gamemodeStats) {
+      setTimeout(() => {
+        this.alertService.showAlert('info', `No tienes registrado el GamemodeStat de ${this.event.game_name} - ${this.event.game_mode}.`)
+      }, 4500);
+      return false;
+    } else {
+      console.log('Gamemode stats found');
+    }
+
+    const eventRequirements = this.event.event_requirements;
+
+    // Si hay rango minimo, comprueba si el rango del usuario es mayor o igual al rango minimo requerido
+    if (eventRequirements.min_rank) {
+      const game = await this.apiService.newGetFullGame(this.event.game_id).toPromise();
+
+      if (!game) {
+        console.log('Game not found');
+        return false;
+      }
+
+      const eventGamemode = game.gamemodes.find(gamemode => gamemode.name === this.event.game_mode);
+
+      if (!eventGamemode) {
+        console.log('Gamemode not found');
+        return false;
+      }
+      const gamemodeRanks = eventGamemode.ranks;
+
+      const userRankIndex = gamemodeRanks.indexOf(gamemodeStats.gamemodes_rank);
+      const minRankIndex = gamemodeRanks.indexOf(eventRequirements.min_rank);
+
+      //Comprueba si el rango del usuario en ese modo de juego es mayor o igual al rango mínimo requerido para el evento
+      if (userRankIndex < minRankIndex) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   leaveEvent() {
@@ -179,6 +264,12 @@ export class MoreEventInfoModalComponent implements OnDestroy{
 
   openDialog() {
     this.modalDialog.nativeElement.showModal();
+
+    this.profileService.gameStats$.subscribe(gameStats => {
+      this.userGameStats = gameStats;
+      console.log(this.userGameStats);
+      console.log(this.event)
+    });
   }
 
   closeDialog() {

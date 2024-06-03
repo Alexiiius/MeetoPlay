@@ -19,6 +19,7 @@ export class ProfileService {
   private userProfileId = new BehaviorSubject<number | null>(null);
 
   eventDeleted = new Subject<void>();
+
   gameStatCreated = new Subject<GameStat>();
   gameStatEdited = new Subject<GameStat>();
   gameStatDeleted = new Subject<number>();
@@ -34,6 +35,10 @@ export class ProfileService {
 
   userFollowed = new Subject<number>();
   userUnFollowed = new Subject<number>();
+
+  gameStatsSource = new BehaviorSubject<GameStat[] | []>([]);
+  gameStats$ = this.gameStatsSource.asObservable();
+
 
   setUserProfileId(id: number) {
     this.userProfileId.next(id);

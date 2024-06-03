@@ -164,6 +164,16 @@ class MessageController extends Controller {
         })
         ->groupBy('from_user_id', 'to_user_id')
         ->get();
+
+        // who is the user that I am talking to
+        foreach ($conversations as $conversation) {
+            if ($conversation->from_user_id == $userId) {
+                $conversation->user = User::where('id', $conversation->to_user_id)->select('id', 'name', 'tag', 'avatar', 'status')->first();
+            } else {
+                $conversation->user = User::where('id', $conversation->from_user_id)->select('id', 'name', 'tag', 'avatar', 'status')->first();
+            }
+        }
+        
     
         return response()->json([
             'data' => [

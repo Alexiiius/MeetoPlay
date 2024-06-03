@@ -26,6 +26,7 @@ class MessageController extends Controller {
         $request->validate([
             'to_user_id' => 'required',
             'text' => 'required',
+            'group_name' => 'in:global,private',
         ]);
 
         $toUserID = $request->get('to_user_id');
@@ -44,18 +45,19 @@ class MessageController extends Controller {
             ]);
         }
 
-        if ($request->get('group_name') != "private"){
+        if ($request->get('group_name') == "global"){
             $message = Message::create([
                 'from_user_id' => auth()->user()->id,
                 'to_user_id' => 1,
+                'from_user_avatar' => auth()->user()->avatar,
                 'text' => $request->get('text'),
                 'from_user_name' => auth()->user()->getFullNameAttribute(),
                 'to_user_name' => "Public",
                 'time' => now()->format('d-m-Y\TH:i:s. T'),
             ]);
 
-            // Dispatch the GlobalMessage job
-            GlobalMessage::dispatch($message);
+            // Dispatch the SendPublicMessage job who send GlobalMessage event
+           SendPublicMessage::dispatch($message);
 
         }else{
             $message = Message::create([
@@ -67,7 +69,7 @@ class MessageController extends Controller {
                 'time' => now()->format('d-m-Y\TH:i:s. T'),
             ]);
 
-                // Dispatch the SendMessage job
+                // Dispatch the SendMessage job who send GotMessage event
                 SendMessage::dispatch($message);
 
                 // Broadcast the GotMessage event

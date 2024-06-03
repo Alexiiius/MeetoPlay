@@ -23,6 +23,7 @@ class SendPublicMessage implements ShouldQueue {
         $this->message = [
             'from_user_id' => $data->from_user_id,
             "from_user_name" => $data->from_user_name,
+            'from_user_avatar' => $data->from_user_avatar,
             'text' => $data->text,
             'time' => $data->time,
         ];

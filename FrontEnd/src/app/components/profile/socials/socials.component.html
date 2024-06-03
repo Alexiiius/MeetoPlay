@@ -5,9 +5,13 @@
   <div class="btn btn-square btn-ghost skeleton"></div>
   <div class="btn btn-square btn-ghost skeleton"></div>
   } @else {
-  <div class="btn btn-square btn-ghost"><i class='bx bxl-instagram bx-md'></i></div>
-  <div class="btn btn-square btn-ghost"><i class='bx bxl-discord-alt bx-md'></i></div>
-  <div class="btn btn-square btn-ghost"><i class='bx bxl-steam bx-md'></i></div>
-  <div class="btn btn-square btn-ghost"><i class='bx bxl-twitch bx-md'></i></div>
+    @if (socials) {
+      <a *ngIf="socials.Discord" href="{{socials.Discord}}" target="_blank" class="btn btn-square btn-ghost"><i class='bx bxl-discord-alt bx-md'></i></a>
+      <a *ngIf="socials.Instagram" href="{{socials.Instagram}}" target="_blank" class="btn btn-square btn-ghost"><i class='bx bxl-instagram bx-md'></i></a>
+      <a *ngIf="socials.X" href="{{socials.X}}" target="_blank"  class="btn btn-square btn-ghost"><i class='bx bxl-twitter bx-md'></i></a>
+      <a *ngIf="socials.Steam" href="{{socials.Steam}}" target="_blank" class="btn btn-square btn-ghost"><i class='bx bxl-steam bx-md'></i></a>
+      <a *ngIf="socials.Twitch" href="{socials.Twitch}}" target="_blank" class="btn btn-square btn-ghost"><i class='bx bxl-twitch bx-md'></i></a>
+      <a *ngIf="socials.Youtube" href="{{socials.Youtube}}" target="_blank" class="btn btn-square btn-ghost"><i class='bx bxl-youtube bx-md'></i></a>
+    }
   }
 </div>

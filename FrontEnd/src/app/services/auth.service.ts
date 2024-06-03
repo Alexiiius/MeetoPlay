@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { LoginResponse, RegisterResponse } from '../interfaces/back-end-api-response';
 import { UserData } from '../interfaces/user-data';
 import { UserReduced } from '../interfaces/user-reduced';
+import { ProfileService } from './profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,21 +15,37 @@ export class AuthService {
   private backAPIUrl = backAPIUrl;
 
   public isAuth = new BehaviorSubject<boolean>(false);
+  public isAuth$ = this.isAuth.asObservable();
 
   public userData = new BehaviorSubject<UserData | null>(null);
 
   public currentUserSafe: UserData | null;
 
-  constructor(private http: HttpClient, private router: Router) {
-    this.autoLogin();
+  constructor(private http: HttpClient, private router: Router, private profileService: ProfileService) {
+    this.profileService.profileAvatarUpdated.subscribe(newAvatar => {
+      let userData = JSON.parse(sessionStorage.getItem('user_data') || '{}');
+      userData.avatar = newAvatar;
+      sessionStorage.setItem('user_data', JSON.stringify(userData));
+    });
+
+    this.profileService.profileNameUpdated.subscribe(newName => {
+      let userData = JSON.parse(sessionStorage.getItem('user_data') || '{}');
+      userData.name = newName;
+      sessionStorage.setItem('user_data', JSON.stringify(userData));
+    });
   }
 
-  autoLogin() { //TODO: Add a check to see if the token is still valid
-    const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
-    if (token) {
-      this.isAuth.next(true);
-      this.router.navigate(['/main']);
-    }
+  checkToken(): Observable<any> {
+    return new Observable<any>(observer => {
+      const subscription = this.http.get(`${this.backAPIUrl}/check-token`).subscribe(
+        (response: any) => {
+          observer.next(response);
+          observer.complete();
+          subscription.unsubscribe();
+        },
+      );
+  });
+
   }
 
   login(credentials: any): Observable<any> {
@@ -79,6 +96,21 @@ export class AuthService {
   }
 
   storeUserData(userData: UserData): Promise<void> {
+    return new Promise((resolve, reject) => {
+      let storedData: UserReduced = {
+        id: userData.id,
+        name: userData.name,
+        tag: userData.tag,
+        full_tag: `${userData.name}#${userData.tag}`,
+        avatar: userData.avatar,
+        status: 'Online'
+      };
+      sessionStorage.setItem('user_data', JSON.stringify(storedData));
+      resolve();
+    });
+  }
+
+  updateUserData(userData: UserData): Promise<void> {
     return new Promise((resolve, reject) => {
       let storedData: UserReduced = {
         id: userData.id,

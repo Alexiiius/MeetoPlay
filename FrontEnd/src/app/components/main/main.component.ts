@@ -5,9 +5,7 @@ import { ChatsComponent } from '../chats/chats.component';
 import { EventsFeedComponent } from '../events-feed/events.component';
 import { FiltersComponent } from '../filters/filters.component';
 import { ProfilecardComponent } from '../profilecard/profilecard.component';
-import { NewEventFormComponent } from '../new-event-form/new-event-form.component';
 import { AuthService } from '../../services/auth.service';
-import { APIService } from '../../services/api.service';
 import { AlertComponent } from './alert/alert.component';
 
 @Component({
@@ -19,7 +17,6 @@ import { AlertComponent } from './alert/alert.component';
     EventsFeedComponent,
     FiltersComponent,
     ProfilecardComponent,
-    NewEventFormComponent,
     HttpClientModule,
     AlertComponent
   ],

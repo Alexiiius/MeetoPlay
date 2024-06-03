@@ -105,7 +105,8 @@
             <div class="w-full flex justify-between items-center text-lg font-normal mb-1">
               <span>Participantes: <span
                   class="font-semibold mr-2 font-mono">{{currentParticipants}}/{{event.max_participants}}</span></span>
-              <div class="flex gap-3 items-center">
+              <div class="flex gap-3 items-center cursor-pointer p-2 px-4 rounded-box hover:bg-neutral/20 transition-colors duration-300"
+              [routerLink]="['/profile', event.owner.id]">
                 <span>Creador del evento: <span class="font-medium">{{event.owner.name}}</span></span>
                 <div class="avatar">
                   <div class="w-12 rounded-full">
@@ -128,7 +129,8 @@
           <hr class="col-span-full">
 
           @for (friend of friendParticipants; track $index) {
-          <div class="flex gap-x-3 items-center">
+          <div class="flex gap-x-3 items-center cursor-pointer p-2 px-4 rounded-box hover:bg-neutral/20 transition-colors duration-300"
+          [routerLink]="['/profile', friend.id]">
             <div class="avatar">
               <div class="w-10 rounded-full">
                 <img src="{{friend.avatar}}" />
@@ -143,7 +145,8 @@
           <div class="col-span-full text-xl mt-3">Seguidos</div>
           <hr class="col-span-full">
           @for (followedUser of followedParticipants; track $index) {
-          <div class="flex gap-x-3 items-center">
+          <div class="flex gap-x-3 items-center cursor-pointer p-2 px-4 rounded-box hover:bg-neutral/20 transition-colors duration-300"
+          [routerLink]="['/profile', followedUser.id]">
             <div class="avatar">
               <div class="w-10 rounded-full">
                 <img src="{{followedUser.avatar}}" />
@@ -158,7 +161,8 @@
           <div class="col-span-full text-xl mt-3">Participantes desconocidos</div>
           <hr class="col-span-full">
           @for (others of otherParticipants; track $index) {
-          <div class="flex gap-x-3 items-center">
+          <div class="flex gap-x-3 items-center cursor-pointer p-2 px-4 rounded-box hover:bg-neutral/20 transition-colors duration-300"
+          [routerLink]="['/profile', others.id]">
             <div class="avatar">
               <div class="w-10 rounded-full">
                 <img src="{{others.avatar}}" />

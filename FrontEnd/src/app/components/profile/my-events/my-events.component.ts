@@ -5,6 +5,7 @@ import { Event } from '../../../models/event';
 import { EventsService } from '../../../services/events.service';
 import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../../services/profile.service';
+import { merge } from 'rxjs';
 
 @Component({
   selector: 'app-my-events',
@@ -33,10 +34,14 @@ export class MyEventsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMyEvents(this.page);
-    this.profileService.eventDeleted.subscribe(() => {
+
+    merge(
+      this.profileService.eventDeleted,
+      this.profileService.eventEdited,
+      this.profileService.eventCreated
+    ).subscribe(() => {
       this.getMyEvents(this.page);
       this.myEvents = []
-      console.log('Evento eliminado');
     });
   }
 

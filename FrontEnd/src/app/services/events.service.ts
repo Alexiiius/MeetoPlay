@@ -3,7 +3,7 @@ import { FormatedNewEvent } from '../interfaces/formated-new-event';
 import { HttpClient } from '@angular/common/http';
 import { backAPIUrl } from '../config';
 import { UserService } from './user.service';
-import { first, Observable } from 'rxjs';
+import { first, Observable, Subject } from 'rxjs';
 import { UserReduced } from '../interfaces/user-reduced';
 import { Owner } from '../models/owner';
 import { EventRequirments } from '../models/eventRequirments';

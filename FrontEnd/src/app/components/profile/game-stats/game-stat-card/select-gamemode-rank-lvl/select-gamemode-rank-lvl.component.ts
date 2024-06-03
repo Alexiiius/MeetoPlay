@@ -148,6 +148,8 @@ export class SelectGamemodeRankLvlComponent {
         if (this.gamemodeStatForm.touched) {
           this.userService.editGamemodeStat(formatedNewGamemodeStat, this.gamemodeStatToEdit.id).subscribe(
             (response) => {
+              console.log(response)
+              console.log('GamemodeStat editado', formatedNewGamemodeStat)
               this.alertService.showAlert('success', 'GamemodeStat editado con éxito! 😄');
               this.profileService.gamemodeStatEdited.next(response.data.GamemodeStats);
               this.deleteRequest.emit();

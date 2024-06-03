@@ -1,12 +1,14 @@
+import { UserData } from './../interfaces/user-data';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
-import { UserData } from '../interfaces/user-data';
+import { BehaviorSubject, map, merge, Observable, switchMap, tap } from 'rxjs';
 import { AuthService } from './auth.service';
 import { backAPIUrl } from '../config';
 import { HttpClient } from '@angular/common/http';
 import { SocialUser } from '../interfaces/social-user';
 import { FormatedNewGameStat } from '../interfaces/formated-new-game-stat';
 import { FormatedNewGamemodeStat } from '../interfaces/formated-new-gamemode-stat';
+import { GameStat } from '../interfaces/game-stat';
+import { ProfileService } from './profile.service';
 
 
 @Injectable({
@@ -18,11 +20,36 @@ export class UserService implements OnInit {
   followedUsers: BehaviorSubject<SocialUser[] | null> = new BehaviorSubject<SocialUser[] | null>(null);
   friends: BehaviorSubject<SocialUser[] | null> = new BehaviorSubject<SocialUser[] | null>(null);
 
+  gameStatCreated$ = this.profileService.gameStatCreated.asObservable();
+  gameStatEdited$ = this.profileService.gameStatEdited.asObservable();
+  gameStatDeleted$ = this.profileService.gameStatDeleted.asObservable();
+
+  gamemodeStatCreated$ = this.profileService.gamemodeStatCreated.asObservable();
+  gamemodeStatEdited$ = this.profileService.gamemodeStatEdited.asObservable();
+  gamemodeStatEditCancelled$ = this.profileService.gamemodeStatEditCancelled.asObservable();
+  gamemodeStatDeleted$ = this.profileService.gamemodeStatDeleted.asObservable();
+
+  anyGameStatActivity$ = merge(
+    this.gameStatCreated$,
+    this.gameStatEdited$,
+    this.gameStatDeleted$,
+    this.gamemodeStatCreated$,
+    this.gamemodeStatEdited$,
+    this.gamemodeStatEditCancelled$,
+    this.gamemodeStatDeleted$
+  );
+
   private backAPIUrl = backAPIUrl;
 
-  constructor(private authService: AuthService, private http: HttpClient) {
+  constructor(private authService: AuthService, private http: HttpClient, private profileService: ProfileService) {
     this.currentUser = new BehaviorSubject<UserData | null>(null);
-    this.authService.userData.subscribe(user => this.currentUser.next(user));
+    this.authService.userData.subscribe(user => {
+      this.currentUser.next(user)
+      if (user) {
+        this.getLoggedUserGameStats().subscribe();
+        this.anyGameStatActivity$.subscribe(() => this.getLoggedUserGameStats().subscribe());
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -61,11 +88,11 @@ export class UserService implements OnInit {
     return this.http.get(`${this.backAPIUrl}/followers/${userId}`);
   }
 
-  getFollowedUsers(userId: number): Observable<any>  {
+  getFollowedUsers(userId: number): Observable<any> {
     return this.http.get(`${this.backAPIUrl}/following/${userId}`);
   }
 
-  getFriends(userId: number): Observable<any>{
+  getFriends(userId: number): Observable<any> {
     return this.http.get(`${this.backAPIUrl}/friends/${userId}`);
   }
 
@@ -73,12 +100,26 @@ export class UserService implements OnInit {
     return this.http.get(`${this.backAPIUrl}/user/game-stats/search/${userId}`);
   }
 
+  getLoggedUserGameStats(): Observable<GameStat | null> {
+    return this.currentUser.pipe(
+      switchMap((user: UserData | null) => {
+        if (user) {
+          return this.http.get<any>(`${this.backAPIUrl}/user/game-stats/search/${user.id}`).pipe(
+            tap(response => this.profileService.gameStatsSource.next(response.data.GameUserStats as GameStat[]))
+          );
+        } else {
+          throw new Error('User is not logged in');
+        }
+      })
+    );
+  }
+
   getUserById(id: number) {
     return this.http.get<UserData>(`${this.backAPIUrl}/user/${id}`);
   }
 
   getLogedUserData(): Observable<UserData> {
-      return this.http.get<UserData>(this.backAPIUrl + '/user')
+    return this.http.get<UserData>(this.backAPIUrl + '/user')
   }
 
   getCurrentEmail(): Observable<string> {
@@ -88,11 +129,11 @@ export class UserService implements OnInit {
   }
 
   followUser(id: number): Observable<any> {
-    return this.http.post(`${this.backAPIUrl}/follow/${id}`,'');
+    return this.http.post(`${this.backAPIUrl}/follow/${id}`, '');
   }
 
   unfollowUser(id: number): Observable<any> {
-    return this.http.post(`${this.backAPIUrl}/unfollow/${id}`,'');
+    return this.http.post(`${this.backAPIUrl}/unfollow/${id}`, '');
   }
 
   postGameStat(gameStat: FormatedNewGameStat): Observable<any> {

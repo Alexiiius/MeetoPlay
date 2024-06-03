@@ -6,17 +6,17 @@ import { UsersSearcherComponent } from './users-searcher/users-searcher.componen
   selector: 'app-aside',
   standalone: true,
   imports: [
-    UsersSearcherComponent
+    UsersSearcherComponent,
+    EventFormComponent
   ],
   templateUrl: './aside.component.html',
   styleUrl: './aside.component.css'
 })
 export class AsideComponent {
 
-  @ViewChild (EventFormComponent) eventForm: EventFormComponent
-
+  @ViewChild(EventFormComponent) eventFormComponent!: EventFormComponent;
 
   openNewEventModal() {
-    this.eventForm.openModal()
+    this.eventFormComponent.openModal()
   }
 }

@@ -15,6 +15,7 @@ import { UserData } from '../../interfaces/user-data';
 import { EventsService } from '../../services/events.service';
 import { AlertService } from '../../services/alert.service';
 import { Router } from '@angular/router';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-event-form',
@@ -67,6 +68,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
   closeModal() {
     this.modalDialog.nativeElement.close();
     this.eventForm.get('whatForm')?.get('title')?.markAsUntouched()
+    this.eventForm.reset();
   }
 
   constructor(
@@ -75,13 +77,14 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private userService: UserService,
     private eventService: EventsService,
-    private alertService: AlertService) { }
+    private alertService: AlertService,
+    private profileService: ProfileService) { }
 
   ngOnInit(): void {
     this.isUpdating = !!this.event;
     if (this.isUpdating) {
       this.updateDataLoading = true;
-  }
+    }
 
     this.eventForm = this.formBuilder.group({
       whatForm: this.formBuilder.group({
@@ -292,7 +295,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
               title: this.event.event_title,
             },
             whenForm: {
-              inscriptionToggle:this.event.date_time_inscription_begin && this.event.date_time_inscription_end ? true : false,
+              inscriptionToggle: this.event.date_time_inscription_begin && this.event.date_time_inscription_end ? true : false,
               eventBegin: this.formatDateTime(this.event.date_time_begin as string),
               eventEnd: this.formatDateTime(this.event.date_time_end as string),
               inscriptionBegin: this.formatDateTime(this.event.date_time_inscription_begin as string),
@@ -409,8 +412,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
             min_rank: this.eventForm?.get('whoForm.minRank')?.value || null,
             max_level: this.eventForm?.get('whoForm.maxLevel')?.value || null,
             min_level: this.eventForm?.get('whoForm.minLevel')?.value || null,
-            max_hours_played: this.eventForm?.get('whoForm.maxHoursPlayed')?.value || null,
-            min_hours_played: this.eventForm?.get('whoForm.minHoursPlayed')?.value || null,
+            max_hours_played: this.eventForm?.get('whoForm.maxHours')?.value || null,
+            min_hours_played: this.eventForm?.get('whoForm.minHours')?.value || null,
           }
         }
       };
@@ -420,12 +423,12 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
       if (this.isUpdating) {
         this.eventService.updateEvent(this.event.id, formatedNewEvent).subscribe(
-          (response) => {
+          () => {
             this.isFormSubmmiting = false;
             this.alertService.showAlert('success', 'Evento actualizado con éxito! 😄');
             this.closeModal();
+            this.profileService.eventEdited.next();
 
-            console.log(response);
           },
           (error) => {
             this.alertService.showAlert('error', 'Error! Algo ha fallado al actualizar el evento. 😓');
@@ -435,12 +438,12 @@ export class EventFormComponent implements OnInit, OnDestroy {
         );
       } else {
         this.eventService.postNewEvent(formatedNewEvent).subscribe(
-          (response) => {
+          () => {
             this.isFormSubmmiting = false;
             this.alertService.showAlert('success', 'Evento creado con éxito! 😄');
             this.closeModal();
+            this.profileService.eventCreated.next();
 
-            console.log(response);
           },
           (error) => {
             this.alertService.showAlert('error', 'Error! Algo ha fallado al crear el evento. 😓');
@@ -471,6 +474,9 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
   //Comprueba si el campo game contiene un juego que existe en el array de juegos
   gameExists(control: AbstractControl): ValidationErrors | null {
+    if (control.value === null || control.value === undefined) {
+      return null;
+    }
     const game = this.games.find(g => g.id === control.value.id);
     return game ? null : { gameNotFound: true };
   }

@@ -95,12 +95,22 @@ export class MoreEventInfoModalComponent implements OnDestroy {
 
     this.eventsService.joinEvent(this.event.id).subscribe(() => {
       this.toggleJoin();
+      this.alertService.showAlert('success', 'Te has unido al evento. ✨');
       this.currentParticipants++;
       this.join_LeaveLoading = false;
     });
   }
 
   async checkRequirements(): Promise<boolean> {
+
+    const game = await this.apiService.newGetFullGame(this.event.game_id).toPromise();
+
+    if (!game) {
+      console.log('Game not found');
+      return false;
+    }
+
+    const eventGamemode = game.gamemodes.find(gamemode => gamemode.name === this.event.game_mode);
 
     //Si no hay requisitos, se puede unir
     if (this.noRequirments()) {
@@ -134,14 +144,6 @@ export class MoreEventInfoModalComponent implements OnDestroy {
 
     // Si hay rango minimo, comprueba si el rango del usuario es mayor o igual al rango minimo requerido
     if (eventRequirements.min_rank) {
-      const game = await this.apiService.newGetFullGame(this.event.game_id).toPromise();
-
-      if (!game) {
-        console.log('Game not found');
-        return false;
-      }
-
-      const eventGamemode = game.gamemodes.find(gamemode => gamemode.name === this.event.game_mode);
 
       if (!eventGamemode) {
         console.log('Gamemode not found');
@@ -156,6 +158,26 @@ export class MoreEventInfoModalComponent implements OnDestroy {
       if (userRankIndex < minRankIndex) {
         return false;
       }
+    }
+
+    //Si el modo de juego es no es ranked, el min_level y max_level se comparan con gamemodes_rank (dado que ahí se guarda el nivel)
+    if (!eventGamemode?.ranked) {
+      if ((eventRequirements.min_level && +gamemodeStats.gamemodes_rank < eventRequirements.min_level) ||
+        (eventRequirements.max_level && +gamemodeStats.gamemodes_rank > eventRequirements.max_level)) {
+        return false;
+      }
+    //Si no es ranked se comparará con el nivel de la cuenta
+    } else {
+      if ((eventRequirements.min_level && userGameStat.lv_account < eventRequirements.min_level) ||
+        (eventRequirements.max_level && userGameStat.lv_account > eventRequirements.max_level)) {
+        return false;
+      }
+    }
+
+    //Comprueba si las horas jugadas del usuario están dentro del rango requerido
+    if ((eventRequirements.min_hours_played && userGameStat.hours_played < eventRequirements.min_hours_played) ||
+      (eventRequirements.max_hours_played && userGameStat.hours_played > eventRequirements.max_hours_played)) {
+      return false;
     }
 
     return true;

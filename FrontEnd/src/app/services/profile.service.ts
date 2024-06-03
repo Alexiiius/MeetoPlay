@@ -18,6 +18,8 @@ export class ProfileService {
 
   private userProfileId = new BehaviorSubject<number | null>(null);
 
+  eventCreated = new Subject<void>();
+  eventEdited = new Subject<void>();
   eventDeleted = new Subject<void>();
 
   gameStatCreated = new Subject<GameStat>();

@@ -132,7 +132,7 @@
           <div class=" flex justify-center gap-3">
             @if (!isLoggedUser) {
             @if (!isFollowing) {
-            <button class="group btn btn-outline btn-primary font-normal" (click)="followUser()">
+            <button class="group btn btn-outline btn-primary font-normal btn-sm" (click)="followUser()">
               @if (isLoadingFollow_Unfollow) {
               <span class="loading loading-spinner loading-sm text-primary group-hover:text-base-100"></span>
               } @else {
@@ -141,7 +141,7 @@
               <span class="group-hover:text-neutral">Seguir</span>
             </button>
             } @else {
-            <button class="group btn btn-outline btn-primary font-normal" (click)="unfollowUser()">
+            <button class="group btn btn-outline btn-primary font-normal btn-sm" (click)="unfollowUser()">
               @if (isLoadingFollow_Unfollow) {
               <span class="loading loading-spinner loading-sm text-primary group-hover:text-base-100"></span>
               } @else {
@@ -150,7 +150,7 @@
               <span class="group-hover:text-neutral">Dejar de seguir</span>
             </button>
             }
-            <button class="group btn btn-outline btn-secondary font-normal">
+            <button class="group btn btn-outline btn-secondary font-normal btn-sm">
               <i class='bx bx-chat text-secondary bx-sm group-hover:text-base-100'></i>
               <span class="group-hover:text-neutral">Chat</span>
             </button>

@@ -32,6 +32,9 @@ export class ProfileService {
   profileNameUpdated = new Subject<string>();
   profileBioUpdated = new Subject<string>();
 
+  userFollowed = new Subject<number>();
+  userUnFollowed = new Subject<number>();
+
   setUserProfileId(id: number) {
     this.userProfileId.next(id);
   }
@@ -49,11 +52,11 @@ export class ProfileService {
 
   updateSocials(socials: UserSocials): Observable<any> {
     console.log(socials);
-    return this.http.patch(`${this.backAPIUrl}/user/socials/update`, { socials: socials});
+    return this.http.patch(`${this.backAPIUrl}/user/socials/update`, { socials: socials });
   }
 
   updateName(name: string, password: string): Observable<any> {
-    return this.http.patch(`${this.backAPIUrl}/user/name/update`, { name: name, password: password});
+    return this.http.patch(`${this.backAPIUrl}/user/name/update`, { name: name, password: password });
   }
 
   updateBio(bio: string): Observable<any> {

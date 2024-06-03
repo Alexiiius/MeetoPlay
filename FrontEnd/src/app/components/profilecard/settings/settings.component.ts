@@ -34,13 +34,18 @@ export class SettingsComponent implements OnInit {
 
   showWrongPassword: boolean = false;
   showWrongPassword2: boolean = false;
+  showWrongPassword3: boolean = false;
   showDuplicatedEmail: boolean = false;
+
+  showDeleteUserFrom: boolean = false;
 
   isLoadingNewEmail: boolean = false;
   isLoadingNewPass: boolean = false;
+  isLoadingDeleteUser: boolean = false;
 
   newEmailForm: FormGroup;
   newPassForm: FormGroup;
+  deleteUserForm: FormGroup;
 
   ngOnInit(): void {
     this.newEmailForm = this.formBuilder.group({
@@ -52,6 +57,10 @@ export class SettingsComponent implements OnInit {
       newPassword: ['', [Validators.required, this.strongPassword]],
       confirmPassword: ['', [Validators.required, this.checkPasswords.bind(this)]],
       currentPassword: ['', Validators.required],
+    });
+
+    this.deleteUserForm = this.formBuilder.group({
+      password: ['', Validators.required],
     });
 
     this.userService.getCurrentEmail().subscribe(
@@ -193,6 +202,33 @@ export class SettingsComponent implements OnInit {
       return errors['notSame'] ? 'Las contraseñas no coinciden' : '';
     }
     return '';
+  }
+
+  deleteUser() {
+    this.isLoadingDeleteUser = true;
+    this.showWrongPassword3 = false;
+
+    if (this.deleteUserForm.invalid) {
+      return;
+    }
+
+    const password = this.deleteUserForm.value.password;
+
+    this.userService.deleteUser(password).subscribe(
+      () => {
+        this.isLoadingDeleteUser = false;
+        this.alertService.showAlert('success', 'Usuario eliminado con éxito! 👋');
+        this.authService.clientLogout();
+      },
+      error => {
+        console.log(error);
+        this.isLoadingDeleteUser = false;
+        this.alertService.showAlert('error', 'Algo ha fallado al eliminar tu cuenta 🚫');
+        if (error.status === 403) {
+          this.showWrongPassword3 = true;
+        }
+      }
+    );
   }
 
   logout() {

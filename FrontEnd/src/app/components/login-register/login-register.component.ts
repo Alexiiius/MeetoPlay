@@ -48,7 +48,6 @@ export class LoginRegisterComponent implements OnInit {
 
     this.authService.isAuth$.subscribe({
       next: (loggedIn) => {
-        console.log('Logged in: ', loggedIn);
         if (loggedIn) {
           this.router.navigate([this.redirectUrl]);
         }

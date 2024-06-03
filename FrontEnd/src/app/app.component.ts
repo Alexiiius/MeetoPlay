@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatsComponent } from './components/chats/chats.component';
 import { EventsFeedComponent } from './components/events-feed/events.component';
-import { FiltersComponent } from './components/filters/filters.component';
 import { ProfilecardComponent } from './components/profilecard/profilecard.component';
 import { AuthService } from './services/auth.service';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
@@ -15,10 +14,6 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   standalone: true,
   imports: [
     RouterOutlet,
-    ChatsComponent,
-    EventsFeedComponent,
-    FiltersComponent,
-    ProfilecardComponent,
     HttpClientModule,
     SplashScreenComponent,
     CommonModule
@@ -51,8 +46,8 @@ export class AppComponent implements OnInit {
     console.log('Checking token');
     const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
     if (token) {
-      this.authService.checkToken().subscribe({
-        next: (response) => {
+      this.authService.checkToken().subscribe(
+        (response) => {
           if (response) {
             this.authService.isAuth.next(true);
             setTimeout(() => {
@@ -60,12 +55,11 @@ export class AppComponent implements OnInit {
             }, 100);
           }
         },
-        error: (error) => {
+        (error) => {
           this.authService.isAuth.next(false);
           this.splashScreenVisible = 'hidden';
           console.log(error);
-        }
-      });
+        });
     } else {
       this.authService.isAuth.next(false);
       this.splashScreenVisible = 'hidden';

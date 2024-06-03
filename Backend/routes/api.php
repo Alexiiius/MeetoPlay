@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/user/game-stats/delete/{gameStatID}', [GameUserStatsController::class, 'destroy']); //delete a specific game stats by game_id only if the user has permission to delete it
     Route::put('/user/game-stats/update/{gameStatID}', [GameUserStatsController::class, 'update']); //update a specific game stats by game_id only if the user has permission to update it
 
-    
+
     Route::patch('/user/game-stats/gamemode/update/{gamemodeStatID}', [GameUserStatsController::class, 'gamemodeUpdate']); //update a specific gamemode stats by gamemode_id only if the user has permission to update it
     Route::delete('/user/game-stats/gamemode/delete/{gamemodeStatID}', [GameUserStatsController::class, 'gamemodeDestroy']); //delete a specific gamemode stats by gamemode_id only if the user has permission to delete it
     Route::post('/user/game-stats/gamemode/create', [GameUserStatsController::class, 'gamemodeCreate']); //create a new gamemode stats and associate it with a game stats
@@ -60,7 +60,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/event/create', [EventController::class, 'store']); //create a new event and its requirements
     Route::delete('/event/delete/{id}', [EventController::class, 'destroy']); //delete a specific event by id only if the user has permission to delete it
     Route::put('/event/update/{id}', [EventController::class, 'updateEvent']); //update a specific event by id only if the user has permission to update it
-    
+
 
     Route::get('/event/{id}', [EventController::class, 'show']); //show a specific event with requirements by id only if the user has permission to see it
     Route::get('/events/public/{page}', [EventController::class, 'showPublicEvents']); //show all public events

@@ -151,12 +151,13 @@ export class AuthService {
       );
     }
   }
+
   clientLogout(): void {
+    this.isAuth.next(false);
     this.router.navigate(['/login']).then(() => {
       localStorage.removeItem('access_token');
       sessionStorage.removeItem('access_token');
       sessionStorage.removeItem('user_data');
-      this.isAuth.next(false);
       this.currentUserSafe = null;
       this.userData.next(null);
     });

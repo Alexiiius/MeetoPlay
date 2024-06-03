@@ -1,5 +1,5 @@
-<label class="input input-bordered flex items-center gap-2">
-  <input type="text" class="grow" placeholder="Buscar" [formControl]="search" />
+<label class="input input-bordered flex items-center gap-2 min-w-0">
+  <input type="text" class="grow min-w-0" placeholder="Buscar" [formControl]="search" />
   @if (isSearching) {
   <span class="loading loading-ring loading-md text-accent"></span>
   } @else {
@@ -24,7 +24,7 @@
           </div>
           <div>
             <div class="font-medium">{{user.name}}</div>
-            <div class="text-sm font-light opacity-50">{{user.name}}#{{user.tag}}</div>
+            <div class="text-sm font-light opacity-50 hidden 2xl:block">{{user.name}}#{{user.tag}}</div>
           </div>
         </div>
       </td>
@@ -43,7 +43,7 @@
       @if (isSearching) {
         <span class="mt-2 w-full flex justify-center font-normal text-neutral/30 items-end">🔍 Buscando {{search.value}} <span class="loading loading-dots loading-xs"></span></span>
       } @else if (search.value && searchInitiated) {
-        <span class="mt-2 w-full flex justify-center font-normal">🫣 No se encontraron resultados </span>
+        <span class="mt-2 w-full flex justify-center font-normal">🥱 No se encontraron resultados </span>
       }
     }
   </tbody>

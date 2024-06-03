@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { UserReduced } from '../../../interfaces/user-reduced';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, forkJoin } from 'rxjs';
+import { debounceTime, distinctUntilChanged, forkJoin, Subject, takeUntil } from 'rxjs';
 import { UserReduceFollowing } from '../../../interfaces/user-reduce-following';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -33,6 +33,8 @@ export class UsersSearcherComponent implements OnInit {
   isSearching: boolean = false;
   searchInitiated: boolean = false;
   isFollowingLoading: { [userId: number]: boolean } = {};
+
+  private searchCanceled = new Subject<void>();
 
   constructor() { }
 
@@ -65,18 +67,30 @@ export class UsersSearcherComponent implements OnInit {
   }
 
   searchUsers() {
+    console.log('searching users');
     this.checkedResults = [];
-    this.searchInitiated = true;
+    this.searchInitiated = false;
     this.isSearching = true;
-    this.userService.getUsersSearch(this.search.value || '').subscribe((results: UserReduced[]) => {
-      this.searchResults = results;
-      this.checkFollowing();
-    });
+    this.searchCanceled.next();
+    this.userService.getUsersSearch(this.search.value || '')
+      .pipe(takeUntil(this.searchCanceled))
+      .subscribe((results: UserReduced[]) => {
+        this.searchResults = results;
+        this.searchInitiated = true; 
+        this.checkFollowing();
+      });
   }
 
   //Comprueba si cada usuario de la lista de resultados está siendo seguido por el usuario actual
   checkFollowing() {
-    const userList = this.searchResults;
+    console.log('checking following' , this.searchResults);
+    let userList = this.searchResults;
+
+    if (userList.length > 8) {
+      userList = userList.slice(0, 8);
+    }
+    console.log('userList', userList);
+
     if (userList.length === 0) {
       this.isSearching = false;
       this.checkedResults = [];

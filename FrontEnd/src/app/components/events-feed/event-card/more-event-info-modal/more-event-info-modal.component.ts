@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Event } from '../../../../models/event';
 import { UserService } from '../../../../services/user.service';
 import { UserReduced } from '../../../../interfaces/user-reduced';
 import { SocialUser } from '../../../../interfaces/social-user';
 import { EventsService } from '../../../../services/events.service';
-import { filter } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
 
@@ -21,7 +21,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './more-event-info-modal.component.html',
   styleUrl: './more-event-info-modal.component.css'
 })
-export class MoreEventInfoModalComponent {
+export class MoreEventInfoModalComponent implements OnDestroy{
   @ViewChild('moreEventInfo') modalDialog!: ElementRef<HTMLDialogElement>;
 
   @Input() event: Event;
@@ -45,6 +45,8 @@ export class MoreEventInfoModalComponent {
 
   isParticipantsLoading: boolean;
   join_LeaveLoading:boolean;
+
+  private currentUserSubscription: Subscription;
 
   @Output() isJoinedChange = new EventEmitter<boolean>();
   isJoined: boolean;
@@ -92,7 +94,7 @@ export class MoreEventInfoModalComponent {
 
   filterParticipants() {
     this.isParticipantsLoading = true;
-    this.userService.currentUser.subscribe(currentUser => {
+    this.currentUserSubscription = this.userService.currentUser.subscribe(currentUser => {
 
       this.userService.followedUsers.subscribe(followedUsers => {
         this.followedUsers = followedUsers || [];
@@ -190,5 +192,9 @@ export class MoreEventInfoModalComponent {
       !this.event.event_requirements.max_level &&
       !this.event.event_requirements.min_hours_played &&
       !this.event.event_requirements.max_hours_played;
+  }
+
+  ngOnDestroy() {
+    this.currentUserSubscription.unsubscribe();
   }
 }

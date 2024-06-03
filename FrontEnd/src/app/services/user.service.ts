@@ -15,7 +15,7 @@ import { ProfileService } from './profile.service';
   providedIn: 'root'
 })
 export class UserService implements OnInit {
-  currentUser: BehaviorSubject<UserData | null>;
+  currentUser: BehaviorSubject<UserData | null> = new BehaviorSubject<UserData | null>(null);
 
   followedUsers: BehaviorSubject<SocialUser[] | null> = new BehaviorSubject<SocialUser[] | null>(null);
   friends: BehaviorSubject<SocialUser[] | null> = new BehaviorSubject<SocialUser[] | null>(null);
@@ -54,6 +54,10 @@ export class UserService implements OnInit {
 
   ngOnInit(): void {
     this.authService.userData.subscribe(user => this.currentUser.next(user));
+  }
+
+  getCurrentUser(): Observable<UserData | null> {
+    return this.currentUser.asObservable();
   }
 
   updateFollowedUsers(newFollowedUsers: SocialUser[]): void {

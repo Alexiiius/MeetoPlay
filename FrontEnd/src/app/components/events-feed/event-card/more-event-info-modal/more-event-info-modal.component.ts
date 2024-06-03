@@ -48,7 +48,7 @@ export class MoreEventInfoModalComponent implements OnDestroy {
   friendParticipants: UserReduced[] = [];
   followedParticipants: UserReduced[] = [];
   otherParticipants: UserReduced[] = [];
-  logedUserParticipating: SocialUser;
+  loggedUserParticipating?: UserReduced;
 
   isParticipantsLoading: boolean;
   join_LeaveLoading: boolean;
@@ -98,6 +98,21 @@ export class MoreEventInfoModalComponent implements OnDestroy {
       this.alertService.showAlert('success', 'Te has unido al evento. ✨');
       this.currentParticipants++;
       this.join_LeaveLoading = false;
+
+      //Recojo el current user y lo añado a la lista de participantes
+      this.userService.currentUser.subscribe(user => {
+        if (user) {
+          this.eventParticipants.push({
+            id: user.id,
+            name: user.name,
+            tag: user.tag,
+            full_tag: `${user.name}#${user.tag}`,
+            avatar: user.avatar,
+            status: 'online'
+          });
+        }
+        this.filterParticipants();
+      });
     });
   }
 
@@ -189,6 +204,13 @@ export class MoreEventInfoModalComponent implements OnDestroy {
       this.toggleJoin();
       this.currentParticipants--;
       this.join_LeaveLoading = false;
+
+      //Recojo al usuario actual y lo saco de la lista de participantes
+      this.userService.currentUser.subscribe(user => {
+        this.eventParticipants = this.eventParticipants.filter(participant => participant.id !== user?.id);
+        this.filterParticipants();
+      });
+
     });
   }
 
@@ -225,6 +247,8 @@ export class MoreEventInfoModalComponent implements OnDestroy {
             !this.friends.some(friend => friend.id === participant.id) &&
             participant.id !== currentUser?.id
           );
+
+          this.loggedUserParticipating = this.eventParticipants.find(participant => participant.id === currentUser?.id);
 
           this.checkIfJoined();
 
@@ -289,8 +313,6 @@ export class MoreEventInfoModalComponent implements OnDestroy {
 
     this.profileService.gameStats$.subscribe(gameStats => {
       this.userGameStats = gameStats;
-      console.log(this.userGameStats);
-      console.log(this.event)
     });
   }
 

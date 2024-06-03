@@ -14,7 +14,8 @@ import { FormsModule } from '@angular/forms';
 })
 export class SocialLinkInputComponent {
 
-  @Input() socialNetwork: 'Instagram' | 'Twitter' | 'Discord' | 'Steam' | 'Twitch' | 'YouTube';
+  @Input() isSavingSocials: boolean;
+  @Input() socialNetwork: 'Instagram' | 'X' | 'Discord' | 'Steam' | 'Twitch' | 'YouTube';
   @Input() socialLink: string;
   @Output() socialLinkUpdated = new EventEmitter<{socialNetwork: string, newSocialLink: string}>();
 

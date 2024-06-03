@@ -108,17 +108,17 @@
 
       <div class="flex flex-col gap-4">
         <app-social-link-input socialNetwork="Discord" [socialLink]="socials.Discord"
-          (socialLinkUpdated)="saveNewSocials($event)" />
+          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
         <app-social-link-input socialNetwork="Instagram" [socialLink]="socials.Instagram"
-          (socialLinkUpdated)="saveNewSocials($event)" />
-        <app-social-link-input socialNetwork="Twitter" [socialLink]="socials.X"
-          (socialLinkUpdated)="saveNewSocials($event)" />
+          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
+        <app-social-link-input socialNetwork="X" [socialLink]="socials.X"
+          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
         <app-social-link-input socialNetwork="Steam" [socialLink]="socials.Steam"
-          (socialLinkUpdated)="saveNewSocials($event)" />
+          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
         <app-social-link-input socialNetwork="Twitch" [socialLink]="socials.Twitch"
-          (socialLinkUpdated)="saveNewSocials($event)" />
+          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
         <app-social-link-input socialNetwork="YouTube" [socialLink]="socials.Youtube"
-          (socialLinkUpdated)="saveNewSocials($event)" />
+          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
       </div>
 
     </div>

@@ -20,7 +20,7 @@
       <i class='bx bxl-youtube bx-md'></i>
     }
 
-    @case ('Twitter') {
+    @case ('X') {
       <i class='bx bxl-twitter bx-md'></i>
     }
 
@@ -34,10 +34,14 @@
     <input type="text" class="grow" [placeholder]="socialNetwork" [(ngModel)]="newSocialLink"/>
 
     <button
-      [ngClass]="newSocialLink !== socialLink ? 'opacity-100' : 'opacity-0'"
-      [disabled]="newSocialLink === socialLink" (click)="updateSocialLink(socialNetwork, newSocialLink)"
+      [ngClass]="newSocialLink !== socialLink ? 'opacity-100' : 'opacity-0'" [class.opacity-20]="isSavingSocials" [class.bg-transparent]="isSavingSocials"
+      [disabled]="newSocialLink === socialLink || isSavingSocials" (click)="updateSocialLink(socialNetwork, newSocialLink)"
       class="button btn btn-ghost btn-square btn-sm flex items-center -mr-2 transition-opacity duration-300">
-      <i class='bx bx-check bx-sm text-success'></i>
+      @if (isSavingSocials) {
+      <span class="loading loading-spinner text-success"></span>
+      } @else {
+        <i class='bx bx-check bx-sm text-success'></i>
+      }
     </button>
 
   </label>

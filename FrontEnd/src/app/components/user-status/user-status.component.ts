@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Subscription } from 'rxjs';
+import { UserData } from '../../interfaces/user-data';
 
 @Component({
   selector: 'app-user-status',
@@ -12,23 +13,19 @@ import { Subscription } from 'rxjs';
   templateUrl: './user-status.component.html',
   styleUrl: './user-status.component.css'
 })
-export class UserStatusComponent implements OnInit, OnDestroy {
+export class UserStatusComponent implements OnDestroy {
 
+  @Input() user: UserData | null = null;
+  @Input() isLoading: boolean;
   @Input() sizeClass: string;
 
-  userStatus: String | 'Offline';
+  userStatus: String;
   private subscription: Subscription;
 
-  constructor(private userService: UserService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.subscription = this.userService.currentUser.subscribe((user) => {
-      if (user) {
-        this.userStatus = user.status;
-      } else {
-        this.userStatus = 'Offline';
-      }
-    });
+  ngOnChanges(): void {
+    this.userStatus = this.user?.status || 'Offline';
   }
 
   ngOnDestroy(): void {

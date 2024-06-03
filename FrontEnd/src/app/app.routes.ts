@@ -3,19 +3,11 @@ import { Routes } from '@angular/router';
 import { EventsFeedComponent } from './components/events-feed/events.component';
 import { LoginRegisterComponent } from './components/login-register/login-register.component';
 import { MainComponent } from './components/main/main.component';
-import { authGuard } from './auth.guard';
+import { authGuard, OwnProfileGuard } from './auth.guard';
 import { ProfileComponent } from './components/profile/profile.component';
 import { GameStatsComponent } from './components/profile/game-stats/game-stats.component';
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';
 import { ParticipatingEventsComponent } from './components/profile/participating-events/participating-events.component';
-import { EditProfileComponent } from './components/profile/edit-profile/edit-profile.component';
-
-// export const routes: Routes = [
-//   {
-//     path: '', component: MainComponent,
-//   }
-
-// ];
 
 export const routes: Routes = [
   {
@@ -27,8 +19,8 @@ export const routes: Routes = [
         path: 'profile/:id', title: 'Meetoplay | Profile', component: ProfileComponent, canActivate: [authGuard], children: [
           { path: '', redirectTo: 'gameStats', pathMatch: 'full' },
           { path: 'gameStats', component: GameStatsComponent, canActivate: [authGuard] },
-          { path: 'myEvents', component: MyEventsComponent, canActivate: [authGuard] },
-          { path: 'participating', component: ParticipatingEventsComponent, canActivate: [authGuard] },
+          { path: 'myEvents', component: MyEventsComponent, canActivate: [authGuard, OwnProfileGuard] },
+          { path: 'participating', component: ParticipatingEventsComponent, canActivate: [authGuard, OwnProfileGuard] },
           { path: '**', redirectTo: 'gameStats' }
         ]
       },

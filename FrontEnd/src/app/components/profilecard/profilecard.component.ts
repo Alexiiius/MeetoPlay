@@ -26,23 +26,24 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './profilecard.component.html',
   styleUrl: './profilecard.component.css'
 })
-export class ProfilecardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ProfilecardComponent implements OnInit {
   @ViewChild('avatar', { static: false }) avatar: ElementRef;
 
-  isLoggingOut = false;
   user: UserData | null = null;
   userAvatarLoaded = false;
-  private userSubscription: Subscription;
 
-  constructor(private userService: UserService, private cdRef: ChangeDetectorRef) { }
+  isLoading: boolean = false;
+
+  constructor(private userService: UserService) { }
 
   profileService = inject(ProfileService);
   authService = inject(AuthService);
 
   ngOnInit(): void {
-    this.userSubscription = this.userService.currentUser.subscribe(user => {
+    this.isLoading = true;
+    this.userService.getLogedUserData().subscribe((user: UserData) => {
       this.user = user;
-      console.log('User:', user);
+      this.isLoading = false;
     });
 
     this.profileService.profileAvatarUpdated.subscribe((newAvatarUrl: string) => {
@@ -56,22 +57,5 @@ export class ProfilecardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.user.name = newName;
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.userSubscription.unsubscribe();
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      if (this.avatar && this.avatar.nativeElement && this.avatar.nativeElement.complete) {
-        this.onAvatarLoad();
-      }
-    }, 0);
-  }
-
-  onAvatarLoad() {
-    this.userAvatarLoaded = true;
-    this.cdRef.detectChanges();
   }
 }

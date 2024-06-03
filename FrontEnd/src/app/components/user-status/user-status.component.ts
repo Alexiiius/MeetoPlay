@@ -13,7 +13,7 @@ import { UserData } from '../../interfaces/user-data';
   templateUrl: './user-status.component.html',
   styleUrl: './user-status.component.css'
 })
-export class UserStatusComponent implements OnDestroy {
+export class UserStatusComponent implements OnInit, OnDestroy {
 
   @Input() user: UserData | null = null;
   @Input() isLoading: boolean;
@@ -22,10 +22,21 @@ export class UserStatusComponent implements OnDestroy {
   userStatus: String;
   private subscription: Subscription;
 
-  constructor() {}
+  constructor(
+    private userService: UserService
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription = this.userService.userStatusChanged.subscribe(
+      (newStatus: string) => {
+        this.userStatus = newStatus;
+      }
+    );
+  }
 
   ngOnChanges(): void {
     this.userStatus = this.user?.status || 'Offline';
+    console.log('User status: ', this.userStatus);
   }
 
   ngOnDestroy(): void {

@@ -1,6 +1,6 @@
 import { UserData } from './../interfaces/user-data';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, map, merge, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, map, merge, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AuthService } from './auth.service';
 import { backAPIUrl } from '../config';
 import { HttpClient } from '@angular/common/http';
@@ -38,6 +38,8 @@ export class UserService implements OnInit {
     this.gamemodeStatEditCancelled$,
     this.gamemodeStatDeleted$
   );
+
+  userStatusChanged = new Subject<string>();
 
   private backAPIUrl = backAPIUrl;
 
@@ -162,6 +164,10 @@ export class UserService implements OnInit {
 
   deleteGamemodeStat(gamemodeStatId: number): Observable<any> {
     return this.http.delete(`${this.backAPIUrl}/user/game-stats/gamemode/delete/${gamemodeStatId}`);
+  }
+
+  setUserStatus(status: string): Observable<any> {
+    return this.http.patch(`${this.backAPIUrl}/user/status/${status}`, '');
   }
 }
 

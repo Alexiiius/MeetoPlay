@@ -1,5 +1,5 @@
 @if (isLoading) {
-  <span class="h-2 w-6 skeleton"></span>
+  <div class="h-2 w-12 skeleton"></div>
 } @else {
   <span class="font-light flex items-center" [ngClass]="{
     'text-xs': sizeClass === 'small',
@@ -8,13 +8,30 @@
   }">
     <div class="rounded-full inline-block mr-1" [ngClass]="{
           'bg-success': userStatus === 'Online',
-          'bg-error': userStatus === 'DND',
-          'bg-warning': userStatus === 'AFK',
-          'bg-neutral/50': userStatus === 'Hidden' || userStatus === 'Offline',
+          'bg-error': userStatus === 'Dnd',
+          'bg-warning': userStatus === 'Afk',
+          'bg-neutral/50': userStatus === 'Invisible' || userStatus === 'Offline',
           'w-2 h-2': sizeClass === 'small',
           'w-2.5 h-2.5': sizeClass === 'medium',
           'w-3 h-3': sizeClass === 'large'
         }">
-    </div>{{userStatus}}
+    </div>
+    @switch (userStatus) {
+      @case ('Online') {
+        <span>En linea</span>
+      }
+
+      @case ('Afk') {
+        <span>Ausente</span>
+      }
+
+      @case ('Dnd') {
+        <span>No molestar</span>
+      }
+
+      @case ('Invisible') {
+        <span>Invisible</span>
+      }
+    }
   </span>
 }

@@ -92,25 +92,20 @@ export class EventsFeedComponent implements OnInit {
         const value = latestSearchValue;
         const group = latestGroup;
         this.actualGroup = group;
-        console.log('Actual group: ', group);
-        console.log('Search value: ', value);
 
         if (value === '' || value === null || (value as string).length <= 1) {
           this.searchedEvents = [];
           // Si no hay valor de búsqueda, obtenemos los eventos del grupo actual
           switch (group) {
             case 'Public':
-              console.log('Showing public events');
               this.displayedEvents = this.publicEvents;
               this.hasMoreEvents['Public'] = this.publicPage < this.publicTotalPages;
               break;
             case 'Friends':
-              console.log('Showing friends events');
               this.displayedEvents = this.friendsEvents;
               this.hasMoreEvents['Friends'] = this.friendsPage < this.friendsTotalPages;
               break;
             case 'Followed':
-              console.log('Showing followed events');
               this.hasMoreEvents['Followed'] = this.followingPage < this.followingTotalPages;
               this.displayedEvents = this.followingEvents;
               break;
@@ -190,7 +185,6 @@ export class EventsFeedComponent implements OnInit {
         this.followedUsers = response.data.following;
         this.userService.updateFollowedUsers(this.followedUsers);
 
-        // console.log('Followed users: ', this.followedUsers);
       },
       error => {
         console.error('Error:', error);
@@ -204,7 +198,6 @@ export class EventsFeedComponent implements OnInit {
         this.friends = response.data.friends;
         this.userService.updateFriends(this.friends);
 
-        // console.log('Friends: ', this.friends);
       },
       error => {
         console.error('Error:', error);
@@ -282,7 +275,6 @@ export class EventsFeedComponent implements OnInit {
       this.displayedEvents = this.publicEvents;
 
       this.isLoading = false;
-      console.log('Public events: ', this.publicEvents);
     }, error => {
       console.error('Error fetching public events: ', error)
 
@@ -303,7 +295,6 @@ export class EventsFeedComponent implements OnInit {
       }
 
       this.isLoading = false;
-      console.log('Friends events: ', this.friendsEvents);
     }, error => {
       console.error('Error fetching friends events: ', error)
 
@@ -325,7 +316,6 @@ export class EventsFeedComponent implements OnInit {
 
       this.isLoading = false;
       this.firstLoad = false;
-      console.log('Following events: ', this.followingEvents);
     }, error => {
       console.error('Error fetching following events: ', error)
 

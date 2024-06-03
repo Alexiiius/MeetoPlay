@@ -45,6 +45,13 @@ export class UserService implements OnInit {
       this.currentUser.next(userData);
     }
   }
+  getUsersSearch(search: string): Observable<any> {
+    return this.http.get(`${this.backAPIUrl}/user/search/${search}`);
+  }
+
+  deleteUser(password: string): Observable<any> {
+    return this.http.post(`${this.backAPIUrl}/user/delete`, { password: password });
+  }
 
   isFollowing(id: number): Observable<any> {
     return this.http.get(`${this.backAPIUrl}/isfollowing/${id}`);

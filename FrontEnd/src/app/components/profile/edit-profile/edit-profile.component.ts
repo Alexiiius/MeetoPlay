@@ -51,6 +51,8 @@ export class EditProfileComponent implements OnInit{
 
   isSavingAvatar: boolean = false;
 
+  isSavingSocials: boolean = false;
+
   isCheckingPassword: boolean = false;
   password: string = '';
   showWrongPassword: boolean = false;
@@ -160,16 +162,19 @@ export class EditProfileComponent implements OnInit{
   }
 
   saveNewSocials(event: { socialNetwork: string, newSocialLink: string }) {
+    this.isSavingSocials = true;
     this.socials[event.socialNetwork] = event.newSocialLink;
 
     this.profileService.updateSocials(this.socials).subscribe(
       (response) => {
         console.log('Socials updated:', response);
         this.alertService.showAlert('success', 'Redes sociales actualizadas correctamente 🎉');
+        this.isSavingSocials = false;
       },
       (error) => {
         console.error('Error updating socials:', error);
         this.alertService.showAlert('error', 'Error actualizando redes sociales 😢');
+        this.isSavingSocials = false;
       });
   }
 

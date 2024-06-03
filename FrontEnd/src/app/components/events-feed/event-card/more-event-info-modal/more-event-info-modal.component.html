@@ -126,9 +126,25 @@
           <div class="flex items-end">Cargando participantes <span class="loading loading-dots loading-xs"></span></div>
           } @else {
 
-          @if (friendParticipants.length == 0 && followedParticipants.length == 0 && otherParticipants.length == 0) {
+          @if (friendParticipants.length == 0 && followedParticipants.length == 0 && otherParticipants.length == 0  && !loggedUserParticipating) {
           <div class="col-span-full font-normal text-xl">No hay participantes todavía 😅</div>
           } @else {
+
+          @if (loggedUserParticipating) {
+          <div class="col-span-full text-xl">Tú</div>
+          <hr class="col-span-full">
+          <div
+            class="flex gap-x-3 items-center cursor-pointer p-2 px-4 rounded-box hover:bg-neutral/20 transition-colors duration-300"
+            [routerLink]="['/profile', loggedUserParticipating.id]">
+            <div class="avatar">
+              <div class="w-10 rounded-full">
+                <img src="{{loggedUserParticipating.avatar}}" />
+              </div>
+            </div>
+            <span class="font-normal">{{loggedUserParticipating.name}}</span>
+          </div>
+          }
+
           @if (friendParticipants.length > 0) {
           <div class="col-span-full text-xl">Amigos</div>
           <hr class="col-span-full">

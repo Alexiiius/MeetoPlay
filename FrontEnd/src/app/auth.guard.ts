@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { map } from 'rxjs';
+import { UserService } from './services/user.service';
 
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -19,4 +20,21 @@ export const authGuard: CanActivateFn = (route, state) => {
     })
   );
 };
+
+export const OwnProfileGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+
+  const id = route.parent?.paramMap.get('id');
+  const userData = localStorage.getItem('user_data') || sessionStorage.getItem('user_data');
+  const currentUserId = userData ? JSON.parse(userData).id : null;
+
+  if (currentUserId && id == currentUserId) {
+    return true;
+  } else {
+    router.navigate(['/']);
+    return false;
+  }
+};
+
+
 

@@ -33,7 +33,6 @@ export class GameStatsComponent implements OnInit {
       if (id !== null) {
         this.userService.getUserGameStats(id).subscribe(response => {
           this.stats = response.data.GameUserStats;
-          console.log(this.stats);
           this.isLoading = false;
         });
       }

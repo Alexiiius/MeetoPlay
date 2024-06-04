@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatsService } from '../../services/chats.service';
 import { ChatMessage } from '../../interfaces/chat-message';
 import { Messages } from '../../interfaces/messages';
+import { WebSocketService } from '../../services/web-socket.service';
 
 @Component({
   selector: 'app-chat',
@@ -36,9 +37,17 @@ export class ChatComponent implements OnInit {
 
   sendedMessages: { to_user_id: number; text: string; isLoading: boolean; }[] = [];
 
-  constructor(private chatService: ChatsService) { }
+  constructor(
+    private chatService: ChatsService,
+    private webSocketService: WebSocketService) {
+  }
+
+  receivedMessages: string[] = [];
 
   ngOnInit() {
+    this.webSocketService.setupEchoPublic();
+    this.webSocketService.setupEchoPrivate();
+
     console.log('user id: ', this.userId);
 
     if (this.userId === 2) {
@@ -71,7 +80,6 @@ export class ChatComponent implements OnInit {
         this.messagesHistory = response.data.messages;
         this.oldMessages = [...this.messagesHistory.data.reverse(), ...this.oldMessages];
         this.chatTotalPages = this.messagesHistory.last_page;
-        console.log(this.oldMessages);
         this.markMessagesAsRead();
 
         if (loadMore) {
@@ -104,16 +112,8 @@ export class ChatComponent implements OnInit {
 
   markMessagesAsRead() {
     const toMarkAsRead = this.oldMessages.filter(message => message.from_user_id === this.toUserId && !message.read_at).map(message => message.id);
-    console.log('toMarkAsRead: ', toMarkAsRead);
 
-    this.chatService.readMessages(toMarkAsRead).subscribe(
-      (response) => {
-        console.log(response);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    this.chatService.readMessages(toMarkAsRead).subscribe();
   }
 
   sendMessage() {
@@ -122,8 +122,9 @@ export class ChatComponent implements OnInit {
       text: this.message,
       isLoading: true
     };
-
     this.sendedMessages.push(newMessage);
+
+
 
     // Ajustar la posición del scroll
     setTimeout(() => {

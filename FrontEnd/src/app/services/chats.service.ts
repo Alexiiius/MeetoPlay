@@ -2,14 +2,16 @@ import { Injectable } from '@angular/core';
 import { backAPIUrl } from '../config';
 import { HttpClient } from '@angular/common/http';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class ChatsService {
 
+
   backAPIUrl = backAPIUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   sendMessage(toUserId: number, message: string) {
     console.log('toUserId: ', toUserId);

@@ -110,10 +110,8 @@ export class LoginRegisterComponent implements OnInit {
       },
       error => {
         if (error.error) {
-          // Handle the error here
-          // For example, show the error message
+
           this.registerErrorMessage = error.message;
-          // And handle the individual field errors
           this.fieldErrors = error.errors;
           console.log(this.fieldErrors);
           console.log(this.registerErrorMessage);

@@ -22,7 +22,9 @@
     "@angular/router": "^17.3.0",
     "boxicons": "^2.1.4",
     "date-fns": "^3.6.0",
-    "rxjs": "~7.8.0",
+    "laravel-echo": "^1.16.1",
+    "pusher-js": "^8.4.0-rc2",
+    "rxjs": "^7.8.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },

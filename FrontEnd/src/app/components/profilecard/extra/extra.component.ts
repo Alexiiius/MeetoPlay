@@ -1,10 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UserData } from '../../../interfaces/user-data';
-import { UserService } from '../../../services/user.service';
-import { debounceTime, fromEvent, merge, startWith, Subscription, switchMap, tap, timer } from 'rxjs';
+import { debounceTime, fromEvent, merge, startWith, switchMap, tap, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UserStatusComponent } from '../user-status/user-status.component';
+import { ProfileService } from '../../../services/profile.service';
 
 
 @Component({
@@ -20,7 +20,7 @@ import { UserStatusComponent } from '../user-status/user-status.component';
 })
 export class ExtraComponent implements OnInit{
 
-  constructor(private userService: UserService) { }
+  constructor(private profileService: ProfileService) { }
 
   copied = false;
   fadeOut = false;
@@ -90,9 +90,10 @@ export class ExtraComponent implements OnInit{
   changeUserStatus(newStatus: string) {
     this.showChangeStatus = false;
     const capitalizedStatus = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
-    this.userService.userStatusChanged.next(capitalizedStatus);
+    this.profileService.userStatusChanged.next(capitalizedStatus);
     this.userStatus = newStatus;
-    this.userService.setUserStatus(newStatus).subscribe(
+    localStorage.setItem('user_status', capitalizedStatus);
+    this.profileService.setUserStatus(newStatus).subscribe(
       (response) => {
         console.log('Estado del usuario cambiado correctamente: ', response);
       },

@@ -5,6 +5,7 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validator
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { loginAnimation, registerAnimation } from './login-register-animation';
 import { set } from 'date-fns';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login-register',

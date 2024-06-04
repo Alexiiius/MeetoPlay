@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UserData } from '../../../interfaces/user-data';
-import { UserService } from '../../../services/user.service';
+import { ProfileService } from '../../../services/profile.service';
 
 @Component({
   selector: 'app-user-status',
@@ -23,11 +23,11 @@ export class UserStatusComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(
-    private userService: UserService
+    private profileService: ProfileService
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.userService.userStatusChanged.subscribe(
+    this.subscription = this.profileService.userStatusChanged.subscribe(
       (newStatus: string) => {
         this.userStatus = newStatus;
       }

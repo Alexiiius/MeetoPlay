@@ -1,15 +1,15 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SettingsComponent } from './settings/settings.component';
 import { ExtraComponent } from './extra/extra.component';
-import { UserStatusComponent } from '../user-status/user-status.component';
 import { UserData } from '../../interfaces/user-data';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
-import {  Subscription } from 'rxjs';
+
 import { HomeComponent } from './home/home.component';
 import { ProfileService } from '../../services/profile.service';
 import { AuthService } from '../../services/auth.service';
+import { UserStatusComponent } from './user-status/user-status.component';
 
 @Component({
   selector: 'app-profilecard',

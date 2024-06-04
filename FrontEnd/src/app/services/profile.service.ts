@@ -41,7 +41,6 @@ export class ProfileService {
   gameStatsSource = new BehaviorSubject<GameStat[] | []>([]);
   gameStats$ = this.gameStatsSource.asObservable();
 
-
   setUserProfileId(id: number) {
     this.userProfileId.next(id);
   }

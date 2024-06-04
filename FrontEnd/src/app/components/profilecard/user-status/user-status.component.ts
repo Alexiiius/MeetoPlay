@@ -36,7 +36,6 @@ export class UserStatusComponent implements OnInit, OnDestroy {
 
   ngOnChanges(): void {
     this.userStatus = this.user?.status || 'Offline';
-    console.log('User status: ', this.userStatus);
   }
 
   ngOnDestroy(): void {

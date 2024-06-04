@@ -1,0 +1,90 @@
+<div class="flex flex-col h-full">
+  <header class="w-full p-3 pb-6 flex items-center">
+    <div class="avatar">
+      <div class="w-20 rounded-full">
+        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+      </div>
+    </div>
+    <div class="ml-2 flex flex-col">
+      <span>Username</span>
+      <span>Userstatus</span>
+    </div>
+
+    <div class="dropdown dropdown-left ml-auto">
+      <div tabindex="0" role="button" class="btn btn-circle btn-ghost btn-md"><i
+          class='bx bx-dots-vertical-rounded bx-md'></i></div>
+      <ul tabindex="0" class="dropdown-content fixed z-20 menu p-2 shadow bg-base-200 rounded-box w-52">
+
+        <li>
+          <button><i class='bx bx-comment-x text-secondary'></i>Vaciar chat</button>
+        </li>
+
+        <li>
+          <button><i class='bx bx-trash text-error'></i>Borrar chat</button>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <div class="h-0.5 w-full bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+
+  <div #messagesContainer id="messagesContainer" class="w-full flex flex-col gap-3 flex-grow overflow-y-auto p-2">
+    @if (moreMessagesLoading) {
+      <div class="w-full flex items-center justify-center font-mono font-medium text-base opacity-70 mt-1">
+        <span class="loading loading-spinner text-primary mr-1"></span> Cargando mensajes anteriores...
+      </div>
+    } @else if (!hasMorePages) {
+      <div class="w-full flex items-center justify-center font-mono font-medium text-base opacity-70 mt-1">
+        No hay mensajes más antiguos
+      </div>
+    }
+    @if (gettingMessages) {
+      <div class="h-full w-full flex items-center justify-center">
+        <div class="loading loading-infinity loading-lg text-primary"></div>
+      </div>
+    } @else {
+
+      <!-- Mensajes cargados desde base de datos -->
+    @for (message of oldMessages; track message.id) {
+    @if (message.from_user_id !== userId) {
+    <div class="chat chat-start">
+      <div class="chat-bubble chat-bubble-primary break-words">{{message.text}}</div>
+    </div>
+    } @else {
+    <div class="chat chat-end">
+      <div class="chat-bubble  chat-bubble-secondary break-words">{{message.text}}</div>
+      @if (!message.read_at) {
+        <i class='bx bx-check text-secondary'></i>
+      } @else {
+        <i class='bx bx-check-double text-secondary'></i>
+      }
+    </div>
+    }
+    }
+
+    <!-- Mensajes enviados en directo -->
+    @for (message of sendedMessages; track $index) {
+    <div class="chat chat-end">
+      <div class="chat-bubble  chat-bubble-secondary">{{message.text}}</div>
+      @if (message.isLoading) {
+      <span class="loading loading-ball loading-xs text-secondary"></span>
+      } @else {
+      <i class='bx bx-check text-secondary'></i>
+      }
+    </div>
+    }
+
+    }
+  </div>
+
+  <label class="input h-10 min-h-10 bg-neutral w-full mt-auto  rounded-box flex items-center gap-2 text-base-100">
+    <input type="text" class="grow" placeholder="Escribe un mensaje a Username" [(ngModel)]="message"
+      (keydown.enter)="sendMessage()" />
+    <button class="btn btn-ghost btn-sm btn-circle">
+      <i class='bx bx-smile bx-sm'></i>
+    </button>
+    <button class="btn btn-ghost btn-sm btn-circle" (click)="sendMessage()">
+      <i class='bx bx-send bx-sm'></i>
+    </button>
+  </label>
+
+</div>

@@ -8,13 +8,14 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { GameStatsComponent } from './components/profile/game-stats/game-stats.component';
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';
 import { ParticipatingEventsComponent } from './components/profile/participating-events/participating-events.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 export const routes: Routes = [
   {
     path: '', component: MainComponent, canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
-      { path: 'main', title: 'Meetoplay | Main', component: EventsFeedComponent , canActivate: [authGuard]},
+      { path: 'main', title: 'Meetoplay | Main', component: ChatComponent , canActivate: [authGuard]},
       {
         path: 'profile/:id', title: 'Meetoplay | Profile', component: ProfileComponent, canActivate: [authGuard], children: [
           { path: '', redirectTo: 'gameStats', pathMatch: 'full' },

@@ -32,7 +32,6 @@ export class ExtraComponent implements OnInit{
   intentionallyAfk = false;
 
   ngOnInit() {
-    console.log('ExtraComponent inicializado');
     const events = ['mousemove', 'keypress', 'scroll'];
     const eventStreams = events.map((event) => fromEvent(window, event));
     const activity$ = merge(...eventStreams).pipe(startWith(null));
@@ -42,7 +41,7 @@ export class ExtraComponent implements OnInit{
         debounceTime(1000), // espera 1 segundo sin actividad antes de cambiar el estado a "online"
         tap(() => {
           //Si el usuario está en estado afk y no ha sido intencionalmente, lo cambia a online
-          if (this.userStatus === 'afk' && !this.intentionallyAfk) {
+          if (this.userStatus === 'afk' || this.userStatus === 'Afk' && !this.intentionallyAfk) {
             this.changeUserStatus('online');
           }
         }),
@@ -51,7 +50,6 @@ export class ExtraComponent implements OnInit{
           return timer(5 * 60 * 1000); // 5 minutos
         }),
         tap(() => {
-          console.log(this.userStatus)
           if (this.userStatus === 'online' || this.userStatus === 'Online') {
             this.changeUserStatus('afk');
           }
@@ -93,14 +91,7 @@ export class ExtraComponent implements OnInit{
     this.profileService.userStatusChanged.next(capitalizedStatus);
     this.userStatus = newStatus;
     localStorage.setItem('user_status', capitalizedStatus);
-    this.profileService.setUserStatus(newStatus).subscribe(
-      (response) => {
-        console.log('Estado del usuario cambiado correctamente: ', response);
-      },
-      (error) => {
-        console.error('Error al cambiar el estado del usuario: ', error);
-      }
-    );
+    this.profileService.setUserStatus(newStatus).subscribe();
   }
 
   setIntentionallyAfk(value: boolean) {

@@ -78,7 +78,7 @@ class MessageController extends Controller {
 
 
 
-        
+
 
         return response()->json([
             'data' => [
@@ -88,10 +88,10 @@ class MessageController extends Controller {
 
     }
 
-    
-    
+
+
     public function getMessages($id, $page, Request $request) {
-    
+
         if (User::find($id) == null) {
             return response()->json([
                 'data' => [
@@ -99,11 +99,11 @@ class MessageController extends Controller {
                 ],
             ]);
         }
-    
+
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
-    
+
         $messages = Message::where(function ($query) use ($id) {
             $query->where('from_user_id', auth()->id())
                   ->where('to_user_id', $id);
@@ -112,19 +112,19 @@ class MessageController extends Controller {
                   ->where('to_user_id', auth()->id());
         })
         ->orderBy('created_at', 'desc')
-        ->paginate(10);
-    
+        ->paginate(20);
+
         return response()->json([
             'data' => [
                 'messages' => $messages,
             ],
         ]);
-    
+
     }
 
     public function markAsRead(Request $request) {
         $messageIds = $request->get('message_ID');
-    
+
         $messages = Message::whereIn('id', $messageIds)
                            ->where('to_user_id', auth()->user()->id)
                            ->update(['read_at' => now()]);
@@ -144,7 +144,7 @@ class MessageController extends Controller {
         $unreadMessages = Message::where('to_user_id', $userId)
                                  ->whereNull('read_at')
                                  ->get();
-    
+
         return response()->json([
             'data' => [
                 'unread_messages' => $unreadMessages,
@@ -173,14 +173,14 @@ class MessageController extends Controller {
                 $conversation->user = User::where('id', $conversation->from_user_id)->select('id', 'name', 'tag', 'avatar', 'status')->first();
             }
         }
-        
-    
+
+
         return response()->json([
             'data' => [
                 'conversations' => $conversations,
             ],
         ]);
     }
-    
+
 
 }

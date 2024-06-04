@@ -4,7 +4,8 @@ import { UserService } from '../../../services/user.service';
 import { debounceTime, fromEvent, merge, startWith, Subscription, switchMap, tap, timer } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { UserStatusComponent } from '../../user-status/user-status.component';
+import { UserStatusComponent } from '../user-status/user-status.component';
+
 
 @Component({
   selector: 'app-extra',
@@ -26,7 +27,9 @@ export class ExtraComponent implements OnInit{
   showChangeStatus = false;
   @Input() user: UserData | null = null;
   @Input() isLoading: boolean;
+
   userStatus: string;
+  intentionallyAfk = false;
 
   ngOnInit() {
     console.log('ExtraComponent inicializado');
@@ -38,7 +41,8 @@ export class ExtraComponent implements OnInit{
       .pipe(
         debounceTime(1000), // espera 1 segundo sin actividad antes de cambiar el estado a "online"
         tap(() => {
-          if (this.userStatus !== 'online') {
+          //Si el usuario está en estado afk y no ha sido intencionalmente, lo cambia a online
+          if (this.userStatus === 'afk' && !this.intentionallyAfk) {
             this.changeUserStatus('online');
           }
         }),
@@ -47,7 +51,8 @@ export class ExtraComponent implements OnInit{
           return timer(5 * 60 * 1000); // 5 minutos
         }),
         tap(() => {
-          if (this.userStatus !== 'afk') {
+          console.log(this.userStatus)
+          if (this.userStatus === 'online' || this.userStatus === 'Online') {
             this.changeUserStatus('afk');
           }
         })
@@ -58,6 +63,7 @@ export class ExtraComponent implements OnInit{
   ngOnChanges() {
     if (this.user) {
       this.userStatus = this.user.status;
+      this.intentionallyAfk = localStorage.getItem('intentionallyAfk') === 'true';
     }
   }
 
@@ -96,5 +102,9 @@ export class ExtraComponent implements OnInit{
     );
   }
 
+  setIntentionallyAfk(value: boolean) {
+    this.intentionallyAfk = value;
+    localStorage.setItem('intentionallyAfk', value.toString());
+  }
 
 }

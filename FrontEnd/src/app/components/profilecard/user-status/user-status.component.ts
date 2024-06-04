@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { UserService } from '../../services/user.service';
 import { Subscription } from 'rxjs';
-import { UserData } from '../../interfaces/user-data';
+import { UserData } from '../../../interfaces/user-data';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-user-status',

@@ -14,7 +14,7 @@ import { UserReduced } from '../../../interfaces/user-reduced';
   templateUrl: './user-status.component.html',
   styleUrl: './user-status.component.css'
 })
-export class UserStatusComponent implements OnInit, OnDestroy {
+export class UserStatusComponent implements OnInit {
 
   @Input() user: UserData | UserReduced | null = null;
   @Input() isLoading: boolean = false;
@@ -22,7 +22,7 @@ export class UserStatusComponent implements OnInit, OnDestroy {
   @Input() isChat: boolean = false;
 
   userStatus: String;
-  private subscription: Subscription;
+
 
   constructor(
     private profileService: ProfileService
@@ -30,7 +30,7 @@ export class UserStatusComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (!this.isChat){
-      this.subscription = this.profileService.userStatusChanged.subscribe(
+      this.profileService.userStatusChanged.subscribe(
         (newStatus: string) => {
           this.userStatus = newStatus;
         }
@@ -40,9 +40,5 @@ export class UserStatusComponent implements OnInit, OnDestroy {
 
   ngOnChanges(): void {
     this.userStatus = this.user?.status || 'Offline';
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 }

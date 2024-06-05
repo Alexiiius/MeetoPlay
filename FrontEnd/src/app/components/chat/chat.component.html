@@ -2,12 +2,12 @@
   <header class="w-full p-3 pb-6 flex items-center">
     <div class="avatar">
       <div class="w-20 rounded-full">
-        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+        <img src="{{userWithChat.avatar}}" />
       </div>
     </div>
     <div class="ml-2 flex flex-col">
-      <span>Username</span>
-      <span>Userstatus</span>
+      <span>{{userWithChat.name}}</span>
+      <app-user-status [user]="userWithChat" [isChat]="true"/>
     </div>
 
     <div class="dropdown dropdown-left ml-auto">
@@ -50,7 +50,7 @@
           <div class="badge badge-neutral w-20">{{date.key}}</div>
         </div>
         @for (message of date.value; track message.id) {
-          @if (message.from_user_id !== userId) {
+          @if (message.from_user_id !== loggedUser.id) {
           <div class="chat chat-start">
             <div class="chat-bubble chat-bubble-primary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">{{message.text}}
               <time class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
@@ -75,7 +75,7 @@
 
     <!-- Mensajes en directo -->
     @for (message of liveMessages; track $index) {
-      @if (message.to_user_id !== userId) {
+      @if (message.to_user_id !== loggedUser.id) {
         <div class="chat chat-end">
           <div class="chat-bubble chat-bubble-secondary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">
             <span>{{message.text}}</span>

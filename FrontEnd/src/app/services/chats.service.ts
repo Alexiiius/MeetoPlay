@@ -1,13 +1,29 @@
 import { Injectable } from '@angular/core';
 import { backAPIUrl } from '../config';
 import { HttpClient } from '@angular/common/http';
+import { UserReduced } from '../interfaces/user-reduced';
+import { Subject } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatsService {
+  private chatWithUser: UserReduced;
 
+  newChatCreated = new Subject<UserReduced>()
+
+  setUser(user: UserReduced) {
+    this.chatWithUser = user;
+    sessionStorage.setItem('user_chating_with', JSON.stringify(user));
+  }
+
+  getUser(): UserReduced {
+    if (!this.chatWithUser) {
+      this.chatWithUser = JSON.parse(sessionStorage.getItem('user_chating_with') || '{}');
+    }
+    return this.chatWithUser;
+  }
 
   backAPIUrl = backAPIUrl;
 
@@ -32,5 +48,9 @@ export class ChatsService {
 
   getChats(){
     return this.http.get(`${this.backAPIUrl}/message/get/conversations`);
+  }
+
+  getUnreadMessages(){
+    return this.http.get(`${this.backAPIUrl}/message/get/unread`);
   }
 }

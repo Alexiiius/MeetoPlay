@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { UserReduced } from '../../interfaces/user-reduced';
 import { FormsModule } from '@angular/forms';
 import { ChatsService } from '../../services/chats.service';
@@ -10,97 +10,116 @@ import { LiveMessage } from '../../interfaces/live-message';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 
+import { UserStatusComponent } from '../profilecard/user-status/user-status.component';
+import { ActivatedRoute } from '@angular/router';
+import { UserData } from '../../interfaces/user-data';
+
 @Component({
   selector: 'app-chat',
   standalone: true,
   imports: [
     FormsModule,
-    CommonModule
+    CommonModule,
+    UserStatusComponent
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, AfterViewInit {
 
   @ViewChild('scrollButton') scrollButton: ElementRef;
   @ViewChild('messagesContainer') messagesContainer: ElementRef;
 
   showScrollButton = false;
 
-  userData: UserReduced = JSON.parse(sessionStorage.getItem('user_data') || '{}');
-  userId = this.userData?.id
+  loggedUser: UserData;
+  userWithChat: UserReduced;
   toUserId: number;
 
-  chatPage: number = 1;
-  chatTotalPages: number = 1;
-  hasMorePages: boolean = true;
+  chatPage: number;
+  chatTotalPages: number;
+  hasMorePages: boolean;
 
-  message: string = '';
+  message: string;
 
-  messagesHistory: Messages;
-  oldMessages: ChatMessage[] = [];
+  messagesHistory: Messages | null;
+  oldMessages: ChatMessage[];
 
-  gettingMessages: boolean = false;
-  moreMessagesLoading: boolean = false;
+  gettingMessages: boolean;
+  moreMessagesLoading: boolean;
 
-  liveMessages: LiveMessage[] = [];
+  liveMessages: LiveMessage[];
 
-  groupedMessages: { [key: string]: ChatMessage[] } = {};
+  groupedMessages: { [key: string]: ChatMessage[] };
 
   constructor(
     private chatService: ChatsService,
     private webSocketService: WebSocketService,
     private renderer: Renderer2,
     private el: ElementRef,
-    private userService: UserService) {
+    private userService: UserService,
+    private route: ActivatedRoute
+  ) {
   }
 
   ngOnInit() {
-    this.webSocketService.setupEchoPublic();
-    this.userService.currentUser.subscribe(user => {
-      if (user) {
-        this.webSocketService.setupEchoPrivate(user.id);
-      }
+    this.route.params.subscribe(params => {
+
+      // Reinicializar las variables
+      this.chatPage = 1;
+      this.chatTotalPages = 1;
+      this.hasMorePages = true;
+      this.message = '';
+      this.messagesHistory = null;
+      this.oldMessages = [];
+      this.liveMessages = [];
+      this.groupedMessages = {};
+
+      this.gettingMessages = false;
+      this.moreMessagesLoading = false;
+
+      this.userWithChat = this.chatService.getUser();
+      this.toUserId = this.userWithChat.id;
+
+      this.webSocketService.setupEchoPublic();
+      this.userService.currentUser.subscribe(user => {
+        if (user) {
+          this.loggedUser = user;
+          this.webSocketService.setupEchoPrivate(user.id);
+        }
+      });
+
+      this.webSocketService.message$.subscribe(message => {
+        console.log("Received new message", message);
+        const formatedMessage = {
+          to_user_id: message.to_user_id,
+          text: message.text,
+          isLoading: false,
+          created_at: new Date().toISOString()
+        };
+
+        const element = document.getElementById('messagesContainer');
+        let isUserAtBottom = false;
+        if (element) {
+          const scrollPosition = element.scrollTop;
+          const elementSize = element.clientHeight;
+          const contentHeight = element.scrollHeight;
+
+          // Check if user is at the bottom
+          isUserAtBottom = Math.ceil(elementSize + scrollPosition) >= contentHeight;
+        }
+
+        this.liveMessages.push(formatedMessage);
+
+        if (isUserAtBottom) {
+          setTimeout(() => {
+            this.scrollToBottom();
+          }, 0);
+        }
+      });
+
+      this.getMessages(this.chatPage);
     });
-
-    this.webSocketService.message$.subscribe(message => {
-      console.log("Received new message", message);
-      const formatedMessage = {
-        to_user_id: message.to_user_id,
-        text: message.text,
-        isLoading: false,
-        created_at: new Date().toISOString()
-      };
-
-      const element = document.getElementById('messagesContainer');
-      let isUserAtBottom = false;
-      if (element) {
-        const scrollPosition = element.scrollTop;
-        const elementSize = element.clientHeight;
-        const contentHeight = element.scrollHeight;
-
-        // Check if user is at the bottom
-        isUserAtBottom = Math.ceil(elementSize + scrollPosition) >= contentHeight;
-      }
-
-      this.liveMessages.push(formatedMessage);
-
-      if (isUserAtBottom) {
-        setTimeout(() => {
-          this.scrollToBottom();
-        }, 0);
-      }
-    });
-
-    console.log('user id: ', this.userId);
-
-    if (this.userId === 2) {
-      this.toUserId = 3;
-    } else {
-      this.toUserId = 2;
-    }
-
-    this.getMessages(this.chatPage);
   }
 
   ngAfterViewInit() {
@@ -146,9 +165,12 @@ export class ChatComponent implements OnInit {
           oldScrollHeight = element.scrollHeight;
         }
 
-        this.oldMessages = [...this.messagesHistory.data.reverse(), ...this.oldMessages];
+        if (this.messagesHistory && this.messagesHistory.data) {
+          this.oldMessages = [...this.messagesHistory.data.reverse(), ...this.oldMessages];
+          this.chatTotalPages = this.messagesHistory.last_page;
+        }
+
         this.processMessages();
-        this.chatTotalPages = this.messagesHistory.last_page;
         this.markMessagesAsRead();
 
         if (loadMore) {

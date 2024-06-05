@@ -34,9 +34,11 @@
             }
           </button>
 
-          <button class="btn btn-square btn-sm btn-ghost hover:bg-base-200/70">
-            <i class='bx bx-chat bx-sm text-secondary'></i>
-          </button>
+          @if (logedUserId !== user.id) {
+            <button class="btn btn-square btn-sm btn-ghost hover:bg-base-200/70" (click)="chatButtonClicked(user); $event.stopPropagation()">
+              <i class='bx bx-chat bx-sm text-secondary'></i>
+            </button>
+          }
         </div>
       </div>
       } @empty {

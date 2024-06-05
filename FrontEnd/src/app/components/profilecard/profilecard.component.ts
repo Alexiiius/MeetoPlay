@@ -41,30 +41,32 @@ export class ProfilecardComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.userService.getLogedUserData().subscribe((user: UserData) => {
-      this.user = user;
-      const previousUserStatus = localStorage.getItem('user_status');
-      if (previousUserStatus) {
-        this.profileService.setUserStatus(previousUserStatus.toLowerCase()).subscribe(
-          (response) => {
-            console.log(response);
-          },
-          (error) => {
-            console.log(error);
-        });
+    this.userService.currentUser.subscribe(user => {
+      if (user) {
+        this.user = user;
+        const previousUserStatus = localStorage.getItem('user_status');
+        if (previousUserStatus) {
+          this.profileService.setUserStatus(previousUserStatus.toLowerCase()).subscribe(
+            (response) => {
+              console.log(response);
+            },
+            (error) => {
+              console.log(error);
+            });
 
-        this.user.status = previousUserStatus;
-      } else {
-        console.log('Setting user status to online');
-        this.profileService.setUserStatus('online').subscribe(
-          (response) => {
-            console.log(response);
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-        this.user.status = 'Online';
+          this.user.status = previousUserStatus;
+        } else {
+          console.log('Setting user status to online');
+          this.profileService.setUserStatus('online').subscribe(
+            (response) => {
+              console.log(response);
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+          this.user.status = 'Online';
+        }
       }
       this.isLoading = false;
     });

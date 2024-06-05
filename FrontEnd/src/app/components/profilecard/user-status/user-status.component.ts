@@ -3,6 +3,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UserData } from '../../../interfaces/user-data';
 import { ProfileService } from '../../../services/profile.service';
+import { UserReduced } from '../../../interfaces/user-reduced';
 
 @Component({
   selector: 'app-user-status',
@@ -15,9 +16,10 @@ import { ProfileService } from '../../../services/profile.service';
 })
 export class UserStatusComponent implements OnInit, OnDestroy {
 
-  @Input() user: UserData | null = null;
-  @Input() isLoading: boolean;
-  @Input() sizeClass: string;
+  @Input() user: UserData | UserReduced | null = null;
+  @Input() isLoading: boolean = false;
+  @Input() sizeClass: 'small' | 'medium' | 'large' = 'medium';
+  @Input() isChat: boolean = false;
 
   userStatus: String;
   private subscription: Subscription;
@@ -27,11 +29,13 @@ export class UserStatusComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.profileService.userStatusChanged.subscribe(
-      (newStatus: string) => {
-        this.userStatus = newStatus;
-      }
-    );
+    if (!this.isChat){
+      this.subscription = this.profileService.userStatusChanged.subscribe(
+        (newStatus: string) => {
+          this.userStatus = newStatus;
+        }
+      );
+    }
   }
 
   ngOnChanges(): void {

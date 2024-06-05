@@ -11,6 +11,11 @@ module.exports = {
     },
   },
   theme: {
+    extend: {
+      alignSelf: {
+        'bottom': 'flex-end',
+      }
+    },
     fontFamily: {
       'Kanit': ['Kanit'],
       'Raleway': ['Raleway'],

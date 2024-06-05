@@ -1,4 +1,4 @@
-<div class="flex flex-col h-full">
+<div class="flex flex-col h-full relative">
   <header class="w-full p-3 pb-6 flex items-center">
     <div class="avatar">
       <div class="w-20 rounded-full">
@@ -25,56 +25,79 @@
       </ul>
     </div>
   </header>
-  <div class="h-0.5 w-full bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
+
+  <div class="min-h-0.5 w-full bg-gradient-to-r from-violet-500 to-sky-400  rounded"></div>
 
   <div #messagesContainer id="messagesContainer" class="w-full flex flex-col gap-3 flex-grow overflow-y-auto p-2">
     @if (moreMessagesLoading) {
-      <div class="w-full flex items-center justify-center font-mono font-medium text-base opacity-70 mt-1">
-        <span class="loading loading-spinner text-primary mr-1"></span> Cargando mensajes anteriores...
-      </div>
+    <div class="w-full flex items-center justify-center font-mono font-medium text-base opacity-70 mt-1">
+      <span class="loading loading-spinner text-primary mr-1"></span> Cargando mensajes anteriores...
+    </div>
     } @else if (!hasMorePages) {
-      <div class="w-full flex items-center justify-center font-mono font-medium text-base opacity-70 mt-1">
-        No hay mensajes más antiguos
-      </div>
+    <div class="w-full flex items-center justify-center font-mono font-medium text-base opacity-70 mt-1">
+      No hay mensajes más antiguos
+    </div>
     }
     @if (gettingMessages) {
-      <div class="h-full w-full flex items-center justify-center">
-        <div class="loading loading-infinity loading-lg text-primary"></div>
-      </div>
+    <div class="h-full w-full flex items-center justify-center">
+      <div class="loading loading-infinity loading-lg text-primary"></div>
+    </div>
     } @else {
 
       <!-- Mensajes cargados desde base de datos -->
-    @for (message of oldMessages; track message.id) {
-    @if (message.from_user_id !== userId) {
-    <div class="chat chat-start">
-      <div class="chat-bubble chat-bubble-primary break-words">{{message.text}}</div>
-    </div>
-    } @else {
-    <div class="chat chat-end">
-      <div class="chat-bubble  chat-bubble-secondary break-words">{{message.text}}</div>
-      @if (!message.read_at) {
-        <i class='bx bx-check text-secondary'></i>
-      } @else {
-        <i class='bx bx-check-double text-secondary'></i>
+      @for (date of groupedMessages|keyvalue; track date.key) {
+        <div class="w-full flex justify-center date-header sticky top-0 z-10">
+          <div class="badge badge-neutral w-20">{{date.key}}</div>
+        </div>
+        @for (message of date.value; track message.id) {
+          @if (message.from_user_id !== userId) {
+          <div class="chat chat-start">
+            <div class="chat-bubble chat-bubble-primary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">{{message.text}}
+              <time class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
+            </div>
+          </div>
+          } @else {
+          <div class="chat chat-end">
+            <div class="chat-bubble chat-bubble-secondary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">
+              <span>{{message.text}}</span>
+              <time class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
+            </div>
+            @if (!message.read_at) {
+            <i class='bx bx-check text-secondary'></i>
+            } @else {
+            <i class='bx bx-check-double text-secondary'></i>
+            }
+          </div>
+          }
+        }
       }
-    </div>
-    }
     }
 
-    <!-- Mensajes enviados en directo -->
-    @for (message of sendedMessages; track $index) {
-    <div class="chat chat-end">
-      <div class="chat-bubble  chat-bubble-secondary">{{message.text}}</div>
-      @if (message.isLoading) {
-      <span class="loading loading-ball loading-xs text-secondary"></span>
+    <!-- Mensajes en directo -->
+    @for (message of liveMessages; track $index) {
+      @if (message.to_user_id !== userId) {
+        <div class="chat chat-end">
+          <div class="chat-bubble chat-bubble-secondary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">
+            <span>{{message.text}}</span>
+            <time class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
+          </div>
+          @if (message.isLoading) {
+          <span class="loading loading-ball loading-xs text-secondary"></span>
+          } @else {
+          <i class='bx bx-check text-secondary'></i>
+          }
+        </div>
       } @else {
-      <i class='bx bx-check text-secondary'></i>
+        <div class="chat chat-start">
+          <div class="chat-bubble chat-bubble-primary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">{{message.text}}
+            <time class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
+          </div>
+        </div>
       }
-    </div>
-    }
-
     }
   </div>
+
+  <button #scrollButton class="scroll-to-bottom absolute bottom-12 right-3 btn btn-circle" (click)="scrollToBottom()" [style.display]="showScrollButton ? 'block' : 'none'"><i class='bx bx-chevrons-down bx-sm'></i></button>
 
   <label class="input h-10 min-h-10 bg-neutral w-full mt-auto  rounded-box flex items-center gap-2 text-base-100">
     <input type="text" class="grow ml-2" placeholder="Escribe un mensaje a Username" [(ngModel)]="message"

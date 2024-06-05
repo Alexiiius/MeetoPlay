@@ -5,6 +5,7 @@ import { AuthService } from './services/auth.service';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
 import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { WebSocketService } from './services/web-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     RouterOutlet,
     HttpClientModule,
     SplashScreenComponent,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

@@ -42,9 +42,9 @@ export class UserService implements OnInit {
   private backAPIUrl = backAPIUrl;
 
   constructor(private authService: AuthService, private http: HttpClient, private profileService: ProfileService) {
-    this.currentUser = new BehaviorSubject<UserData | null>(null);
     this.authService.userData.subscribe(user => {
       this.currentUser.next(user)
+      console.log(user)
       if (user) {
         this.getLoggedUserGameStats().subscribe();
         this.anyGameStatActivity$.subscribe(() => this.getLoggedUserGameStats().subscribe());

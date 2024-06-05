@@ -1,23 +1,31 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { UserReduced } from '../../interfaces/user-reduced';
 import { FormsModule } from '@angular/forms';
 import { ChatsService } from '../../services/chats.service';
 import { ChatMessage } from '../../interfaces/chat-message';
 import { Messages } from '../../interfaces/messages';
 import { WebSocketService } from '../../services/web-socket.service';
+import { format } from 'date-fns';
+import { LiveMessage } from '../../interfaces/live-message';
+import { CommonModule } from '@angular/common';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    CommonModule
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
 export class ChatComponent implements OnInit {
 
+  @ViewChild('scrollButton') scrollButton: ElementRef;
   @ViewChild('messagesContainer') messagesContainer: ElementRef;
+
+  showScrollButton = false;
 
   userData: UserReduced = JSON.parse(sessionStorage.getItem('user_data') || '{}');
   userId = this.userData?.id
@@ -35,18 +43,54 @@ export class ChatComponent implements OnInit {
   gettingMessages: boolean = false;
   moreMessagesLoading: boolean = false;
 
-  sendedMessages: { to_user_id: number; text: string; isLoading: boolean; }[] = [];
+  liveMessages: LiveMessage[] = [];
+
+  groupedMessages: { [key: string]: ChatMessage[] } = {};
 
   constructor(
     private chatService: ChatsService,
-    private webSocketService: WebSocketService) {
+    private webSocketService: WebSocketService,
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private userService: UserService) {
   }
-
-  receivedMessages: string[] = [];
 
   ngOnInit() {
     this.webSocketService.setupEchoPublic();
-    this.webSocketService.setupEchoPrivate();
+    this.userService.currentUser.subscribe(user => {
+      if (user) {
+        this.webSocketService.setupEchoPrivate(user.id);
+      }
+    });
+
+    this.webSocketService.message$.subscribe(message => {
+      console.log("Received new message", message);
+      const formatedMessage = {
+        to_user_id: message.to_user_id,
+        text: message.text,
+        isLoading: false,
+        created_at: new Date().toISOString()
+      };
+
+      const element = document.getElementById('messagesContainer');
+      let isUserAtBottom = false;
+      if (element) {
+        const scrollPosition = element.scrollTop;
+        const elementSize = element.clientHeight;
+        const contentHeight = element.scrollHeight;
+
+        // Check if user is at the bottom
+        isUserAtBottom = Math.ceil(elementSize + scrollPosition) >= contentHeight;
+      }
+
+      this.liveMessages.push(formatedMessage);
+
+      if (isUserAtBottom) {
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 0);
+      }
+    });
 
     console.log('user id: ', this.userId);
 
@@ -62,9 +106,24 @@ export class ChatComponent implements OnInit {
   ngAfterViewInit() {
     this.messagesContainer.nativeElement.addEventListener('scroll', () => {
       if (this.messagesContainer.nativeElement.scrollTop === 0) {
-        console.log('Reached top of the chat');
         this.loadMoreMessages();
       }
+
+      // Show or hide the scroll button
+      const element = this.messagesContainer.nativeElement;
+      const scrollBottom = element.scrollHeight - element.clientHeight;
+      this.showScrollButton = element.scrollTop < scrollBottom - 300; // Change this to the scroll distance you want
+    });
+
+    this.renderer.listen('window', 'scroll', () => {
+      const headers = this.el.nativeElement.querySelectorAll('.date-header');
+      headers.forEach((header: HTMLElement, i: number) => {
+        if (i < headers.length - 1 && headers[i + 1].getBoundingClientRect().top <= header.offsetHeight) {
+          this.renderer.setStyle(header, 'top', `-${header.offsetHeight}px`);
+        } else {
+          this.renderer.setStyle(header, 'top', '0');
+        }
+      });
     });
   }
 
@@ -78,7 +137,17 @@ export class ChatComponent implements OnInit {
     this.chatService.getMessages(this.toUserId, page).subscribe(
       (response: any) => {
         this.messagesHistory = response.data.messages;
+
+        const element = document.getElementById('messagesContainer');
+        let oldScrollPosition = 0;
+        let oldScrollHeight = 0;
+        if (element) {
+          oldScrollPosition = element.scrollTop;
+          oldScrollHeight = element.scrollHeight;
+        }
+
         this.oldMessages = [...this.messagesHistory.data.reverse(), ...this.oldMessages];
+        this.processMessages();
         this.chatTotalPages = this.messagesHistory.last_page;
         this.markMessagesAsRead();
 
@@ -86,13 +155,15 @@ export class ChatComponent implements OnInit {
           this.moreMessagesLoading = false;
         } else {
           this.gettingMessages = false;
-
-          // Ajustar la posición del scroll
-          setTimeout(() => {
-            this.scrollToBottom();
-          }, 0);
         }
 
+        // Ajustar la posición del scroll
+        setTimeout(() => {
+          if (element) {
+            const newScrollHeight = element.scrollHeight;
+            element.scrollTop = oldScrollPosition + (newScrollHeight - oldScrollHeight);
+          }
+        }, 0);
       },
       (error) => {
         console.log(error);
@@ -100,12 +171,37 @@ export class ChatComponent implements OnInit {
     );
   }
 
+  processMessages() {
+    this.groupedMessages = this.oldMessages.reduce((groups: { [key: string]: ChatMessage[] }, message) => {
+      const date = new Date(message.created_at);
+      const today = new Date();
+      let dateKey;
+
+      if (date.toDateString() === today.toDateString()) {
+        dateKey = 'Hoy';
+      } else if (date.getDate() === today.getDate() - 1) {
+        dateKey = 'Ayer';
+      } else {
+        dateKey = date.toLocaleDateString();
+      }
+
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+
+      groups[dateKey].push(message);
+
+      return groups;
+    }, {});
+    console.log(this.groupedMessages);
+  }
+
   loadMoreMessages() {
     if (this.chatPage < this.chatTotalPages && !this.moreMessagesLoading) {
       console.log('Loading more messages');
       this.chatPage++;
       this.getMessages(this.chatPage, true);
-    } else {
+    } else if (!this.moreMessagesLoading) {
       this.hasMorePages = false;
     }
   }
@@ -117,14 +213,17 @@ export class ChatComponent implements OnInit {
   }
 
   sendMessage() {
+    if (this.message.trim() === '') {
+      return;
+    }
+
     const newMessage = {
       to_user_id: this.toUserId,
       text: this.message,
-      isLoading: true
+      isLoading: true,
+      created_at: new Date().toISOString()
     };
-    this.sendedMessages.push(newMessage);
-
-
+    this.liveMessages.push(newMessage);
 
     // Ajustar la posición del scroll
     setTimeout(() => {
@@ -154,5 +253,10 @@ export class ChatComponent implements OnInit {
         lastMessage.scrollIntoView({ behavior: 'smooth' });
       }
     }
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return format(date, 'HH:mm');
   }
 }

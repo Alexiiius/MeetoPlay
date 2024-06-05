@@ -29,4 +29,8 @@ export class ChatsService {
   readMessages(toMarkAsRead: number[]) {
     return this.http.put(`${this.backAPIUrl}/message/read`, { message_ID: toMarkAsRead });
   }
+
+  getChats(){
+    return this.http.get(`${this.backAPIUrl}/message/get/conversations`);
+  }
 }

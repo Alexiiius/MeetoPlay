@@ -3,6 +3,8 @@ import { Inject, Injectable } from '@angular/core';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { backAPIUrl } from '../config';
+import { SocketMessage } from '../interfaces/socket-message';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +18,14 @@ export class WebSocketService {
   private Echo: Echo;
   private Pusher: typeof Pusher;
 
-  constructor(@Inject(DOCUMENT) private document: Document) {
-    // this.setupEchoPublic();
-    // this.setupEchoPrivate();
+  private messageSource = new Subject<SocketMessage>();
+  message$ = this.messageSource.asObservable();
 
+  constructor() {
     this.Pusher = Pusher;
   }
+
+
   setupEchoPublic() {
 
     this.Echo = new Echo({
@@ -40,7 +44,7 @@ export class WebSocketService {
     });
   }
 
-  setupEchoPrivate() {
+  setupEchoPrivate(userId: number) {
     this.Echo = new Echo({
       broadcaster: 'reverb',
       key: 'ixyw7gpei8mjty0vi0n5',
@@ -51,16 +55,17 @@ export class WebSocketService {
       enabledTransports: ['ws', 'wss'],
       auth: {
         headers: {
-            'Authorization': 'Bearer ' + 'mFpSVUmgbhSnm2RDuNz3JzIsEMPCxpsTox1E7fjqbd11e402',
+            'Authorization': 'Bearer ' + this.token,
         },
     },
     authEndpoint: `http://localhost:80/api/broadcasting/auth`
     });
 
 
-    this.Echo.private(`App.Models.User.2`).listen('GotMessage', (e: any) => {
+    this.Echo.private(`App.Models.User.${userId}`).listen('GotMessage', (response: any) => {
       console.log("From private channel");
-      console.log(e);
+      console.log(response);
+      this.messageSource.next(response.message);
     });
   }
 

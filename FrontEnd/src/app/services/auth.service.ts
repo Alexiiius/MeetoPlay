@@ -7,7 +7,6 @@ import { LoginResponse, RegisterResponse } from '../interfaces/back-end-api-resp
 import { UserData } from '../interfaces/user-data';
 import { UserReduced } from '../interfaces/user-reduced';
 import { ProfileService } from './profile.service';
-import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'

@@ -155,6 +155,7 @@ class UserController extends Controller
             return response()->json([
                 'data' => [
                     'message'=>'Error uploading image.',
+                    'error' => $e->getMessage(),
                     'avatar' => $user->avatar,
                     'Links' => [
                         'self' => url('/api/user/avatar/update'),

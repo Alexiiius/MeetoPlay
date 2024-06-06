@@ -34,49 +34,65 @@
     </div>
   </header>
 
-  <div class="layout__row layout__row--even">
-    <div class="layout__row__mockup">
-      <object data="assets/landing/notipanel.svg" type="image/svg+xml" class="layout__row__mockup__svg"></object>
+  <div class="layout__row layout__what">
+    <div class="layout__what__mockup">
+      <object data="assets/landing/notipanel.svg" type="image/svg+xml" class="layout__what__mockup__svg"></object>
     </div>
 
-    <div class="layout__row__text">
-      <div class="layout__row__text__tittle">
-        <span><span class="layout__row__text__tittle__specialword">What?</span> Eso nos preguntamos nosotros</span>
+    <div class="layout__what__text">
+      <div class="layout__what__text__tittle">
+        <span><span class="layout__what__text__tittle__specialword">What?</span> Eso nos preguntamos nosotros</span>
       </div>
-      <div class="layout__row__text__phrase">
+      <div class="layout__what__text__phrase">
         Esto es la red social que te va a solucionar la vida. Aquí vas a poder organizar tu “dura” vida gamer, o esa es
         la intención.
       </div>
     </div>
   </div>
 
-  <div class="layout__row layout__row--odd">
-    <!-- contenido de la segunda fila -->
+  <div class="layout__row layout__when">
+    <div class="layout__when__text">
+      <div class="layout__when__text__tittle">
+        <span><span class="layout__when__text__tittle__specialword">When?</span> Cuando quieras, osea, ya!</span>
+      </div>
+      <div class="layout__when__text__phrase">
+        Únete a nuestra comunidad y empieza a conocer gente con la que jugar de chill o tryhardear a tope.
+      </div>
+    </div>
+    <div class="layout__when__mockup" id="myObject">
+      <object data="assets/landing/eventcard.svg" type="image/svg+xml" class="layout__when__mockup__svg"></object>
+    </div>
   </div>
 
-  <div class="layout__row layout__row--even">
-    <!-- contenido de la primera fila -->
+  <div class="layout__row layout__who">
+    <div class="layout__who__mockup">
+      <object data="assets/landing/chat.svg" type="image/svg+xml" class="layout__who__mockup__svg"></object>
+    </div>
+
+    <div class="layout__who__text">
+      <div class="layout__who__text__tittle">
+        <span><span class="layout__who__text__tittle__specialword">Who?</span> Tú, yo, nosotros, todos</span>
+      </div>
+      <div class="layout__who__text__phrase">
+        Esta web está desarrollada por gamers y para gamers, anímate a conocernos y a formar parte de nuestra comunidad.
+      </div>
+    </div>
   </div>
 
-  <div class="layout__row layout__row--odd">
-    <!-- contenido de la segunda fila -->
-  </div>
-
-  <!-- más filas según sea necesario -->
-
-  <div class="layout__footer">
-    <!-- contenido del footer -->
-  </div>
 </div>
 
-<div class="layout__header__navbar__side-menu" [ngClass]="{'open': isSideMenuOpen}">
+<div class="layout__header__navbar__side-menu" [ngClass]="isSideMenuOpen ? 'open': 'close'">
   <header class="layout__header__navbar__side-menu__header">
-    <object data="assets/landing/logo.svg" type="image/svg+xml" class="layout__header__navbar__side-menu__header__svg"></object>
+    <object data="assets/landing/logo.svg" type="image/svg+xml"
+      class="layout__header__navbar__side-menu__header__svg"></object>
     <span class="layout__header__navbar__side-menu__header__text">MeetoPlay</span>
+    <button class="layout__header__navbar__side-menu__header__button" (click)="toggleSideMenu()">
+      <i class='bx bx-x bx-sm'></i>
+    </button>
   </header>
-  <a href="#">Acceder</a>
-  <a href="#">What?</a>
-  <a href="#">When</a>
-  <a href="#">Who?</a>
-  <a href="#">Why?</a>
+  <a href="#" class="layout__header__navbar__side-menu__link">Acceder</a>
+  <a href="#" class="layout__header__navbar__side-menu__link">What?</a>
+  <a href="#" class="layout__header__navbar__side-menu__link">When</a>
+  <a href="#" class="layout__header__navbar__side-menu__link">Who?</a>
+  <a href="#" class="layout__header__navbar__side-menu__link">Why?</a>
 </div>

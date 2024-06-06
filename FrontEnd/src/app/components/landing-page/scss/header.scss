@@ -1,7 +1,7 @@
 .layout__header {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: min-content auto;
+  grid-template-rows: min-content min-content;
   grid-column-gap: 10px;
   grid-row-gap: 50px;
   padding-inline: 20px;
@@ -89,31 +89,48 @@
     }
 
     &__side-menu {
+      visibility: hidden;
+      display: flex;
       position: fixed;
       top: 0;
       right: 0;
       width: 400px;
+      max-width: 80%;
       height: 100%;
       background-color: $base-200;
       border-radius: 8px;
       overflow: auto;
-      // transform: translateX(100%);
+      transform: translateX(100%);
       transition: transform 0.5s ease;
       z-index: 1000;
       color: $neutral;
       padding: 30px;
-      display: flex;
       flex-direction: column;
       gap: 20px;
 
+      &__link {
+        transition: color 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          color: $secondary;
+        }
+      }
+
       &.open {
         animation: slide-in 0.5s forwards;
+      }
+
+      &.close {
+        animation: slide-out 0.5s forwards;
       }
 
       &__header {
         display: flex;
         align-items: center;
         gap: 10px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid $neutral;
 
         &__svg{
           width: 55px;
@@ -123,6 +140,20 @@
         &__text {
           font-size: 20px;
           font-weight: 500;
+        }
+
+        &__button {
+          margin-left: auto;
+          font-size: 20px;
+          font-weight: 500;
+          color: $neutral;
+          cursor: pointer;
+          background-color: transparent;
+          border: none;
+
+          &:hover {
+            color: $primary;
+          }
         }
       }
 
@@ -142,9 +173,22 @@
     @keyframes slide-in {
       from {
         transform: translateX(100%);
+        visibility: hidden;
       }
       to {
         transform: translateX(0);
+        visibility: visible;
+      }
+    }
+
+    @keyframes slide-out {
+      from {
+        transform: translateX(0);
+        visibility: visible;
+      }
+      to {
+        transform: translateX(100%);
+        visibility: hidden;
       }
     }
   }
@@ -163,11 +207,28 @@
     }
 
     p {
-      font-size: 20px;
+      font-size: clamp(0.75rem, 0.6346rem + 0.5128vw, 1.25rem);
       font-weight: 500;
       font-family: "Kanit", sans-serif;
       text-align: center;
       margin-top: 20px;
     }
+  }
+
+  @media (max-width: 900px) {
+    &__textsplashcontainer {
+      grid-column-start: 2;
+      grid-column-end: 12;
+
+      p {
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .layout__header{
+    grid-row-gap: 25px;
   }
 }

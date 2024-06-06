@@ -1,0 +1,173 @@
+.layout__header {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: min-content auto;
+  grid-column-gap: 10px;
+  grid-row-gap: 50px;
+  padding-inline: 20px;
+  padding-block: 40px;
+  background: linear-gradient(to right, $secondary, $primary);
+
+  &__navbar {
+    grid-column-start: 2;
+    grid-column-end: 12;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: min-content;
+    grid-column-gap: 10px;
+
+    &__logo {
+      grid-column-start: 1;
+      grid-column-end: 3;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      &__svg {
+        width: 65px;
+        height: 54px;
+      }
+
+      &__text {
+        font-size: 16px;
+        font-weight: bold;
+        color: $neutral;
+        font-family: "Raleway", sans-serif;
+        text-shadow: 2px 4px 2px rgba(0, 0, 0, 0.25);
+      }
+    }
+
+    &__links {
+      grid-column-start: 3;
+      grid-column-end: 9;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+
+      &__link {
+        font-size: 16px;
+        font-weight: 500;
+        color: $neutral;
+        font-family: "Kanit", sans-serif;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    &__btncontainer {
+      grid-column-start: 10;
+      grid-column-end: 12;
+      display: flex;
+      align-items: center;
+      justify-content: end;
+
+      &__btn {
+        font-size: 16px;
+        font-weight: 500;
+        color: $base-100;
+        font-family: "Kanit", sans-serif;
+        cursor: pointer;
+        padding: 10px 25px;
+        border-radius: 8px;
+        background-color: $neutral;
+        transition: color 0.3s;
+
+        &:hover {
+          color: $primary;
+          box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.25);
+        }
+      }
+    }
+
+    &__menu-btn {
+      display: none;
+      grid-column-start: 11;
+      grid-column-end: 12;
+    }
+
+    &__side-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 400px;
+      height: 100%;
+      background-color: $base-200;
+      border-radius: 8px;
+      overflow: auto;
+      // transform: translateX(100%);
+      transition: transform 0.5s ease;
+      z-index: 1000;
+      color: $neutral;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      &.open {
+        animation: slide-in 0.5s forwards;
+      }
+
+      &__header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        &__svg{
+          width: 55px;
+          height: 46px;
+        }
+
+        &__text {
+          font-size: 20px;
+          font-weight: 500;
+        }
+      }
+
+
+    }
+
+    @media (max-width: 900px) {
+      &__links, &__btncontainer {
+        display: none;
+      }
+
+      &__menu-btn {
+        display: block;
+      }
+    }
+
+    @keyframes slide-in {
+      from {
+        transform: translateX(100%);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+  }
+
+  &__textsplashcontainer {
+    grid-column-start: 4;
+    grid-column-end: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &__textsplash {
+      width: 100%;
+      height: auto;
+    }
+
+    p {
+      font-size: 20px;
+      font-weight: 500;
+      font-family: "Kanit", sans-serif;
+      text-align: center;
+      margin-top: 20px;
+    }
+  }
+}

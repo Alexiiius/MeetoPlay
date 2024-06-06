@@ -23,12 +23,14 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   animations: [
     trigger('fade', [
       state('visible', style({
-        opacity: 1
+        opacity: 1,
+        display: 'block'
       })),
       state('hidden', style({
-        opacity: 0
+        opacity: 0,
+        display: 'none'
       })),
-      transition('visible => hidden', animate('2000ms ease-out')),
+      transition('visible => hidden', animate('1000ms ease-out')),
     ])
   ]
 })

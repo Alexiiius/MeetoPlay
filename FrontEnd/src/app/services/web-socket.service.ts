@@ -31,9 +31,9 @@ export class WebSocketService {
     this.Echo = new Echo({
       broadcaster: 'reverb',
       key: 'ixyw7gpei8mjty0vi0n5',
-      wsHost: 'localhost',
-      wsPort: 8080,
-      wssPort: 8080,
+      wsHost: '35.173.106.192',
+      wsPort: 8085,
+      wssPort: 8085,
       forceTLS: false,
       enabledTransports: ['ws', 'wss'],
     });
@@ -48,9 +48,9 @@ export class WebSocketService {
     this.Echo = new Echo({
       broadcaster: 'reverb',
       key: 'ixyw7gpei8mjty0vi0n5',
-      wsHost: 'localhost',
-      wsPort: 8080,
-      wssPort: 8080,
+      wsHost: '35.173.106.192',
+      wsPort: 8085,
+      wssPort: 8085,
       forceTLS: false,
       enabledTransports: ['ws', 'wss'],
       auth: {
@@ -58,7 +58,7 @@ export class WebSocketService {
             'Authorization': 'Bearer ' + this.token,
         },
     },
-    authEndpoint: `http://localhost:80/api/broadcasting/auth`
+    authEndpoint: `http://35.173.106.192:80/api/broadcasting/auth`
     });
 
 

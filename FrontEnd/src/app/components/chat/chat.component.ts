@@ -90,8 +90,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
       });
 
       this.webSocketService.message$.subscribe(message => {
-        console.log("Received new message", message);
-        const formatedMessage = {
+        const formatedMessage: LiveMessage = {
           to_user_id: message.to_user_id,
           text: message.text,
           isLoading: false,

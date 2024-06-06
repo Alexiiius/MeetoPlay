@@ -11,8 +11,8 @@
   </div>
 
   @if (unreadedMessages !== 0) {
-  <div class="badge badge-error absolute -top-1 -right-1">
-    @if (unreadedMessages === 20) {
+  <div class="badge badge-error absolute -top-1 -right-1 shadow-md">
+    @if (unreadedMessages >= 20) {
       20+
     } @else {
       {{unreadedMessages}}

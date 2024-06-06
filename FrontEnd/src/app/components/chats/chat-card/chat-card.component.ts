@@ -28,10 +28,6 @@ export class ChatCardComponent implements OnInit{
       if (this.user) {
         this.user.full_tag = this.user.name + this.user.tag
       }
-
-    if (this.unreadedMessages >= 20) {
-      this.unreadedMessages = 20;
-    }
   }
 
   navigateToChatWithUser(user: UserReduced) {

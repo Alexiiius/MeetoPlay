@@ -6,6 +6,7 @@ import { UserData } from '../../interfaces/user-data';
 import { UserService } from '../../services/user.service';
 import { UserReduced } from '../../interfaces/user-reduced';
 import { ChatMessage } from '../../interfaces/chat-message';
+import { WebSocketService } from '../../services/web-socket.service';
 
 @Component({
   selector: 'app-chats',
@@ -23,14 +24,29 @@ export class ChatsComponent implements OnInit {
 
   constructor(
     private chatsService: ChatsService,
-    private userService: UserService
+    private userService: UserService,
+    private webSocketService: WebSocketService
   ) { }
 
   ngOnInit(): void {
     this.userService.currentUser.subscribe(user => {
       if (user) {
         this.logedUser = user;
+        this.webSocketService.setupEchoPrivate(user.id)
       }
+    });
+
+    this.webSocketService.message$.subscribe(message => {
+
+      const chat = this.chats.find(chat => chat.user.id === message.from_user_id);
+      if (chat) {
+        chat.unreadMessagesCount++;
+      }
+
+      let audio = new Audio();
+      audio.src = "/assets/notification.mp3";
+      audio.load();
+      audio.play();
     });
 
     this.chatsService.newChatCreated.subscribe((user: UserReduced) => {

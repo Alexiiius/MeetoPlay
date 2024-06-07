@@ -5,4 +5,5 @@ export interface Chat {
   to_user_id: number,
   user: UserReduced,
   unreadMessagesCount: number;
+  open: boolean;
 }

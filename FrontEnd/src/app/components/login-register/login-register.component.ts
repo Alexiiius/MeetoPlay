@@ -5,6 +5,7 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validator
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { loginAnimation, registerAnimation } from './login-register-animation';
 import { set } from 'date-fns';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login-register',
@@ -109,10 +110,8 @@ export class LoginRegisterComponent implements OnInit {
       },
       error => {
         if (error.error) {
-          // Handle the error here
-          // For example, show the error message
+
           this.registerErrorMessage = error.message;
-          // And handle the individual field errors
           this.fieldErrors = error.errors;
           console.log(this.fieldErrors);
           console.log(this.registerErrorMessage);

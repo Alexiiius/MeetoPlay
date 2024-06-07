@@ -1,6 +1,6 @@
 import { UserData } from './../interfaces/user-data';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, map, merge, Observable, Subject, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, map, merge, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { AuthService } from './auth.service';
 import { backAPIUrl } from '../config';
 import { HttpClient } from '@angular/common/http';
@@ -39,12 +39,9 @@ export class UserService implements OnInit {
     this.gamemodeStatDeleted$
   );
 
-  userStatusChanged = new Subject<string>();
-
   private backAPIUrl = backAPIUrl;
 
   constructor(private authService: AuthService, private http: HttpClient, private profileService: ProfileService) {
-    this.currentUser = new BehaviorSubject<UserData | null>(null);
     this.authService.userData.subscribe(user => {
       this.currentUser.next(user)
       if (user) {
@@ -114,7 +111,7 @@ export class UserService implements OnInit {
             tap(response => this.profileService.gameStatsSource.next(response.data.GameUserStats as GameStat[]))
           );
         } else {
-          throw new Error('User is not logged in');
+          return of(null);
         }
       })
     );
@@ -164,10 +161,6 @@ export class UserService implements OnInit {
 
   deleteGamemodeStat(gamemodeStatId: number): Observable<any> {
     return this.http.delete(`${this.backAPIUrl}/user/game-stats/gamemode/delete/${gamemodeStatId}`);
-  }
-
-  setUserStatus(status: string): Observable<any> {
-    return this.http.patch(`${this.backAPIUrl}/user/status/${status}`, '');
   }
 }
 

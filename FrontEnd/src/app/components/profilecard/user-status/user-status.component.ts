@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UserData } from '../../../interfaces/user-data';
-import { UserService } from '../../../services/user.service';
+import { ProfileService } from '../../../services/profile.service';
+import { UserReduced } from '../../../interfaces/user-reduced';
 
 @Component({
   selector: 'app-user-status',
@@ -13,33 +14,31 @@ import { UserService } from '../../../services/user.service';
   templateUrl: './user-status.component.html',
   styleUrl: './user-status.component.css'
 })
-export class UserStatusComponent implements OnInit, OnDestroy {
+export class UserStatusComponent implements OnInit {
 
-  @Input() user: UserData | null = null;
-  @Input() isLoading: boolean;
-  @Input() sizeClass: string;
+  @Input() user: UserData | UserReduced | null = null;
+  @Input() isLoading: boolean = false;
+  @Input() sizeClass: 'small' | 'medium' | 'large' = 'medium';
+  @Input() isChat: boolean = false;
 
   userStatus: String;
-  private subscription: Subscription;
+
 
   constructor(
-    private userService: UserService
+    private profileService: ProfileService
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.userService.userStatusChanged.subscribe(
-      (newStatus: string) => {
-        this.userStatus = newStatus;
-      }
-    );
+    if (!this.isChat){
+      this.profileService.userStatusChanged.subscribe(
+        (newStatus: string) => {
+          this.userStatus = newStatus;
+        }
+      );
+    }
   }
 
   ngOnChanges(): void {
     this.userStatus = this.user?.status || 'Offline';
-    console.log('User status: ', this.userStatus);
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 }

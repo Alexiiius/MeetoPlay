@@ -12,6 +12,8 @@ import { UserReduceFollowing } from '../../interfaces/user-reduce-following';
 import { ProfileService } from '../../services/profile.service';
 import { GameStatFormComponent } from './game-stat-form/game-stat-form.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { UserReduced } from '../../interfaces/user-reduced';
+import { ChatsService } from '../../services/chats.service';
 
 @Component({
   selector: 'app-profile',
@@ -53,7 +55,8 @@ export class ProfileComponent {
     private route: ActivatedRoute,
     private userService: UserService,
     private router: Router,
-    private profileService: ProfileService) { }
+    private profileService: ProfileService,
+    private chatService: ChatsService) { }
 
     ngOnInit() {
       this.route.params.subscribe(params => {
@@ -103,6 +106,29 @@ export class ProfileComponent {
         }
       });
     }
+
+  chatButtonClicked() {
+    const userReduced: UserReduced = {
+      id: this.user.id,
+      name: this.user.name,
+      tag: this.user.tag,
+      full_tag: `${this.user.name}#${this.user.tag}`,
+      avatar: this.user.avatar,
+      status: this.user.status
+    };
+
+    if (userReduced.full_tag){
+      userReduced.full_tag = userReduced.full_tag.replace(/\s/g, '');
+    }
+
+    console.log(userReduced.full_tag);
+
+    this.chatService.setUser(userReduced);
+    this.chatService.newChatCreated.next(userReduced);
+
+
+    this.router.navigate(['/chat-with', userReduced.full_tag])
+  }
 
   openEditProfileModal() {
     this.editProfileComponent.openEditProfileModal();

@@ -1,13 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { ChatsComponent } from './components/chats/chats.component';
-import { EventsFeedComponent } from './components/events-feed/events.component';
-import { ProfilecardComponent } from './components/profilecard/profilecard.component';
 import { AuthService } from './services/auth.service';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
 import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { WebSocketService } from './services/web-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +14,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     RouterOutlet,
     HttpClientModule,
     SplashScreenComponent,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -35,12 +33,12 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 export class AppComponent implements OnInit {
   title = 'MeetoPlay';
 
-  constructor() {
-  }
 
   authService = inject(AuthService);
 
   splashScreenVisible = 'visible';
+
+  constructor() { }
 
   ngOnInit(): void {
     console.log('Checking token');

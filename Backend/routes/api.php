@@ -11,6 +11,7 @@ use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\FollowerController;
 use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\GameUserStatsController;
+use Illuminate\Support\Facades\Broadcast;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']); //register a new user using name, email password and password_confirmation
@@ -120,4 +121,8 @@ Route::get('health-check', function () {
 //Pepazo endpoint for fun
 Route::get('/pepazo', function () {
     return response()->json(['pepazo' => 'pepazo']);
+});
+
+Route::middleware('auth:sanctum')->post('/broadcasting/auth', function (Request $request) {
+    return Broadcast::auth($request);
 });

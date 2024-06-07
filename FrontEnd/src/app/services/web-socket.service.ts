@@ -4,7 +4,7 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { backAPIUrl } from '../config';
 import { SocketMessage } from '../interfaces/socket-message';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +18,12 @@ export class WebSocketService {
   private Echo: Echo;
   private Pusher: typeof Pusher;
 
-  private messageSource = new Subject<SocketMessage>();
-  message$ = this.messageSource.asObservable();
+  private privateMessageSource = new Subject<SocketMessage>();
+  privateMessage$ = this.privateMessageSource.asObservable();
+
+  private privateMessagesChannel: string;
+
+  private privateDone: boolean = false;
 
   constructor() {
     this.Pusher = Pusher;
@@ -45,28 +49,35 @@ export class WebSocketService {
   }
 
   setupEchoPrivate(userId: number) {
-    this.Echo = new Echo({
-      broadcaster: 'reverb',
-      key: 'ixyw7gpei8mjty0vi0n5',
-      wsHost: '35.173.106.192',
-      wsPort: 8085,
-      wssPort: 8085,
-      forceTLS: false,
-      enabledTransports: ['ws', 'wss'],
-      auth: {
-        headers: {
+
+    if (!this.privateDone) {
+      this.Echo = new Echo({
+        broadcaster: 'reverb',
+        key: 'ixyw7gpei8mjty0vi0n5',
+        wsHost: '35.173.106.192',
+        wsPort: 8085,
+        wssPort: 8085,
+        forceTLS: false,
+        enabledTransports: ['ws', 'wss'],
+        auth: {
+          headers: {
             'Authorization': 'Bearer ' + this.token,
+          },
         },
-    },
-    authEndpoint: `http://35.173.106.192:80/api/broadcasting/auth`
-    });
+        authEndpoint: `http://35.173.106.192:80/api/broadcasting/auth`
+      });
 
 
-    this.Echo.private(`App.Models.User.${userId}`).listen('GotMessage', (response: any) => {
-      console.log("From private channel");
-      console.log(response);
-      this.messageSource.next(response.message);
-    });
+      this.privateMessagesChannel = `App.Models.User.${userId}`;
+
+      this.Echo.private(this.privateMessagesChannel).listen('GotMessage', (response: any) => {
+        console.log("From private channel");
+        console.log(response);
+
+        this.privateMessageSource.next(response.message);
+      });
+      this.privateDone = true;
+    }
   }
 
 }

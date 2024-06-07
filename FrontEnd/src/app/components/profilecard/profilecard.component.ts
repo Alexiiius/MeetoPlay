@@ -46,25 +46,11 @@ export class ProfilecardComponent implements OnInit {
         this.user = user;
         const previousUserStatus = localStorage.getItem('user_status');
         if (previousUserStatus) {
-          this.profileService.setUserStatus(previousUserStatus.toLowerCase()).subscribe(
-            (response) => {
-              console.log(response);
-            },
-            (error) => {
-              console.log(error);
-            });
+          this.profileService.setUserStatus(previousUserStatus.toLowerCase()).subscribe();
 
           this.user.status = previousUserStatus;
         } else {
-          console.log('Setting user status to online');
-          this.profileService.setUserStatus('online').subscribe(
-            (response) => {
-              console.log(response);
-            },
-            (error) => {
-              console.log(error);
-            }
-          );
+          this.profileService.setUserStatus('online').subscribe();
           this.user.status = 'Online';
         }
       }

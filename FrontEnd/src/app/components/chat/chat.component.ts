@@ -89,7 +89,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
         }
       });
 
-      this.webSocketService.message$.subscribe(message => {
+      this.webSocketService.privateMessage$.subscribe(message => {
         const formatedMessage: LiveMessage = {
           to_user_id: message.to_user_id,
           text: message.text,

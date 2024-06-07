@@ -19,7 +19,7 @@ import { WebSocketService } from '../../services/web-socket.service';
 })
 export class ChatsComponent implements OnInit {
 
-  chats: Chat[];
+  chats: Chat[] = [];
   logedUser: UserData;
 
   constructor(
@@ -36,17 +36,29 @@ export class ChatsComponent implements OnInit {
       }
     });
 
-    this.webSocketService.message$.subscribe(message => {
+    this.webSocketService.privateMessage$.subscribe(message => {
+      console.log('New message received: ', message);
 
       const chat = this.chats.find(chat => chat.user.id === message.from_user_id);
       if (chat) {
         chat.unreadMessagesCount++;
       }
 
-      let audio = new Audio();
-      audio.src = "/assets/notification.mp3";
-      audio.load();
-      audio.play();
+      // Check if the browser supports the Notification API
+      if ("Notification" in window) {
+        // Ask the user for permission to show notifications, if necessary
+        if (Notification.permission !== "granted") {
+          Notification.requestPermission();
+        }
+
+        // If the user has granted permission, show a notification
+        if (Notification.permission === "granted") {
+          new Notification(`Nuevo mensaje de ${message.from_user_name}`, {
+            body: message.text,
+            icon: "../../../assets/favicon.svg"
+          });
+        }
+      }
     });
 
     this.chatsService.newChatCreated.subscribe((user: UserReduced) => {

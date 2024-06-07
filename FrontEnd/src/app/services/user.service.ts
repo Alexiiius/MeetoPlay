@@ -44,7 +44,6 @@ export class UserService implements OnInit {
   constructor(private authService: AuthService, private http: HttpClient, private profileService: ProfileService) {
     this.authService.userData.subscribe(user => {
       this.currentUser.next(user)
-      console.log(user)
       if (user) {
         this.getLoggedUserGameStats().subscribe();
         this.anyGameStatActivity$.subscribe(() => this.getLoggedUserGameStats().subscribe());

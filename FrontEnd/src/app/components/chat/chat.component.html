@@ -2,12 +2,12 @@
   <header class="w-full p-3 pb-6 flex items-center">
     <div class="avatar">
       <div class="w-20 rounded-full">
-        <img src="{{userWithChat.avatar}}" />
+        <img src="{{userChattingWith.avatar}}" />
       </div>
     </div>
-    <div class="ml-2 flex flex-col">
-      <span>{{userWithChat.name}}</span>
-      <app-user-status [user]="userWithChat" [isChat]="true"/>
+    <div class="ml-2 flex flex-col cursor-pointer group" [routerLink]="['/profile', userChattingWith.id]" >
+      <span class="group-hover:underline">{{userChattingWith.name}}</span>
+      <app-user-status [user]="userChattingWith" [isChat]="true"/>
     </div>
 
     <div class="dropdown dropdown-left ml-auto">

@@ -21,4 +21,8 @@ Route::get('health-check', function () {
 //     ->middleware(['auth'])
 //     ->name('profile');
 
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
 require __DIR__.'/auth.php';

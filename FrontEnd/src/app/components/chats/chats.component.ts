@@ -7,6 +7,7 @@ import { UserService } from '../../services/user.service';
 import { UserReduced } from '../../interfaces/user-reduced';
 import { ChatMessage } from '../../interfaces/chat-message';
 import { WebSocketService } from '../../services/web-socket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chats',
@@ -22,10 +23,13 @@ export class ChatsComponent implements OnInit {
   chats: Chat[] = [];
   logedUser: UserData;
 
+  userIdChatOpen: number;
+
   constructor(
     private chatsService: ChatsService,
     private userService: UserService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -36,75 +40,135 @@ export class ChatsComponent implements OnInit {
       }
     });
 
+    this.userIdChatOpen = this.chatsService.getUser().id;
+
     this.webSocketService.privateMessage$.subscribe(message => {
-      console.log('New message received: ', message);
+      // Añade el mensaje a la conversación correspondiente
+      this.addUnreadedMessagesLive(message);
 
-      const chat = this.chats.find(chat => chat.user.id === message.from_user_id);
-      if (chat) {
-        chat.unreadMessagesCount++;
-      }
-
-      // Check if the browser supports the Notification API
-      if ("Notification" in window) {
-        // Ask the user for permission to show notifications, if necessary
-        if (Notification.permission !== "granted") {
-          Notification.requestPermission();
-        }
-
-        // If the user has granted permission, show a notification
-        if (Notification.permission === "granted") {
-          new Notification(`Nuevo mensaje de ${message.from_user_name}`, {
-            body: message.text,
-            icon: "../../../assets/favicon.svg"
-          });
-        }
-      }
+      // Muestra una notificación
+      this.notification(message);
     });
+
 
     this.chatsService.newChatCreated.subscribe((user: UserReduced) => {
-      // Busca un chat existente con el usuario
-      const existingChat = this.chats.find(chat => chat.user.id === user.id);
-
-      // Si no se encuentra ninguno, crea un nuevo chat y añádelo a la lista de chats
-      if (!existingChat) {
-        const newChat: Chat = {
-          from_user_id: this.logedUser.id,
-          to_user_id: user.id,
-          user: user,
-          unreadMessagesCount: 0
-        };
-        this.chats.push(newChat);
-      }
+      this.onNewChatCreated(user);
     });
+
 
     this.chatsService.getChats().subscribe((response: any) => {
       this.chats = response.data.conversations;
 
-      const seenUsers: { [key: number]: boolean } = {}; // Add index signature to allow indexing with a number
-      this.chats = this.chats.filter(chat => {
-        if (seenUsers[chat.user.id]) {
-          return false;
-        } else {
-          seenUsers[chat.user.id] = true;
-          return true;
+      this.deleteDuplicatedChats();
+      this.addUnreadedMessages();
+
+    });
+  }
+
+
+  addUnreadedMessagesLive(message: any) {
+    const chat = this.chats.find(chat => chat.user.id === message.from_user_id);
+
+    if (!chat) {
+      this.userService.getUserById(message.from_user_id).subscribe((user: UserData) => {
+
+        const userReduced: UserReduced = {
+          id: user.id,
+          name: user.name,
+          tag:  user.tag,
+          full_tag: `${user.name}#${user.tag}`,
+          avatar: user.avatar,
+          status: user.status
+        };
+
+        this.onNewChatCreated(userReduced, true);
+
+      });
+
+    } else if (this.userIdChatOpen !== message.from_user_id){
+      chat.unreadMessagesCount++;
+    }
+  }
+
+  notification(message: any) {
+    // Check if the browser supports the Notification API
+    if ("Notification" in window) {
+      // Ask the user for permission to show notifications, if necessary
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
+
+      // If the user has granted permission, show a notification
+      if (Notification.permission === "granted") {
+        new Notification(`Nuevo mensaje de ${message.from_user_name}`, {
+          body: message.text,
+          icon: "../../../assets/favicon.svg"
+        });
+      }
+    }
+  }
+
+  onNewChatCreated(user: UserReduced, withNewMessage = false) {
+    // Busca un chat existente con el usuario
+    const existingChat = this.chats.find(chat => chat.user.id === user.id);
+
+    // Si no se encuentra ninguno, crea un nuevo chat y añádelo a la lista de chats
+    if (!existingChat) {
+      const newChat: Chat = {
+        from_user_id: this.logedUser.id,
+        to_user_id: user.id,
+        user: user,
+        unreadMessagesCount: withNewMessage ? 1 : 0
+      };
+      this.chats.push(newChat);
+    }
+  }
+
+  deleteDuplicatedChats() {
+
+    const seenUsers: { [key: number]: boolean } = {};
+    this.chats = this.chats.filter(chat => {
+      if (seenUsers[chat.user.id]) {
+        return false;
+      } else {
+        seenUsers[chat.user.id] = true;
+        return true;
+      }
+    });
+  }
+
+  addUnreadedMessages() {
+    // Inicializa unreadMessages a 0 para cada chat
+    this.chats.forEach(chat => {
+      chat.unreadMessagesCount = 0;
+    });
+
+    this.chatsService.getUnreadMessages().subscribe((response: any) => {
+      const unreadMessages = response.data.unread_messages;
+
+      unreadMessages.forEach((unreadMessage: ChatMessage) => {
+        const chat = this.chats.find(chat => chat.user.id === unreadMessage.from_user_id);
+        if (chat) {
+          chat.unreadMessagesCount++;
         }
       });
-
-      // Inicializa unreadMessages a 0 para cada chat
-      this.chats.forEach(chat => {
-        chat.unreadMessagesCount = 0;
-      });
-
-      this.chatsService.getUnreadMessages().subscribe((response: any) => {
-        const unreadMessages = response.data.unread_messages;
-
-        unreadMessages.forEach((unreadMessage: ChatMessage) => {
-          const chat = this.chats.find(chat => chat.user.id === unreadMessage.from_user_id);
-          if (chat) {
-            chat.unreadMessagesCount++;
-          }
-        });
-      });
     });
+  }
+
+  onChatOpen(chat: Chat) {
+    chat.unreadMessagesCount = 0;
+  }
+
+  navigateToChatWithUser(chat: Chat) {
+    this.chatsService.setUser(chat.user);
+    //Elimina los espacios del fulltag
+    if (chat.user.full_tag){
+      chat.user.full_tag = chat.user.full_tag.replace(/\s/g, '');
+    }
+
+    this.userIdChatOpen = chat.user.id;
+    chat.unreadMessagesCount = 0;
+
+    this.router.navigate(['/chat-with', chat.user.full_tag]);
   }
 }

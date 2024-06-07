@@ -33,7 +33,7 @@
     <div class="w-full flex items-center justify-center font-mono font-medium text-base opacity-70 mt-1">
       <span class="loading loading-spinner text-primary mr-1"></span> Cargando mensajes anteriores...
     </div>
-    } @else if (!hasMorePages) {
+    } @else if (!hasMorePages && moreMassagesLoaded) {
     <div class="w-full flex items-center justify-center font-mono font-medium text-base opacity-70 mt-1">
       No hay mensajes más antiguos
     </div>

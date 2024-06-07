@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { UserReduced } from '../../interfaces/user-reduced';
 import { FormsModule } from '@angular/forms';
 import { ChatsService } from '../../services/chats.service';
@@ -38,6 +38,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   chatPage: number;
   chatTotalPages: number;
+  moreMassagesLoaded: boolean = false;
   hasMorePages: boolean;
 
   message: string;
@@ -65,56 +66,10 @@ export class ChatComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
 
-      // Reinicializar las variables
-      this.chatPage = 1;
-      this.chatTotalPages = 1;
-      this.hasMorePages = true;
-      this.message = '';
-      this.messagesHistory = null;
-      this.oldMessages = [];
-      this.liveMessages = [];
-      this.groupedMessages = {};
-
-      this.gettingMessages = false;
-      this.moreMessagesLoading = false;
-
-      this.userWithChat = this.chatService.getUser();
-      this.toUserId = this.userWithChat.id;
-
-      this.webSocketService.setupEchoPublic();
-      this.userService.currentUser.subscribe(user => {
-        if (user) {
-          this.loggedUser = user;
-          this.webSocketService.setupEchoPrivate(user.id);
-        }
-      });
+      this.resetVariables();
 
       this.webSocketService.privateMessage$.subscribe(message => {
-        const formatedMessage: LiveMessage = {
-          to_user_id: message.to_user_id,
-          text: message.text,
-          isLoading: false,
-          created_at: new Date().toISOString()
-        };
-
-        const element = document.getElementById('messagesContainer');
-        let isUserAtBottom = false;
-        if (element) {
-          const scrollPosition = element.scrollTop;
-          const elementSize = element.clientHeight;
-          const contentHeight = element.scrollHeight;
-
-          // Check if user is at the bottom
-          isUserAtBottom = Math.ceil(elementSize + scrollPosition) >= contentHeight;
-        }
-
-        this.liveMessages.push(formatedMessage);
-
-        if (isUserAtBottom) {
-          setTimeout(() => {
-            this.scrollToBottom();
-          }, 0);
-        }
+        this.onNewMessage(message)
       });
 
       this.getMessages(this.chatPage);
@@ -143,6 +98,36 @@ export class ChatComponent implements OnInit, AfterViewInit {
         }
       });
     });
+  }
+
+  onNewMessage(message: any) {
+    if (message.from_user_id === this.userWithChat.id) {
+      const formatedMessage: LiveMessage = {
+        to_user_id: message.to_user_id,
+        text: message.text,
+        isLoading: false,
+        created_at: new Date().toISOString()
+      };
+
+      const element = document.getElementById('messagesContainer');
+      let isUserAtBottom = false;
+      if (element) {
+        const scrollPosition = element.scrollTop;
+        const elementSize = element.clientHeight;
+        const contentHeight = element.scrollHeight;
+
+        // Check if user is at the bottom
+        isUserAtBottom = Math.ceil(elementSize + scrollPosition) >= contentHeight;
+      }
+
+      this.liveMessages.push(formatedMessage);
+
+      if (isUserAtBottom) {
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 0);
+      }
+    }
   }
 
   getMessages(page: number, loadMore: boolean = false) {
@@ -214,12 +199,11 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
       return groups;
     }, {});
-    console.log(this.groupedMessages);
   }
 
   loadMoreMessages() {
     if (this.chatPage < this.chatTotalPages && !this.moreMessagesLoading) {
-      console.log('Loading more messages');
+      this.moreMassagesLoaded = true;
       this.chatPage++;
       this.getMessages(this.chatPage, true);
     } else if (!this.moreMessagesLoading) {
@@ -256,11 +240,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
     this.chatService.sendMessage(this.toUserId, text).subscribe(
       (response) => {
-        console.log(response);
         newMessage.isLoading = false;
       },
       (error) => {
-        console.log(error);
         newMessage.isLoading = false;
       }
     );
@@ -279,5 +261,29 @@ export class ChatComponent implements OnInit, AfterViewInit {
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     return format(date, 'HH:mm');
+  }
+
+  resetVariables() {
+    // Reinicializar las variables
+    this.chatPage = 1;
+    this.chatTotalPages = 1;
+    this.hasMorePages = true;
+    this.message = '';
+    this.messagesHistory = null;
+    this.oldMessages = [];
+    this.liveMessages = [];
+    this.groupedMessages = {};
+
+    this.gettingMessages = false;
+    this.moreMessagesLoading = false;
+
+    this.userWithChat = this.chatService.getUser();
+    this.toUserId = this.userWithChat.id;
+
+    this.userService.currentUser.subscribe(user => {
+      if (user) {
+        this.loggedUser = user;
+      }
+    });
   }
 }

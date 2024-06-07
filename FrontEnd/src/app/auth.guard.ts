@@ -52,8 +52,6 @@ export const chatGuard: CanActivateFn = (route, state) => {
     usernameInUrl = decodeURIComponent(usernameInUrl)
   }
 
-  console.log(userChatingWith.full_tag, usernameInUrl);
-
   if(userChatingWith && userChatingWith.full_tag === usernameInUrl){
     return true;
   } else {

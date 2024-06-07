@@ -76,6 +76,7 @@ export class WebSocketService {
 
         this.privateMessageSource.next(response.message);
       });
+
       this.privateDone = true;
     }
   }

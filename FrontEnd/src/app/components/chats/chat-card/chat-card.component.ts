@@ -20,23 +20,11 @@ export class ChatCardComponent implements OnInit{
   @Input() user: UserReduced
   @Input() unreadedMessages: number;
 
-  constructor(
-    private router: Router,
-    private chatsService: ChatsService) { }
+  constructor() { }
 
   ngOnInit(): void {
       if (this.user) {
         this.user.full_tag = this.user.name + this.user.tag
       }
-  }
-
-  navigateToChatWithUser(user: UserReduced) {
-    this.chatsService.setUser(user);
-    //Elimina los espacios del fulltag
-    if (user.full_tag){
-      user.full_tag = user.full_tag.replace(/\s/g, '');
-    }
-
-    this.router.navigate(['/chat-with', user.full_tag]);
   }
 }

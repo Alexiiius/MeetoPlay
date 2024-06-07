@@ -278,6 +278,11 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.moreMessagesLoading = false;
 
     this.userWithChat = this.chatService.getUser();
+
+    this.chatService.userChattingWithUpdated.subscribe(() => {
+      this.userWithChat = this.chatService.getUser();
+    });
+
     this.toUserId = this.userWithChat.id;
 
     this.userService.currentUser.subscribe(user => {

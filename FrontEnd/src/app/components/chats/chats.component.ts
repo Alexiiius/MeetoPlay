@@ -7,7 +7,8 @@ import { UserService } from '../../services/user.service';
 import { UserReduced } from '../../interfaces/user-reduced';
 import { ChatMessage } from '../../interfaces/chat-message';
 import { WebSocketService } from '../../services/web-socket.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-chats',
@@ -40,6 +41,8 @@ export class ChatsComponent implements OnInit {
       }
     });
 
+    this.onChatsLeave();
+
     this.userIdChatOpen = this.chatsService.getUser().id;
 
     this.webSocketService.privateMessage$.subscribe(message => {
@@ -61,7 +64,12 @@ export class ChatsComponent implements OnInit {
 
       this.deleteDuplicatedChats();
       this.addUnreadedMessages();
+      this.updateUserChatingWithStatus();
 
+      this.chats.forEach((chat) => {
+        const openChatId = Number(sessionStorage.getItem('open_chat_id'));
+        chat.open = chat.user.id === openChatId;
+      });
     });
   }
 
@@ -75,7 +83,7 @@ export class ChatsComponent implements OnInit {
         const userReduced: UserReduced = {
           id: user.id,
           name: user.name,
-          tag:  user.tag,
+          tag: user.tag,
           full_tag: `${user.name}#${user.tag}`,
           avatar: user.avatar,
           status: user.status
@@ -85,7 +93,7 @@ export class ChatsComponent implements OnInit {
 
       });
 
-    } else if (this.userIdChatOpen !== message.from_user_id){
+    } else if (this.userIdChatOpen !== message.from_user_id) {
       chat.unreadMessagesCount++;
     }
   }
@@ -118,9 +126,15 @@ export class ChatsComponent implements OnInit {
         from_user_id: this.logedUser.id,
         to_user_id: user.id,
         user: user,
-        unreadMessagesCount: withNewMessage ? 1 : 0
+        unreadMessagesCount: withNewMessage ? 1 : 0,
+        open: true
       };
+
       this.chats.push(newChat);
+      this.navigateToChatWithUser(newChat);
+    } else {
+      // Si se encuentra, abre el chat
+      this.navigateToChatWithUser(existingChat);
     }
   }
 
@@ -161,14 +175,53 @@ export class ChatsComponent implements OnInit {
 
   navigateToChatWithUser(chat: Chat) {
     this.chatsService.setUser(chat.user);
+
     //Elimina los espacios del fulltag
-    if (chat.user.full_tag){
+    if (chat.user.full_tag) {
       chat.user.full_tag = chat.user.full_tag.replace(/\s/g, '');
     }
 
     this.userIdChatOpen = chat.user.id;
     chat.unreadMessagesCount = 0;
 
+    // Recorro todos los chats para cerrarlos
+    this.chats.forEach((chat) => {
+      chat.open = false;
+    });
+
+    chat.open = true;
+
+    // Guardo el ID del chat abierto en sessionStorage
+    sessionStorage.setItem('open_chat_id', chat.user.id.toString());
+
     this.router.navigate(['/chat-with', chat.user.full_tag]);
+  }
+
+  updateUserChatingWithStatus() {
+    const userChattingWith = this.chatsService.getUser();
+    const updatedUserChattingWith = this.chats.find(chat => chat.user.id === userChattingWith.id)?.user;
+
+    if (updatedUserChattingWith) {
+      this.chatsService.setUser(updatedUserChattingWith);
+      this.chatsService.userChattingWithUpdated.next();
+    }
+  }
+
+  onChatsLeave() {
+    // Suscribirse a los eventos de cambio de ruta
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      if (event instanceof NavigationEnd) {
+        if (!event.url.startsWith('/chat-with')) {
+          // Si la nueva ruta no comienza con '/chat-with', cerrar todos los chats
+          this.chats.forEach(chat => {
+            chat.open = false;
+          });
+          // También borra el chat abierto de sessionStorage
+          sessionStorage.removeItem('open_chat_id');
+        }
+      }
+    });
   }
 }

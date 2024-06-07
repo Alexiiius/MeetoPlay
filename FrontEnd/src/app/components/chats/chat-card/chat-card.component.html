@@ -1,4 +1,5 @@
-<div class="w-full p-4 bg-base-200 gap-3 flex items-center rounded-box cursor-pointer hover:bg-base-300 relative">
+<div class="w-full p-4 bg-base-200 gap-3 flex items-center rounded-box cursor-pointer hover:bg-base-300 relative"
+  [ngClass]="{'border-b-2 border-b-primary': chat.open}">
   <div class="avatar">
     <div class="w-12 rounded-full">
       <img src="{{user.avatar}}" />
@@ -9,12 +10,12 @@
     <app-user-status [user]="user" [sizeClass]="'small'" [isChat]="true" />
   </div>
 
-  @if (unreadedMessages !== 0) {
+  @if (chat.unreadMessagesCount !== 0) {
   <div class="badge badge-error absolute -top-1 -right-1 shadow-md">
-    @if (unreadedMessages >= 20) {
+    @if (chat.unreadMessagesCount >= 20) {
       20+
     } @else {
-      {{unreadedMessages}}
+      {{chat.unreadMessagesCount}}
     }
   </div>
   }

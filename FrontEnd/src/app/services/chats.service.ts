@@ -12,6 +12,7 @@ export class ChatsService {
   private chatWithUser: UserReduced;
 
   newChatCreated = new Subject<UserReduced>()
+  userChattingWithUpdated = new Subject<void>()
 
   setUser(user: UserReduced) {
     this.chatWithUser = user;

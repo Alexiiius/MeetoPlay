@@ -102,12 +102,6 @@ export class UsersListComponent {
       status: user.status
     };
 
-    if (userReduced.full_tag){
-      userReduced.full_tag = userReduced.full_tag.replace(/\s/g, '');
-    }
-
-    this.chatService.setUser(userReduced);
     this.chatService.newChatCreated.next(userReduced);
-    this.router.navigate(['/chat-with', userReduced.full_tag])
   }
 }

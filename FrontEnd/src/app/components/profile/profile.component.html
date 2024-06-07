@@ -186,7 +186,7 @@
         }
       </div>
 
-      <button *ngIf="checkRoute()"
+      <button *ngIf="checkRoute() && isLoggedUser"
         class="btn btn-primary text-neutral min-h-0 h-[40px] w-[40px] btn-square flex items-center justify-center"
         (click)="openGameStatFormModal()">
         <i class='bx bx-plus bx-sm'></i>
@@ -207,7 +207,7 @@
 
   <app-users-list *ngIf="!isLoading" (userFollowed)="updateFollowCounts()" [logedUserId]="logedUser.id" />
 
-  <app-game-stat-form />
+  <app-game-stat-form/>
 
   <app-edit-profile [user]="user"/>
 </div>

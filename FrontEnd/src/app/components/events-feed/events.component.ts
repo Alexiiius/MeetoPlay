@@ -13,6 +13,7 @@ import { UserService } from '../../services/user.service';
 import { FollowedUsersResponse } from '../../interfaces/followed-user-response';
 import { FriendsResponse } from '../../interfaces/friends-response';
 import { catchError, combineLatest, debounceTime, distinctUntilChanged, map, merge, of, Subject, switchMap, take, tap } from 'rxjs';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-events',
@@ -74,7 +75,8 @@ export class EventsFeedComponent implements OnInit {
   constructor(
     private eventService: EventsService,
     private eventFeedService: EventFeedService,
-    private userService: UserService) { }
+    private userService: UserService,
+    private profileService: ProfileService) { }
 
   ngAfterViewInit() {
     let latestSearchValue = '';
@@ -154,6 +156,17 @@ export class EventsFeedComponent implements OnInit {
     this.getFriendsEvents(this.friendsPage);
     this.getFollowingEvents(this.followingPage);
     this.getLoggedUser();
+
+    this.profileService.eventCreated.subscribe(() => {
+      this.publicEvents = [];
+      this.friendsEvents= [];
+      this.followingEvents = [];
+      this.searchedEvents = [];
+      this.getPublicEvents(this.publicPage);
+      this.getFriendsEvents(this.friendsPage);
+      this.getFollowingEvents(this.followingPage);
+      this.getLoggedUser();
+    });
   }
 
   searchValue = new Subject<string>();

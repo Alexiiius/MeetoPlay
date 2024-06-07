@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 
 import { UserStatusComponent } from '../profilecard/user-status/user-status.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UserData } from '../../interfaces/user-data';
 
 @Component({
@@ -20,7 +20,8 @@ import { UserData } from '../../interfaces/user-data';
   imports: [
     FormsModule,
     CommonModule,
-    UserStatusComponent
+    UserStatusComponent,
+    RouterLink
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
@@ -33,7 +34,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   showScrollButton = false;
 
   loggedUser: UserData;
-  userWithChat: UserReduced;
+  userChattingWith: UserReduced;
   toUserId: number;
 
   chatPage: number;
@@ -101,7 +102,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   }
 
   onNewMessage(message: any) {
-    if (message.from_user_id === this.userWithChat.id) {
+    if (message.from_user_id === this.userChattingWith.id) {
       const formatedMessage: LiveMessage = {
         to_user_id: message.to_user_id,
         text: message.text,
@@ -277,13 +278,13 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.gettingMessages = false;
     this.moreMessagesLoading = false;
 
-    this.userWithChat = this.chatService.getUser();
+    this.userChattingWith = this.chatService.getUser();
 
     this.chatService.userChattingWithUpdated.subscribe(() => {
-      this.userWithChat = this.chatService.getUser();
+      this.userChattingWith = this.chatService.getUser();
     });
 
-    this.toUserId = this.userWithChat.id;
+    this.toUserId = this.userChattingWith.id;
 
     this.userService.currentUser.subscribe(user => {
       if (user) {

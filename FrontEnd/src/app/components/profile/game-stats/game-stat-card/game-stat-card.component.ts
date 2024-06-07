@@ -12,6 +12,7 @@ import { GamemodeStat } from '../../../../interfaces/gamemode-stat';
 import { NewFullGame } from '../../../../interfaces/new-fullGame';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../../../services/alert.service';
+import { UserData } from '../../../../interfaces/user-data';
 
 @Component({
   selector: 'app-game-stat-card',
@@ -29,6 +30,9 @@ import { AlertService } from '../../../../services/alert.service';
 export class GameStatCardComponent implements OnInit {
 
   @ViewChild(GameStatFormComponent) gameStatForm: GameStatFormComponent;
+
+  logedUser: UserData;
+  profileId: number | null = null;
 
   @Input() gameStat: GameStat;
   isOpen: boolean = false;
@@ -58,6 +62,16 @@ export class GameStatCardComponent implements OnInit {
   ngOnInit(): void {
     this.getGamemodes();
     this.getFullGame();
+
+    this.userService.currentUser.subscribe(user => {
+      if(user){
+        this.logedUser = user;
+      }
+    });
+
+    this.profileService.getUserProfileId().subscribe(id => {
+      this.profileId = id;
+    });
 
     this.profileService.gamemodeStatCreated.subscribe(newGamemodeStat => {
       console.log(newGamemodeStat);

@@ -1,4 +1,2 @@
-const baseUrl = 'http://localhost:80';
-export const backAPIUrl = baseUrl + '/api';
-const baseGamesApiUrl = 'http://localhost:81';
-export const gamesApiUrl = baseGamesApiUrl + '/api';
+export const backAPIUrl = 'http://35.173.106.192:80/api';
+export const gamesApiUrl = 'http://3.93.159.150:80/api';

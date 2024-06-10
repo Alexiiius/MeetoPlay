@@ -51,6 +51,10 @@ export class LoginRegisterComponent implements OnInit {
       next: (loggedIn) => {
         if (loggedIn) {
           this.router.navigate([this.redirectUrl]);
+          if (!this.redirectUrl.includes('/chat-with')) {
+            sessionStorage.removeItem('user_chating_with');
+            sessionStorage.removeItem('open_chat_id');
+          }
         }
       },
       error: (error) => {

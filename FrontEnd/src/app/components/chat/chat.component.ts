@@ -223,7 +223,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const newMessage = {
+    const newMessage: LiveMessage = {
       to_user_id: this.toUserId,
       text: this.message,
       isLoading: true,

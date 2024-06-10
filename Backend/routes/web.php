@@ -22,7 +22,7 @@ Route::get('/', function () {
 
 // ADMIN ROUTES //
 
-Route::middleware(['auth', 'verified', 'onlyAdminWeb'])->group(function () {
+Route::middleware(['auth', 'verified', 'onlyAdminWeb', 'setLocale'])->group(function () {
 
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
@@ -33,6 +33,11 @@ Route::middleware(['auth', 'verified', 'onlyAdminWeb'])->group(function () {
     Route::get('/events', function () {
     return view('events-manager');
     })->name('events');
+
+    Route::get('/advise', function () {
+      return view('advise-manager');
+      })->name('advise');
+
 
     Route::view('profile', 'profile')->name('profile');
 

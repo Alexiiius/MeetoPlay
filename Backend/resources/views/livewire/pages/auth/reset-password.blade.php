@@ -65,7 +65,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         Session::flash('status', __($status));
 
-        $this->redirectRoute('login', navigate: true);
+        $this->redirect('https://meetoplay.vercel.app/login');
     }
 }; ?>
 
@@ -98,7 +98,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
-                {{ __('Reset Password') }}
+                Restablecer contraseña
             </x-primary-button>
         </div>
     </form>

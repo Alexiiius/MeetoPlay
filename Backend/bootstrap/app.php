@@ -34,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => App\Http\Middleware\RoleCheck::class,
             'onlyAdminWeb' => App\Http\Middleware\EnsureAdminOnlyWeb::class,
+            'setLocale' => App\Http\Middleware\SetLocale::class,
         ]);
     })
     ->withBroadcasting(

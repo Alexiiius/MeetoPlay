@@ -138,6 +138,15 @@ class GameUserStatsController extends Controller {
             return $this->responseDataFormat($request, null, 'Unauthorized', 401);
         }
 
+        $gameUserStatsNameExist = GameUserStats::where('game_name', $request->game_name)
+            ->where('user_id', $GameUserStats->user_id)
+            ->get()
+            ->first();
+
+        if ($gameUserStatsNameExist && $gameUserStatsNameExist->game_name == $request->game_name ) {
+            return $this->responseDataFormat($request, null, 'Game stats already exist', 409);
+        }
+
         $dataToUpdate = $request->all();
         $dataToUpdate['user_id'] = $user->id;
 

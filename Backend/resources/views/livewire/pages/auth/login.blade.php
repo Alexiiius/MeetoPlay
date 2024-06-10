@@ -48,6 +48,14 @@ new #[Layout('layouts.guest')] class extends Component
             <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
         </div>
 
+        <!-- DONT TOUCH IT DANI -->
+        <!-- OTHERWISE YOU WANT TO FUCK UP THE WHOLE LOGIN FUNCTIONALITY -->
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Remember Me -->
         <div class="block mt-4">
             <label for="remember" class="inline-flex items-center">

@@ -10,6 +10,882 @@
         "version": "1.0"
     },
     "paths": {
+        "/api/user/game-stats/search/{id}": {
+            "get": {
+                "tags": [
+                    "GameUserStats"
+                ],
+                "summary": "Get game stats for a specific user",
+                "operationId": "c1c644192621f8ab4778f5ed7173c235",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user to get the game stats for",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Game stats retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Game stats retrieved successfully"
+                                                },
+                                                "game_stats": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "game_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "user_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "game_name": {
+                                                                "type": "string",
+                                                                "example": "Game Name"
+                                                            },
+                                                            "hours_played": {
+                                                                "type": "integer",
+                                                                "example": 100
+                                                            },
+                                                            "lv_account": {
+                                                                "type": "integer",
+                                                                "example": 10
+                                                            },
+                                                            "nickname_game": {
+                                                                "type": "string",
+                                                                "example": "Nickname"
+                                                            },
+                                                            "game_pic": {
+                                                                "type": "string",
+                                                                "example": "game_pic.jpg"
+                                                            },
+                                                            "gamemodeStats": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer",
+                                                                            "example": 1
+                                                                        },
+                                                                        "game_user_stats_id": {
+                                                                            "type": "integer",
+                                                                            "example": 1
+                                                                        },
+                                                                        "gamemode_name": {
+                                                                            "type": "string",
+                                                                            "example": "Gamemode Name"
+                                                                        },
+                                                                        "gamemodes_rank": {
+                                                                            "type": "string",
+                                                                            "example": "Rank"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/game-stats/search/{id}"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No game stats found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "No game stats found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/game-stats/create": {
+            "post": {
+                "tags": [
+                    "GameUserStats"
+                ],
+                "summary": "Create game stats for the authenticated user",
+                "operationId": "3e3b61d9886f762cb75488611e62587a",
+                "requestBody": {
+                    "description": "Game stats to be created",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "game_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "game_name": {
+                                        "type": "string",
+                                        "example": "Game Name"
+                                    },
+                                    "hours_played": {
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "lv_account": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "nickname_game": {
+                                        "type": "string",
+                                        "example": "Nickname"
+                                    },
+                                    "game_pic": {
+                                        "type": "string",
+                                        "example": "game_pic.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Game stats created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Game stats created successfully"
+                                                },
+                                                "game_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "game_name": {
+                                                    "type": "string",
+                                                    "example": "Game Name"
+                                                },
+                                                "hours_played": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "lv_account": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "nickname_game": {
+                                                    "type": "string",
+                                                    "example": "Nickname"
+                                                },
+                                                "game_pic": {
+                                                    "type": "string",
+                                                    "example": "game_pic.jpg"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/game-stats/create"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Game stats already exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Game stats already exist."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/game-stats/delete/{gameStatID}": {
+            "delete": {
+                "tags": [
+                    "GameUserStats"
+                ],
+                "summary": "Delete game stats for a specific user",
+                "operationId": "4c5bea59444fb6a9555e340478e17a58",
+                "parameters": [
+                    {
+                        "name": "gameStatID",
+                        "in": "path",
+                        "description": "ID of the game stats to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Game stats deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Game stats deleted successfully"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/game-stats/delete/{gameStatID}"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Game stats not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Game stats not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/game-stats/update/{gameStatID}": {
+            "put": {
+                "tags": [
+                    "GameUserStats"
+                ],
+                "summary": "Update game stats for a specific user",
+                "operationId": "da230bcc5390a06927f8687a24289fb9",
+                "parameters": [
+                    {
+                        "name": "gameStatID",
+                        "in": "path",
+                        "description": "ID of the game stats to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Game stats to be updated",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "hours_played": {
+                                        "type": "integer",
+                                        "example": 100
+                                    },
+                                    "lv_account": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "nickname_game": {
+                                        "type": "string",
+                                        "example": "Nickname"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Game stats updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Game stats updated successfully"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/game-stats/update/{gameStatID}"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Game stats not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Game stats not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Game stats already exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Game stats already exist."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/game-stats/gamemode/create": {
+            "post": {
+                "tags": [
+                    "GameUserStats"
+                ],
+                "summary": "Create game mode stats for a specific user",
+                "operationId": "a8b71d2b5c3c3d839cd67aa3e62788f3",
+                "requestBody": {
+                    "description": "Game mode stats to be created",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "game_user_stats_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "gamemode_name": {
+                                        "type": "string",
+                                        "example": "Gamemode Name"
+                                    },
+                                    "gamemodes_rank": {
+                                        "type": "string",
+                                        "example": "Rank"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Game mode stats created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Game mode stats created successfully"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/game-stats/gamemode/create"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Game stats not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Game stats not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Game mode stats already exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Game mode stats already exist."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/game-stats/gamemode/update/{gamemodeStatID}": {
+            "patch": {
+                "tags": [
+                    "GameUserStats"
+                ],
+                "summary": "Update game mode stats for a specific user",
+                "operationId": "5817abee39ea0d12d75e0ce0e0c18e82",
+                "parameters": [
+                    {
+                        "name": "gamemodeStatID",
+                        "in": "path",
+                        "description": "ID of the game mode stats to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Game mode stats to be updated",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "gamemode_name": {
+                                        "type": "string",
+                                        "example": "Gamemode Name"
+                                    },
+                                    "gamemodes_rank": {
+                                        "type": "string",
+                                        "example": "Rank"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Game mode stats updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Game mode stats updated successfully"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/game-stats/gamemode/update/{gamemodeStatID}"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Game mode stats not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Game mode stats not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Game mode stats already exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Game mode stats already exist."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/game-stats/gamemode/delete/{gamemodeStatID}": {
+            "delete": {
+                "tags": [
+                    "GameUserStats"
+                ],
+                "summary": "Delete game mode stats for a specific user",
+                "operationId": "7b21a1913a15680dd944879544eef660",
+                "parameters": [
+                    {
+                        "name": "gamemodeStatID",
+                        "in": "path",
+                        "description": "ID of the game mode stats to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Game mode stats deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Game mode stats deleted successfully"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/game-stats/gamemode/delete/{gamemodeStatID}"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Game mode stats not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Game mode stats not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/user": {
             "get": {
                 "tags": [
@@ -1262,6 +2138,10 @@
         }
     },
     "tags": [
+        {
+            "name": "GameUserStats",
+            "description": "Endpoints for User Stats in Games"
+        },
         {
             "name": "User Endpoints",
             "description": "Endpoints for authenticated users"

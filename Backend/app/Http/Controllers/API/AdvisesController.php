@@ -34,8 +34,8 @@ class AdvisesController extends Controller {
  *             type="object",
  *             @OA\Property(property="title", type="string"),
  *             @OA\Property(property="description", type="string"),
- *             @OA\Property(property="time_start", type="string", format="date-time"),
- *             @OA\Property(property="time_end", type="string", format="date-time")
+ *             @OA\Property(property="time_start", type="string", format="date-time", example="2021-06-01 00:00:00"),
+ *             @OA\Property(property="time_end", type="string", format="date-time", example="2021-06-01 00:00:00")
  *         )
  *     ),
  *     @OA\Response(

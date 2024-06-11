@@ -101,7 +101,6 @@ export class ChatsComponent implements OnInit {
 
       const chat = this.chats[chatIndex];
       if (this.userIdChatOpen !== message.from_user_id) {
-        console.log('entra', chat.unreadMessagesCount);
         chat.unreadMessagesCount++;
       }
 
@@ -121,127 +120,132 @@ export class ChatsComponent implements OnInit {
     }
   };
 
-notification(message: any) {
-  // Check if the browser supports the Notification API
-  if ("Notification" in window) {
-    // Ask the user for permission to show notifications, if necessary
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
+  notification(message: any) {
+    // Check if the browser supports the Notification API
+    if ("Notification" in window) {
+      // Ask the user for permission to show notifications, if necessary
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
 
-    // If the user has granted permission, show a notification
-    if (Notification.permission === "granted") {
-      new Notification(`Nuevo mensaje de ${message.from_user_name}`, {
-        body: message.text,
-        icon: "../../../assets/favicon.svg"
-      });
+      // If the user has granted permission, show a notification
+      if (Notification.permission === "granted") {
+        new Notification(`Nuevo mensaje de ${message.from_user_name}`, {
+          body: message.text,
+          icon: "../../../assets/favicon.svg"
+        });
+      }
     }
   }
-}
 
-onNewChatCreated(user: UserReduced, withNewMessage = false) {
-  // Busca un chat existente con el usuario
-  const existingChat = this.chats.find(chat => chat.user.id === user.id);
+  onNewChatCreated(user: UserReduced, withNewMessage = false) {
+    // Busca un chat existente con el usuario
+    const existingChat = this.chats.find(chat => chat.user.id === user.id);
 
-  // Si no se encuentra ninguno, crea un nuevo chat y añádelo a la lista de chats
-  if (!existingChat) {
-    const newChat: Chat = {
-      from_user_id: this.logedUser.id,
-      to_user_id: user.id,
-      user: user,
-      unreadMessagesCount: withNewMessage ? 1 : 0,
-      open: true
-    };
+    // Si no se encuentra ninguno, crea un nuevo chat y añádelo a la lista de chats
+    if (!existingChat) {
+      const newChat: Chat = {
+        from_user_id: this.logedUser.id,
+        to_user_id: user.id,
+        user: user,
+        unreadMessagesCount: withNewMessage ? 1 : 0,
+        open: true
+      };
 
-    this.chats.unshift(newChat);
-  }
-}
-
-deleteDuplicatedChats() {
-
-  const seenUsers: { [key: number]: boolean } = {};
-  this.chats = this.chats.filter(chat => {
-    if (seenUsers[chat.user.id]) {
-      return false;
+      this.chats.unshift(newChat);
+      this.navigateToChatWithUser(newChat);
     } else {
-      seenUsers[chat.user.id] = true;
-      return true;
+      this.navigateToChatWithUser(existingChat);
     }
-  });
-}
 
-addUnreadedMessages() {
-  // Inicializa unreadMessages a 0 para cada chat
-  this.chats.forEach(chat => {
-    chat.unreadMessagesCount = 0;
-  });
 
-  this.chatsService.getUnreadMessages().subscribe((response: any) => {
-    const unreadMessages = response.data.unread_messages;
+  }
 
-    unreadMessages.forEach((unreadMessage: ChatMessage) => {
-      const chat = this.chats.find(chat => chat.user.id === unreadMessage.from_user_id);
-      if (chat) {
-        chat.unreadMessagesCount++;
+  deleteDuplicatedChats() {
+
+    const seenUsers: { [key: number]: boolean } = {};
+    this.chats = this.chats.filter(chat => {
+      if (seenUsers[chat.user.id]) {
+        return false;
+      } else {
+        seenUsers[chat.user.id] = true;
+        return true;
       }
     });
-  });
-}
-
-onChatOpen(chat: Chat) {
-  chat.unreadMessagesCount = 0;
-}
-
-navigateToChatWithUser(chat: Chat) {
-  this.chatsService.setUser(chat.user);
-
-  //Elimina los espacios del fulltag
-  if (chat.user.full_tag) {
-    chat.user.full_tag = chat.user.full_tag.replace(/\s/g, '');
   }
 
-  this.userIdChatOpen = chat.user.id;
-  chat.unreadMessagesCount = 0;
+  addUnreadedMessages() {
+    // Inicializa unreadMessages a 0 para cada chat
+    this.chats.forEach(chat => {
+      chat.unreadMessagesCount = 0;
+    });
 
-  // Recorro todos los chats para cerrarlos
-  this.chats.forEach((chat) => {
-    chat.open = false;
-  });
+    this.chatsService.getUnreadMessages().subscribe((response: any) => {
+      const unreadMessages = response.data.unread_messages;
 
-  chat.open = true;
-
-  // Guardo el ID del chat abierto en sessionStorage
-  sessionStorage.setItem('open_chat_id', chat.user.id.toString());
-
-  this.router.navigate(['/chat-with', chat.user.full_tag]);
-}
-
-updateUserChatingWithStatus() {
-  const userChattingWith = this.chatsService.getUser();
-  const updatedUserChattingWith = this.chats.find(chat => chat.user.id === userChattingWith.id)?.user;
-
-  if (updatedUserChattingWith) {
-    this.chatsService.setUser(updatedUserChattingWith);
-    this.chatsService.userChattingWithUpdated.next();
+      unreadMessages.forEach((unreadMessage: ChatMessage) => {
+        const chat = this.chats.find(chat => chat.user.id === unreadMessage.from_user_id);
+        if (chat) {
+          chat.unreadMessagesCount++;
+        }
+      });
+    });
   }
-}
 
-onChatsLeave() {
-  // Suscribirse a los eventos de cambio de ruta
-  this.router.events.pipe(
-    filter(event => event instanceof NavigationEnd)
-  ).subscribe((event: any) => {
-    if (event instanceof NavigationEnd) {
-      if (!event.url.startsWith('/chat-with')) {
-        // Si la nueva ruta no comienza con '/chat-with', cerrar todos los chats
-        this.chats.forEach(chat => {
-          chat.open = false;
-        });
-        // También borra el chat abierto de sessionStorage
-        sessionStorage.removeItem('open_chat_id');
-        sessionStorage.removeItem('user_chating_with')
-      }
+  onChatOpen(chat: Chat) {
+    chat.unreadMessagesCount = 0;
+  }
+
+  navigateToChatWithUser(chat: Chat) {
+    this.chatsService.setUser(chat.user);
+
+    //Elimina los espacios del fulltag
+    if (chat.user.full_tag) {
+      chat.user.full_tag = chat.user.full_tag.replace(/\s/g, '');
     }
-  });
-}
+
+    this.userIdChatOpen = chat.user.id;
+    chat.unreadMessagesCount = 0;
+
+    // Recorro todos los chats para cerrarlos
+    this.chats.forEach((chat) => {
+      chat.open = false;
+    });
+
+    chat.open = true;
+
+    // Guardo el ID del chat abierto en sessionStorage
+    sessionStorage.setItem('open_chat_id', chat.user.id.toString());
+
+    this.router.navigate(['/chat-with', chat.user.full_tag]);
+  }
+
+  updateUserChatingWithStatus() {
+    const userChattingWith = this.chatsService.getUser();
+    const updatedUserChattingWith = this.chats.find(chat => chat.user.id === userChattingWith.id)?.user;
+
+    if (updatedUserChattingWith) {
+      this.chatsService.setUser(updatedUserChattingWith);
+      this.chatsService.userChattingWithUpdated.next();
+    }
+  }
+
+  onChatsLeave() {
+    // Suscribirse a los eventos de cambio de ruta
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      if (event instanceof NavigationEnd) {
+        if (!event.url.startsWith('/chat-with')) {
+          // Si la nueva ruta no comienza con '/chat-with', cerrar todos los chats
+          this.chats.forEach(chat => {
+            chat.open = false;
+          });
+          // También borra el chat abierto de sessionStorage
+          sessionStorage.removeItem('open_chat_id');
+          sessionStorage.removeItem('user_chating_with')
+        }
+      }
+    });
+  }
 }

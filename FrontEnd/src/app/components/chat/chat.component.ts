@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { UserReduced } from '../../interfaces/user-reduced';
 import { FormsModule } from '@angular/forms';
 import { ChatsService } from '../../services/chats.service';
@@ -14,6 +14,7 @@ import { UserStatusComponent } from '../profilecard/user-status/user-status.comp
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UserData } from '../../interfaces/user-data';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
@@ -28,7 +29,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements OnInit, AfterViewInit {
+export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('scrollButton') scrollButton: ElementRef;
   @ViewChild('messagesContainer') messagesContainer: ElementRef;
@@ -57,6 +58,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   groupedMessages: { [key: string]: ChatMessage[] };
 
+  privateMesaageSubscription: Subscription;
+
   constructor(
     private chatService: ChatsService,
     private webSocketService: WebSocketService,
@@ -72,12 +75,16 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
       this.resetVariables();
 
-      this.webSocketService.privateMessage$.subscribe(message => {
+      this.privateMesaageSubscription = this.webSocketService.privateMessage$.subscribe(message => {
         this.onNewMessage(message)
       });
 
       this.getMessages(this.chatPage);
     });
+  }
+
+  ngOnDestroy() {
+    this.privateMesaageSubscription.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -133,6 +140,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
       }
 
       this.liveMessages.push(formatedMessage);
+      this.chatService.readMessages([message.message_id]).subscribe();
 
       if (isUserAtBottom) {
         setTimeout(() => {
@@ -226,7 +234,14 @@ export class ChatComponent implements OnInit, AfterViewInit {
   markMessagesAsRead() {
     const toMarkAsRead = this.oldMessages.filter(message => message.from_user_id === this.toUserId && !message.read_at).map(message => message.id);
 
-    this.chatService.readMessages(toMarkAsRead).subscribe();
+    this.chatService.readMessages(toMarkAsRead).subscribe(
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   sendMessage() {
@@ -253,6 +268,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.chatService.sendMessage(this.toUserId, text).subscribe(
       (response) => {
         newMessage.isLoading = false;
+        console.log(response)
         this.chatService.lastUserChattingWithId.next(this.toUserId);
       },
       (error) => {

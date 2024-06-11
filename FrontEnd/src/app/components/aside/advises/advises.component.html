@@ -2,8 +2,9 @@
   @for (advise of advises; track advise.id) {
     <div class="px-6 py-4 bg-base-200 rounded-box border-2 border-secondary">
       <header class="font-medium mb-2">{{advise.title}}</header>
-      <p class="text-light">{{advise.description}}</p>
+      <p class="font-light">{{advise.description}}</p>
     </div>
+  } @empty {
+    <div class="text-nuetral">No hay avisos 😅</div>
   }
 </div>
-<div class="w-4 h-4 rounded-full bg-error absolute top-0 right-0 z-20">!</div>

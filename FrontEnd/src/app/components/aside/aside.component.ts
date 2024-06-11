@@ -27,8 +27,4 @@ export class AsideComponent {
   openNewEventModal() {
     this.eventFormComponent.openModal()
   }
-
-  handleHasAdvises(hasAdvises: boolean) {
-      this.showbadge = hasAdvises;
-  }
 }

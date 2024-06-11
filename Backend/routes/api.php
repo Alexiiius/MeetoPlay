@@ -12,6 +12,7 @@ use App\Http\Controllers\API\FollowerController;
 use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\GameUserStatsController;
 use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\API\AdvisesController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']); //register a new user using name, email password and password_confirmation
@@ -97,6 +98,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/message/get/conversations', [MessageController::class, 'getConversations']); //get all conversations from auth user
 
+    // ------------------------------------------------------------------ ADVISES ------------------------------------------------------------
+
+    Route::get('/advises/get', [AdvisesController::class, 'getActualAdvises']); //return all advises that are active
+
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
     Route::get('/check-token', function () {
@@ -110,6 +115,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum' , 'admin'])->group(function () {
 
     Route::get('/users', [UserController::class, 'index']); //return name, email and id from all users
+
+    Route::post('/advises/create', [AdvisesController::class, 'createAdvise']); //create a new advise only for admin
 
 });
 

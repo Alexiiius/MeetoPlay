@@ -1,28 +1,52 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Carbon;
+
+// ROUTES PUBLIC //
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
+
 
 Route::get('health-check-json', function () {
-    return response()->json([ 'status' => 'OK', 'timestamp' => now()->format('d-m-Y\TH:i:s. T') ]);
+    return response()->json(['status' => 'OK', 'timestamp' => now()->format('d-m-Y\TH:i:s. T')]);
 });
 
 Route::get('health-check', function () {
     return "LARAVEL 11 IS A HELL";
 });
 
-// Route::view('/', 'welcome');
+Route::get('/', function () {
+  return redirect('/login');
+})->name('home');
 
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified'])
-//     ->name('dashboard');
+// ADMIN ROUTES //
 
-// Route::view('profile', 'profile')
-//     ->middleware(['auth'])
-//     ->name('profile');
+Route::middleware(['auth', 'verified', 'onlyAdminWeb', 'setLocale'])->group(function () {
 
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
+    Route::view('dashboard', 'dashboard')->name('dashboard');
 
-require __DIR__.'/auth.php';
+    Route::get('/users', function () {
+        return view('user-manager');
+    })->name('users');
+
+    Route::get('/events', function () {
+    return view('events-manager');
+    })->name('events');
+
+    Route::get('/advise', function () {
+      return view('advise-manager');
+      })->name('advise');
+
+
+    Route::view('profile', 'profile')->name('profile');
+
+    Route::get('pulse', function () {
+        return view('pulse');
+    })->name('pulse');
+
+});
+
+
+
+require __DIR__ . '/auth.php';

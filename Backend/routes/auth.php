@@ -7,11 +7,11 @@ use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 
 Route::middleware('guest')->group(function () {
-    // Volt::route('register', 'pages.auth.register')
-    //     ->name('register');
+    Volt::route('register', 'pages.auth.register')
+        ->name('register');
 
-    // Volt::route('login', 'pages.auth.login')
-    //     ->name('login');
+    Volt::route('login', 'pages.auth.login')
+        ->name('login');
 
     Volt::route('forgot-password', 'pages.auth.forgot-password')
         ->name('password.request');

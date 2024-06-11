@@ -7,6 +7,7 @@ import { UserReduceFollowing } from '../../../interfaces/user-reduce-following';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProfileService } from '../../../services/profile.service';
+import { UserData } from '../../../interfaces/user-data';
 
 @Component({
   selector: 'app-users-searcher',
@@ -28,7 +29,7 @@ export class UsersSearcherComponent implements OnInit {
   searchResults: UserReduced[] = [];
   checkedResults: UserReduceFollowing[] = [];
 
-  logedUserId: number = this.userService.currentUser.value?.id || 0;
+  logedUser: UserData;
 
   isSearching: boolean = false;
   searchInitiated: boolean = false;
@@ -50,6 +51,13 @@ export class UsersSearcherComponent implements OnInit {
         this.checkedResults = [];
       }
     });
+
+    this.userService.currentUser.subscribe(user => {
+      if (user) {
+        this.logedUser = user;
+      }
+    });
+
 
     this.profileService.userFollowed.subscribe(userId => {
       const user = this.checkedResults.find(user => user.id === userId);
@@ -76,7 +84,7 @@ export class UsersSearcherComponent implements OnInit {
       .pipe(takeUntil(this.searchCanceled))
       .subscribe((results: UserReduced[]) => {
         this.searchResults = results;
-        this.searchInitiated = true; 
+        this.searchInitiated = true;
         this.checkFollowing();
       });
   }
@@ -119,9 +127,5 @@ export class UsersSearcherComponent implements OnInit {
       this.isFollowingLoading[userId] = false;
 
     });
-  }
-
-  isLogedUser(userId: number): boolean {
-    return this.logedUserId === userId;
   }
 }

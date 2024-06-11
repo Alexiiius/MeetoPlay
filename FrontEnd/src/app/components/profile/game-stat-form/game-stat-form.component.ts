@@ -3,13 +3,10 @@ import { GameStat } from '../../../interfaces/game-stat';
 import { NewSelectGameComponent } from '../../event-form/new-select-game/new-select-game.component';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Game } from '../../../models/game';
-import { APIService } from '../../../services/api.service';
-import { Gamemode } from '../../../models/gamemode';
 import { CommonModule } from '@angular/common';
 import { FormatedNewGameStat } from '../../../interfaces/formated-new-game-stat';
 import { UserService } from '../../../services/user.service';
 import { AlertService } from '../../../services/alert.service';
-import { Router } from '@angular/router';
 import { ProfileService } from '../../../services/profile.service';
 
 @Component({
@@ -123,6 +120,13 @@ export class GameStatFormComponent implements OnInit {
           this.profileService.gameStatCreated.next(response.data.GameUserStats);
           console.log(response);
           this.closeModal();
+
+          this.gameStatForm.reset({
+            nickname: '',
+            game: { id: -1, name: '👾 Seleccione un juego', image: '' },
+            level: '',
+            hours_played: ''
+          });
         },
         (error) => {
           this.isFormSubmmiting = false;

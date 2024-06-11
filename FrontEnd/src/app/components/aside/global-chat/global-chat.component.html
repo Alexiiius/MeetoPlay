@@ -69,7 +69,7 @@
   <label
     class="input h-8 min-h-8 px-2 min-w-0 bg-neutral w-full mt-3 rounded-box flex items-center gap-0.5 text-base-100">
     <input type="text" class="w-full ml-1 min-w-0" placeholder="Escribe un mensaje..." [(ngModel)]="message"
-      (keydown.enter)="sendMessage()" />
+      (keydown.enter)="sendMessage()" maxlength="255"/>
     <button class="btn btn-ghost btn-sm btn-circle" (click)="toggleEmojis()">
       <i class='bx bx-smile bx-sm'></i>
     </button>

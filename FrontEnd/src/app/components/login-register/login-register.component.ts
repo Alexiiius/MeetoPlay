@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { loginAnimation, registerAnimation } from './login-register-animation';
 import { set } from 'date-fns';
@@ -69,7 +69,7 @@ export class LoginRegisterComponent implements OnInit {
     });
 
     this.registerForm = this.formBuilder.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, this.maxLength(15), this.noWhitespace()]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, this.strongPassword]],
       password_confirmation: ['', [Validators.required, this.checkPasswords.bind(this)]]
@@ -146,6 +146,36 @@ export class LoginRegisterComponent implements OnInit {
     const errors = this.registerForm.get('password_confirmation')?.errors;
     if (errors) {
       return errors['notSame'] ? 'Las contraseñas no coinciden' : '';
+    }
+    return '';
+  }
+
+  // Validador personalizado para comprobar la longitud máxima
+  maxLength(max: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isTooLong = control.value.length > max;
+      return isTooLong ? { 'maxLength': { value: control.value } } : null;
+    };
+  }
+
+  // Validador personalizado para comprobar si hay espacios
+  noWhitespace(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const hasWhitespace = /\s/g.test(control.value);
+      return hasWhitespace ? { 'whitespace': { value: control.value } } : null;
+    };
+  }
+
+  // Para mostrar el error
+  get nameError() {
+    const errors = this.registerForm.get('name')?.errors;
+    if (errors) {
+      if (errors['maxLength']) {
+        return 'El nombre no puede tener más de 15 caracteres.';
+      }
+      if (errors['whitespace']) {
+        return 'El nombre no puede contener espacios.';
+      }
     }
     return '';
   }

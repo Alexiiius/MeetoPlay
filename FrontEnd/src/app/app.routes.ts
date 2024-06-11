@@ -28,7 +28,7 @@ export const routes: Routes = [
       { path: 'chat-with/:usernamefulltag', title: 'Meetoplay | Chat', component: ChatComponent, canActivate: [authGuard, chatGuard] }
     ]
   },
-  { path: 'login', title: 'Meetoplay | Login', component: LoginRegisterComponent, data: { mode: 'login' } },
+  { path: 'login', title: 'Meetoplay', component: LoginRegisterComponent, data: { mode: 'login' } },
   { path: 'register', title: 'Meetoplay | Register', component: LoginRegisterComponent, data: { mode: 'register' } },
   { path: '**', redirectTo: 'main' }
 

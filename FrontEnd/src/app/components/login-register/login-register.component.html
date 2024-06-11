@@ -2,7 +2,12 @@
   <div id="login" [@loginAnimation]="state"
     class="absolute 2xl:w-[600px] w-[400px] 2xl:px-24 px-12 rounded-box bg-gradient-to-b from-violet-500 to-accent col-span-3 flex flex-col items-center justify-center gap-6">
 
-    <h2 class="mb-3 text-base-100 text-2xl">Sign In</h2>
+    <div class="absolute top-6 left-6 flex gap-2 items-center">
+      <object data="assets/favicon.svg" type="image/svg+xml" class="w-10 h-auto"></object>
+      <span>MeetoPlay</span>
+    </div>
+
+    <h2 class="mb-3 text-base-100 text-2xl">Iniciar sesión</h2>
 
     <form [formGroup]="loginForm" (ngSubmit)="login()" class="flex flex-col gap-6 w-full">
 
@@ -27,10 +32,15 @@
         <input class="grow" type="password" placeholder="Contraseña" formControlName="password">
       </label>
 
-      <label class="label cursor-pointer">
-        <span class="label-text text-neutral-800">Remember me</span>
-        <input type="checkbox" checked="checked" class="checkbox" formControlName="rememberMe" />
-      </label>
+      <div class="flex flex-nowrap justify-between">
+        <label class="label cursor-pointer gap-2">
+          <input type="checkbox" checked="checked" class="checkbox bg-base-100" formControlName="rememberMe" />
+          <span class="label-text text-neutral-800">Recordarme</span>
+        </label>
+        <label class="label" >
+          <a href="https://meetoplay.es/forgot-password" class="label-text text-base-100 hover:underline">¿Olvidaste tu contraseña?</a>
+        </label>
+      </div>
 
       @if (logingIn) {
       <button class="btn pointer-events-none">
@@ -44,15 +54,18 @@
       }
 
       @if (loginErrorMessage) {
-        <div role="alert" class="alert alert-error">
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          <span class="text-sm">{{loginErrorMessage}}</span>
-        </div>
+      <div role="alert" class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="text-sm">{{loginErrorMessage}}</span>
+      </div>
       }
 
     </form>
 
-    <span class="text-center text-base-100">¿No tienes cuenta?<a routerLink="/register" class="link ml-2">Crear
+    <span class="text-center text-base-100 text-sm">¿No tienes cuenta?<a routerLink="/register" class="link ml-2">Crear
         cuenta</a></span>
   </div>
 
@@ -107,19 +120,32 @@
   </div>
 
   <div id="register" [@registerAnimation]="state"
-    class="absolute  2xl:w-[600px] w-[400px] 2x:px-24 px-12 rounded-box bg-gradient-to-b from-violet-500 to-accent col-span-3  flex flex-col items-center justify-center gap-6">
-    <h2 class="mb-3 text-base-100 text-2xl">Sign Up</h2>
+    class="absolute 2xl:w-[600px] w-[400px] 2x:px-24 px-12 rounded-box bg-gradient-to-b from-violet-500 to-accent col-span-3  flex flex-col items-center justify-center gap-6">
+
+    <div class="absolute top-6 left-6 flex gap-2 items-center">
+      <object data="assets/favicon.svg" type="image/svg+xml" class="w-10 h-auto"></object>
+      <span>MeetoPlay</span>
+    </div>
+
+    <h2 class="mb-3 text-base-100 text-2xl">Registro</h2>
 
     <form [formGroup]="registerForm" (ngSubmit)="register()" class="flex flex-col gap-6 w-full">
 
-      <label class="input input-bordered flex items-center gap-2"
-        [ngClass]="{'input-error': isInvalid(registerForm, 'username')}">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
-          <path
-            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-        </svg>
-        <input type="text" class="grow" placeholder="Username" formControlName="name" />
-      </label>
+      <div class="relative">
+        <label class="input input-bordered flex items-center gap-2"
+          [ngClass]="{'input-error': isInvalid(registerForm, 'username')}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
+            <path
+              d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+          </svg>
+          <input type="text" class="grow" placeholder="Username" formControlName="name" maxlength="15"/>
+        </label>
+        @if (isInvalid(registerForm, 'name') && nameError !== '') {
+        <div class="label absolute -bottom-6">
+          <span class="label-text-alt text-error">{{nameError}}</span>
+        </div>
+        }
+      </div>
 
       <label class="input input-bordered flex items-center gap-2"
         [ngClass]="{'input-error': isInvalid(registerForm, 'email')}">
@@ -149,7 +175,7 @@
         }
       </div>
 
-      <div>
+      <div class="relative">
         <label class="input input-bordered flex items-center gap-2"
           [ngClass]="{'input-error': isInvalid(registerForm, 'password_confirmation')}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
@@ -161,7 +187,7 @@
             formControlName="password_confirmation">
         </label>
         @if (isInvalid(registerForm, 'password_confirmation')) {
-        <div class="label">
+        <div class="label absolute -bottom-6">
           <span class="label-text-alt text-error">{{passwordConfirmationError}}</span>
         </div>
         }
@@ -182,17 +208,20 @@
     </form>
 
     @if (objectKeys(fieldErrors).length > 0) {
-      <div role="alert" class="alert alert-error">
-        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        @for (key of objectKeys(fieldErrors); track $index) {
-          @for (error of fieldErrors[key]; track $index) {
-            <span class="text-sm">{{error}}</span>
-          }
-        }
-      </div>
+    <div role="alert" class="alert alert-error">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      @for (key of objectKeys(fieldErrors); track $index) {
+      @for (error of fieldErrors[key]; track $index) {
+      <span class="text-sm">{{error}}</span>
+      }
+      }
+    </div>
     }
 
-    <span class="text-center text-base-100">¿Ya tienes cuenta?
+    <span class="text-center text-base-100 text-sm">¿Ya tienes cuenta?
       <a routerLink="/login" class="link ml-2">Iniciar sesión</a>
     </span>
   </div>

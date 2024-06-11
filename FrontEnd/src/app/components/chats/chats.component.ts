@@ -25,6 +25,9 @@ export class ChatsComponent implements OnInit {
   logedUser: UserData;
 
   userIdChatOpen: number;
+  items = Array(5).fill(0);
+
+  chatsLoading: boolean = true;
 
   constructor(
     private chatsService: ChatsService,
@@ -39,6 +42,10 @@ export class ChatsComponent implements OnInit {
         this.logedUser = user;
         this.webSocketService.setupEchoPrivate(user.id)
       }
+    });
+
+    this.chatsService.lastUserChattingWithId.subscribe((userId: number) => {
+      this.moveChatToStart(userId);
     });
 
     this.onChatsLeave();
@@ -70,14 +77,16 @@ export class ChatsComponent implements OnInit {
         const openChatId = Number(sessionStorage.getItem('open_chat_id'));
         chat.open = chat.user.id === openChatId;
       });
+
+      this.chatsLoading = false;
     });
   }
 
 
   addUnreadedMessagesLive(message: any) {
-    const chat = this.chats.find(chat => chat.user.id === message.from_user_id);
+    const chatIndex = this.chats.findIndex(chat => chat.user.id === message.from_user_id);
 
-    if (!chat) {
+    if (chatIndex === -1) {
       this.userService.getUserById(message.from_user_id).subscribe((user: UserData) => {
 
         const userReduced: UserReduced = {
@@ -93,10 +102,28 @@ export class ChatsComponent implements OnInit {
 
       });
 
-    } else if (this.userIdChatOpen !== message.from_user_id) {
-      chat.unreadMessagesCount++;
+    } else {
+
+      const chat = this.chats[chatIndex];
+      if (this.userIdChatOpen !== message.from_user_id) {
+        chat.unreadMessagesCount++;
+      }
+
+      // Mover el chat al principio del array
+      this.chats.splice(chatIndex, 1);
+      this.chats.unshift(chat);
     }
   }
+
+  moveChatToStart(userId: number) {
+    const chatIndex = this.chats.findIndex(chat => chat.user.id === userId);
+
+    if (chatIndex !== -1) {
+      const chat = this.chats[chatIndex];
+      this.chats.splice(chatIndex, 1);
+      this.chats.unshift(chat);
+    }
+  };
 
   notification(message: any) {
     // Check if the browser supports the Notification API
@@ -130,8 +157,13 @@ export class ChatsComponent implements OnInit {
         open: true
       };
 
-      this.chats.push(newChat);
-    } 
+      this.chats.unshift(newChat);
+      this.navigateToChatWithUser(newChat);
+    } else {
+      this.navigateToChatWithUser(existingChat);
+    }
+
+
   }
 
   deleteDuplicatedChats() {
@@ -216,6 +248,7 @@ export class ChatsComponent implements OnInit {
           });
           // También borra el chat abierto de sessionStorage
           sessionStorage.removeItem('open_chat_id');
+          sessionStorage.removeItem('user_chating_with')
         }
       }
     });

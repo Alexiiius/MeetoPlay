@@ -31,7 +31,7 @@
   }
   <label class="input input-bordered flex items-center gap-2 w-full">
 
-    <input type="text" class="grow" [placeholder]="socialNetwork" [(ngModel)]="newSocialLink"/>
+    <input type="text" class="grow" [placeholder]="socialNetwork" [(ngModel)]="newSocialLink" maxlength="100"/>
 
     <button
       [ngClass]="newSocialLink !== socialLink ? 'opacity-100' : 'opacity-0'" [class.opacity-20]="isSavingSocials" [class.bg-transparent]="isSavingSocials"

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { UserData } from '../../interfaces/user-data';
@@ -56,7 +56,9 @@ export class ProfileComponent {
     private userService: UserService,
     private router: Router,
     private profileService: ProfileService,
-    private chatService: ChatsService) { }
+    private chatService: ChatsService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
     ngOnInit() {
       this.route.params.subscribe(params => {
@@ -77,6 +79,7 @@ export class ProfileComponent {
             this.isLoggedUser = isLoggedUser;
             this.isFollowing = isFollowing;
             this.isLoading = false;
+            this.cdr.detectChanges();
           });
         });
       });

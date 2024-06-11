@@ -94,6 +94,78 @@
                 ]
             }
         },
+        "/api/user/{id}": {
+            "get": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Return id, name, email, tag, avatar, date_of_birth, bio and socials from a specific user by id",
+                "operationId": "cfda6034f564816af0b1cdcee832e362",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of user to return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 35
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 35
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "tag": {
+                                            "type": "string",
+                                            "example": "0035"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "user3@example.com"
+                                        },
+                                        "avatar": {
+                                            "type": "string",
+                                            "example": "http://localhost/storage/avatars/default.jpg"
+                                        },
+                                        "date_of_birth": {
+                                            "type": "string",
+                                            "example": null
+                                        },
+                                        "bio": {
+                                            "type": "string",
+                                            "example": "Hello, I am using MeetoPlay!"
+                                        },
+                                        "socials": {
+                                            "type": "string",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [
@@ -147,6 +219,156 @@
                         "description": "Invalid input"
                     }
                 }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login a user and return a new token",
+                "operationId": "c373bc4cffa4a56fc64e3979b8ee7b96",
+                "requestBody": {
+                    "description": "User credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in. New token created and old tokens deleted.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "User logged in. New token created and old tokens deleted."
+                                                },
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "auth_token"
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "http://localhost/api/login"
+                                                        },
+                                                        "register": {
+                                                            "type": "string",
+                                                            "example": "http://localhost/api/register"
+                                                        },
+                                                        "logout": {
+                                                            "type": "string",
+                                                            "example": "http://localhost/api/logout"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "timestamp": {
+                                                    "type": "string",
+                                                    "example": "2022-01-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout the authenticated user and delete all tokens",
+                "operationId": "5ff2dc8b48bff52908d3821a0ecc9b3e",
+                "responses": {
+                    "200": {
+                        "description": "User logged out. All tokens deleted.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "User logged out. All tokens deleted."
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "http://localhost/api/logout"
+                                                        },
+                                                        "login": {
+                                                            "type": "string",
+                                                            "example": "http://localhost/api/login"
+                                                        },
+                                                        "register": {
+                                                            "type": "string",
+                                                            "example": "http://localhost/api/register"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "timestamp": {
+                                                    "type": "string",
+                                                    "example": "2022-01-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         }
     },

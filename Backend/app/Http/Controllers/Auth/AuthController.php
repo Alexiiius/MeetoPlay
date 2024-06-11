@@ -84,6 +84,49 @@ class AuthController extends Controller{
         ]);
     }
 
+
+    /**
+ * @OA\Post(
+ *     path="/api/login",
+ *     summary="Login a user and return a new token",
+ *     tags={"Authentication"},
+ *     @OA\RequestBody(
+ *         description="User credentials",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="email", type="string", example="user@example.com"),
+ *             @OA\Property(property="password", type="string", example="password")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User logged in. New token created and old tokens deleted.",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(property="message", type="string", example="User logged in. New token created and old tokens deleted."),
+ *                 @OA\Property(property="access_token", type="string", example="auth_token"),
+ *                 @OA\Property(property="token_type", type="string", example="Bearer"),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(property="self", type="string", example="http://localhost/api/login"),
+ *                     @OA\Property(property="register", type="string", example="http://localhost/api/register"),
+ *                     @OA\Property(property="logout", type="string", example="http://localhost/api/logout")
+ *                 )
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(property="timestamp", type="string", example="2022-01-01T00:00:00.000000Z")
+ *             )
+ *         )
+ *     )
+ * )
+ */
     public function login(Request $request) {
 
 
@@ -119,6 +162,39 @@ class AuthController extends Controller{
         ]);
     }
 
+
+    /**
+ * @OA\Post(
+ *     path="/api/logout",
+ *     summary="Logout the authenticated user and delete all tokens",
+ *     tags={"Authentication"},
+ *     security={{"Bearer":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="User logged out. All tokens deleted.",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(property="message", type="string", example="User logged out. All tokens deleted."),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(property="self", type="string", example="http://localhost/api/logout"),
+ *                     @OA\Property(property="login", type="string", example="http://localhost/api/login"),
+ *                     @OA\Property(property="register", type="string", example="http://localhost/api/register")
+ *                 )
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(property="timestamp", type="string", example="2022-01-01T00:00:00.000000Z")
+ *             )
+ *         )
+ *     )
+ * )
+ */
     // Destroy all tokens related to the user
     public function logout(Request $request) {
 

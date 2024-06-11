@@ -70,11 +70,44 @@ class UserController extends Controller {
         return $request->user();
     }
 
+
+
     //return a user full data by id
     public function showOld(string $id) {
         return $user = User::find($id);
     }
 
+
+/**
+ * @OA\Get(
+ *    path="/api/user/{id}",
+ *    summary="Return id, name, email, tag, avatar, date_of_birth, bio and socials from a specific user by id",
+ *    tags={"User Endpoints"},
+ *    security={{"Bearer":{}}},
+ *    @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       description="ID of user to return",
+ *       required=true,
+ *       @OA\Schema(type="integer", example=35)
+ *    ),
+ *    @OA\Response(
+ *        response=200,
+ *        description="Successful operation",
+ *        @OA\JsonContent(
+ *           type="object",
+ *           @OA\Property(property="id", type="integer", example=35),
+ *           @OA\Property(property="name", type="string", example="John Doe"),
+ *           @OA\Property(property="tag", type="string", example="0035"),
+ *           @OA\Property(property="email", type="string", example="user3@example.com"),
+ *           @OA\Property(property="avatar", type="string", example="http://localhost/storage/avatars/default.jpg"),
+ *           @OA\Property(property="date_of_birth", type="string", example=null),
+ *           @OA\Property(property="bio", type="string", example="Hello, I am using MeetoPlay!"),
+ *           @OA\Property(property="socials", type="string", example=null)
+ *        )
+ *    )
+ * )
+ */
     //return a user not sensitive data by id
     public function showNew(string $id) {
         $user = User::where('id', $id)

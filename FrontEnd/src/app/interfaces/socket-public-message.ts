@@ -4,6 +4,6 @@ export interface SocketPublicMessage {
   to_user_id: number;
   from_user_name: string;
   text: string;
-  time: string;
+  created_at: string;
   color: string;
 }

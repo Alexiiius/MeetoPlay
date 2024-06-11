@@ -92,6 +92,12 @@ export class EditProfileComponent implements OnInit{
   }
 
   openPassConfirmationModal() {
+    // Comprobación de la longitud y de los espacios
+    if (this.newNickname.length > 15 || /\s/g.test(this.newNickname)) {
+      this.alertService.showAlert('warning', 'El nickname no puede tener más de 15 caracteres ni contener espacios.');
+      this.isCheckingPassword = false;
+      return;
+    }
     this.modalDialog.nativeElement.showModal();
   }
 
@@ -122,25 +128,26 @@ export class EditProfileComponent implements OnInit{
   }
 
   saveNewNickname() {
-    this.isCheckingPassword = true;
-    if (this.newNickname !== this.originalNickname) {
-      this.profileService.updateName(this.newNickname, this.password).subscribe(
-        (response) => {
-          console.log('Name updated:', response);
-          this.alertService.showAlert('success', 'Nickname actualizado correctamente 🎉');
-          this.originalNickname = this.newNickname;
-          this.profileService.profileNameUpdated.next(this.newNickname);
-          this.isCheckingPassword = false;
-          this.closePassConfirmationModal();
-        },
-        (error) => {
-          console.error('Error updating name:', error);
-          this.alertService.showAlert('error', 'Error al actualizar tu nickname 😢');
-          this.isCheckingPassword = false;
-          this.showWrongPassword =  true;
-        });
-    }
+  this.isCheckingPassword = true;
+  if (this.newNickname !== this.originalNickname) {
+
+    this.profileService.updateName(this.newNickname, this.password).subscribe(
+      (response) => {
+        console.log('Name updated:', response);
+        this.alertService.showAlert('success', 'Nickname actualizado correctamente 🎉');
+        this.originalNickname = this.newNickname;
+        this.profileService.profileNameUpdated.next(this.newNickname);
+        this.isCheckingPassword = false;
+        this.closePassConfirmationModal();
+      },
+      (error) => {
+        console.error('Error updating name:', error);
+        this.alertService.showAlert('error', 'Error al actualizar tu nickname 😢');
+        this.isCheckingPassword = false;
+        this.showWrongPassword =  true;
+      });
   }
+}
 
   saveNewBio() {
     this.isSavingBio = true;

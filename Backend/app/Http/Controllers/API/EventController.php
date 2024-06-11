@@ -12,12 +12,92 @@ use App\Models\EventRequirement;
 use App\Models\User;
 use App\Models\Event;
 
+
+/**
+ * @OA\Tag(
+ *     name="Events",
+ *     description="Endpoints for Events"
+ * )
+ */
 class EventController extends Controller
 {
 
 
-    public function store(Request $request)
-    {
+
+    /**
+ * @OA\Post(
+ *     path="/api/event/create",
+ *     summary="Create a new event",
+ *     tags={"Events"},
+ *     security={{"Bearer":{}}},
+ *     @OA\RequestBody(
+ *         description="Event data to be created",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="event", type="object", 
+ *                     @OA\Property(property="event_title", type="string", example="Event Title"),
+ *                     @OA\Property(property="game_id", type="integer", example=1),
+ *                     @OA\Property(property="game_name", type="string", example="Game Name"),
+ *                     @OA\Property(property="game_mode", type="string", example="Game Mode"),
+ *                     @OA\Property(property="game_pic", type="string", example="http://example.com/game.jpg"),
+ *                     @OA\Property(property="platform", type="string", example="Platform"),
+ *                     @OA\Property(property="event_owner_id", type="integer", example=1),
+ *                     @OA\Property(property="date_time_begin", type="string", example="01-01-2022T00:00:00"),
+ *                     @OA\Property(property="date_time_end", type="string", example="01-01-2022T00:00:00"),
+ *                     @OA\Property(property="date_time_inscription_begin", type="string", example="01-01-2022T00:00:00"),
+ *                     @OA\Property(property="date_time_inscription_end", type="string", example="01-01-2022T00:00:00"),
+ *                     @OA\Property(property="max_participants", type="integer", example=100),
+ *                     @OA\Property(property="privacy", type="string", example="public"),
+ *                     @OA\Property(property="event_requirements", type="object", 
+ *                         @OA\Property(property="max_rank", type="string", example="Rank"),
+ *                         @OA\Property(property="min_rank", type="string", example="Rank"),
+ *                         @OA\Property(property="max_level", type="integer", example=100),
+ *                         @OA\Property(property="min_level", type="integer", example=1),
+ *                         @OA\Property(property="max_hours_played", type="integer", example=1000),
+ *                         @OA\Property(property="min_hours_played", type="integer", example=100)
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Event created successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="message", type="string", example="Event created successfully!"),
+ *                 @OA\Property(property="Links", type="object", 
+ *                     @OA\Property(property="self", type="string", example="/api/create/event"),
+ *                     @OA\Property(property="event", type="string", example="/api/event/{event_id}")
+ *                 ),
+ *                 @OA\Property(property="meta", type="object", 
+ *                     @OA\Property(property="timestamp", type="string", example="01-01-2022T00:00:00. UTC")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Bad Request.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Unauthorized.")
+ *         )
+ *     )
+ * )
+ */
+    public function store(Request $request) {
         $request->validate([
             'data.event.event_title' => 'required|string',
             'data.event.game_id' => 'required|integer',

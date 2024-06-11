@@ -64,7 +64,7 @@ export class GameStatCardComponent implements OnInit {
     this.getFullGame();
 
     this.userService.currentUser.subscribe(user => {
-      if(user){
+      if (user) {
         this.logedUser = user;
       }
     });
@@ -78,12 +78,16 @@ export class GameStatCardComponent implements OnInit {
       if (!this.gameStat.gamemode_stats) {
         this.gameStat.gamemode_stats = [];
       }
-      this.gameStat.gamemode_stats.push(newGamemodeStat);
+      if (newGamemodeStat.game_user_stats_id === this.gameStat.id) {
+        this.gameStat.gamemode_stats.push(newGamemodeStat);
+      }
     });
-
+    
     this.profileService.gamemodeStatEdited.subscribe(editedGamemodeStat => {
-      this.gameStat.gamemode_stats.push(editedGamemodeStat);
-      this.editingGamemodeStat = this.defaultGamemodeStat;
+      if (editedGamemodeStat.game_user_stats_id === this.gameStat.id) {
+        this.gameStat.gamemode_stats.push(editedGamemodeStat);
+        this.editingGamemodeStat = this.defaultGamemodeStat;
+      }
     });
 
     this.profileService.gamemodeStatEditCancelled.subscribe(restoredGamemodeStat => {
@@ -153,7 +157,7 @@ export class GameStatCardComponent implements OnInit {
 
   deleteGamemodeStat() {
     this.isDeleting = true;
-    this.userService.deleteGameStat(this.gameStat.id).subscribe( () => {
+    this.userService.deleteGameStat(this.gameStat.id).subscribe(() => {
       this.isDeleting = false;
       this.profileService.gameStatDeleted.next(this.gameStat.id);
     });

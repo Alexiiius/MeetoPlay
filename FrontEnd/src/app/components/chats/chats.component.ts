@@ -25,6 +25,9 @@ export class ChatsComponent implements OnInit {
   logedUser: UserData;
 
   userIdChatOpen: number;
+  items = Array(5).fill(0);
+
+  chatsLoading: boolean = true;
 
   constructor(
     private chatsService: ChatsService,
@@ -74,6 +77,8 @@ export class ChatsComponent implements OnInit {
         const openChatId = Number(sessionStorage.getItem('open_chat_id'));
         chat.open = chat.user.id === openChatId;
       });
+
+      this.chatsLoading = false;
     });
   }
 

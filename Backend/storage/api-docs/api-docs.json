@@ -10,6 +10,153 @@
         "version": "1.0"
     },
     "paths": {
+        "/api/advises/create": {
+            "post": {
+                "tags": [
+                    "Advises"
+                ],
+                "summary": "Create a new advise. Only for ADMIN",
+                "operationId": "createAdvise",
+                "requestBody": {
+                    "description": "Advise to add",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "time_start": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "time_end": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Advise created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "type": "string"
+                                                },
+                                                "time_start": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "time_end": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/advises/get": {
+            "get": {
+                "tags": [
+                    "Advises"
+                ],
+                "summary": "Get all active advises",
+                "operationId": "getActualAdvises",
+                "responses": {
+                    "200": {
+                        "description": "Active advises retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "time_start": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "time_end": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/event/create": {
             "post": {
                 "tags": [
@@ -4009,6 +4156,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Advises",
+            "description": "Endpoints for Advises"
+        },
         {
             "name": "Events",
             "description": "Endpoints for Events"

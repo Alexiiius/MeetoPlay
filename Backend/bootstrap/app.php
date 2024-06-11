@@ -42,21 +42,26 @@ return Application::configure(basePath: dirname(__DIR__))
         ['prefix' => 'api', 'middleware' => ['auth:sanctum']],
     )
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (AuthenticationException $e) {
-            return response()->json([
-                'data' => [
-                    'message' => 'Unauthorized access',
-                    'errors' => $e->getMessage(),
-                    'Links' => [
-                        'self' => url('/api/register'),
-                        'login' => url('/api/login'),
-                        'logout' => url('/api/logout'),
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'data' => [
+                        'message' => 'Unauthorized access',
+                        'errors' => $e->getMessage(),
+                        'Links' => [
+                            'self' => url('/api/register'),
+                            'login' => url('/api/login'),
+                            'logout' => url('/api/logout'),
+                        ],
                     ],
-                ],
-                'meta' => [
-                    'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
-                ],
-            ], 401);
+                    'meta' => [
+                        'timestamp' => now()->format('d-m-Y\TH:i:s. T'),
+                    ],
+                ], 401);
+            }else{
+                return redirect('/login')->with('error', 'Unauthorized access');
+            }
         });
         $exceptions->render(function (MethodNotAllowedHttpException $e) {
             return response()->json([

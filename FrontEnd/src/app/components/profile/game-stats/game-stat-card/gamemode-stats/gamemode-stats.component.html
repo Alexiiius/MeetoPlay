@@ -1,0 +1,25 @@
+<td class=" p-2 pl-4">{{gamemodeStat.gamemode_name}}</td>
+<td class=" p-2 pl-4">{{gamemodeStat.gamemodes_rank}}</td>
+@if (logedUser.id === profileId) {
+  <td class="flex gap-2 p-2 pl-4">
+
+    @if (isLoading) {
+      <button class="btn btn-ghost btn-sm btn-square hover:bg-base-300 cursor-wait" (click)="$event.stopPropagation()">
+        <span class="loading loading-spinner text-secondary"></span>
+      </button>
+    } @else {
+      <button class="btn btn-ghost btn-sm btn-square hover:bg-base-300" (click)="editGamemodeStat(); $event.stopPropagation()">
+        <i class='bx bx-edit-alt bx-sm text-secondary'></i>
+      </button>
+    }
+
+    <button class="btn btn-ghost btn-sm btn-square hover:bg-base-300"
+      (click)="deleteGamemodeStat(gamemodeStat.id); $event.stopPropagation()">
+      @if (deletingGameStat) {
+      <span class="loading loading-spinner text-error"></span>
+      } @else {
+      <i class='bx bx-trash bx-sm text-error'></i>
+      }
+    </button>
+  </td>
+}

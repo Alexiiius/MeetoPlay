@@ -1,9 +1,9 @@
 export class Platform {
   id: number;
-  name: string;
+  platform: string;
 
-  constructor(id: number, name: string) {
+  constructor(id: number, platform: string) {
     this.id = id;
-    this.name = name;
+    this.platform = platform;
   }
 }

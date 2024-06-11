@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { backAPIUrl } from '../config';
 import { Router } from '@angular/router';
 import { LoginResponse, RegisterResponse } from '../interfaces/back-end-api-response';
+import { UserData } from '../interfaces/user-data';
+import { UserReduced } from '../interfaces/user-reduced';
+import { ProfileService } from './profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,17 +15,41 @@ export class AuthService {
   private backAPIUrl = backAPIUrl;
 
   public isAuth = new BehaviorSubject<boolean>(false);
+  public isAuth$ = this.isAuth.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {
-    this.autoLogin();
+  public userData = new BehaviorSubject<UserData | null>(null);
+
+  public currentUserSafe: UserData | null;
+
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private profileService: ProfileService) {
+
+    this.profileService.profileAvatarUpdated.subscribe(newAvatar => {
+      let userData = JSON.parse(sessionStorage.getItem('user_data') || '{}');
+      userData.avatar = newAvatar;
+      sessionStorage.setItem('user_data', JSON.stringify(userData));
+    });
+
+    this.profileService.profileNameUpdated.subscribe(newName => {
+      let userData = JSON.parse(sessionStorage.getItem('user_data') || '{}');
+      userData.name = newName;
+      sessionStorage.setItem('user_data', JSON.stringify(userData));
+    });
   }
 
-  autoLogin() {
-    const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
-    if (token) {
-      this.isAuth.next(true);
-      this.router.navigate(['/main']);
-    }
+  checkToken(): Observable<any> {
+    return new Observable<any>(observer => {
+      const subscription = this.http.get(`${this.backAPIUrl}/check-token`).subscribe(
+        (response: any) => {
+          observer.next(response);
+          observer.complete();
+          subscription.unsubscribe();
+        },
+      );
+  });
+
   }
 
   login(credentials: any): Observable<any> {
@@ -34,29 +61,11 @@ export class AuthService {
         return token;
       }),
       catchError(errorResponse => {
-        // Access the error object
         const error = errorResponse.error;
-        // Now you can access error.data, error.meta, etc.
-        // For example, convert the error into a user-friendly format
         return throwError({ error: true, message: error.data.message });
       })
     );
   }
-
-  // login(user: any): Observable<any> {
-  //   const formatedUser = {
-  //     email: user.email,
-  //     password: user.password
-  //   }
-
-  //   return this.http.post(this.backAPIUrl + '/login', formatedUser).pipe(
-  //     tap(() => { // Update the value of isLoggedIn
-  //       console.log('User logged in')
-  //       this.isAuth.next(true);
-  //       this.router.navigate(['/main']);
-  //     })
-  //   );
-  // }
 
   register(credentials: any): Observable<any> {
     return this.http.post<RegisterResponse>(this.backAPIUrl + '/register', credentials).pipe(
@@ -66,10 +75,7 @@ export class AuthService {
         return token;
       }),
       catchError(errorResponse => {
-        // Access the error object
         const error = errorResponse.error;
-        // Now you can access error.data, error.meta, etc.
-        // For example, convert the error into a user-friendly format
         if (error.data && error.data.errors) {
           return throwError({ error: true, message: error.data.message, errors: error.data.errors });
         } else {
@@ -79,46 +85,106 @@ export class AuthService {
     );
   }
 
-  // register(user: any): Observable<any> {
+  storeToken(token: string, rememberMe: boolean): Promise<void> {
+    localStorage.removeItem('access_token');
+    sessionStorage.removeItem('access_token');
+    return new Promise((resolve, reject) => {
+      if (rememberMe) {
+        localStorage.setItem('access_token', token);
+        sessionStorage.setItem('access_token', token);
+      } else {
+        sessionStorage.setItem('access_token', token);
+      }
+      resolve();
+    });
+  }
 
-  //   const formatedUser = {
-  //     name: user.username,
-  //     email: user.email,
-  //     password: user.password,
-  //     password_confirmation: user.password_confirmation
-  //   }
+  storeUserData(userData: UserData): Promise<void> {
+    return new Promise((resolve, reject) => {
+      let storedData: UserReduced = {
+        id: userData.id,
+        name: userData.name,
+        tag: userData.tag,
+        full_tag: `${userData.name}#${userData.tag}`,
+        avatar: userData.avatar,
+        status: 'Online'
+      };
+      sessionStorage.setItem('user_data', JSON.stringify(storedData));
+      resolve();
+    });
+  }
 
-  //   console.log(formatedUser);
+  updateUserData(userData: UserData): Promise<void> {
+    return new Promise((resolve, reject) => {
+      let storedData: UserReduced = {
+        id: userData.id,
+        name: userData.name,
+        tag: userData.tag,
+        full_tag: `${userData.name}#${userData.tag}`,
+        avatar: userData.avatar,
+        status: 'Online'
+      };
+      sessionStorage.setItem('user_data', JSON.stringify(storedData));
+      resolve();
+    });
+  }
 
-  //   return this.http.post(this.backAPIUrl + '/register', formatedUser).pipe(
-  //     tap(() => { // Update the value of isLoggedIn
-  //       console.log('User registered')
-  //       this.isAuth.next(true);
-  //       this.router.navigate(['/main']);
-  //     })
-  //   );
-  // }
+  retrieveUserData(): UserData | null {
+    const userData = sessionStorage.getItem('user_data');
+    return userData ? JSON.parse(userData) : null;
+  }
 
-  storeToken(token: string, rememberMe: boolean) {
-    if (rememberMe) {
-      localStorage.setItem('access_token', token);
+  getUserDataSafe(): void {
+    this.http.get<UserData>(this.backAPIUrl + '/user').subscribe(userData => {
+      this.currentUserSafe = userData;
+    });
+  }
+
+  getUserData(): Observable<UserData> {
+    const storedUserData = this.retrieveUserData();
+    if (storedUserData) {
+      this.userData.next(storedUserData);
+      return of(storedUserData);
     } else {
-      sessionStorage.setItem('access_token', token);
+      return this.http.get<UserData>(this.backAPIUrl + '/user').pipe(
+        tap(userData => {
+          this.userData.next(userData);
+          this.storeUserData(userData);
+          this.getUserDataSafe();
+        })
+      );
     }
   }
 
-  logout() {
-    return this.http.post(this.backAPIUrl + '/logout', '').subscribe(
-      response => {
-        console.log(response);
+  clientLogout(): void {
+    this.isAuth.next(false);
+    this.router.navigate(['/login']).then(() => {
+      localStorage.removeItem('access_token');
+      sessionStorage.removeItem('access_token');
+      sessionStorage.removeItem('user_data');
+      this.currentUserSafe = null;
+      this.userData.next(null);
+    });
+  }
+
+  logout(): Observable<any> {
+    return this.profileService.setUserStatus('offline').pipe(
+      switchMap(() => {
+        return this.http.post(this.backAPIUrl + '/logout', '');
+      }),
+      tap(() => {
         localStorage.removeItem('access_token');
         sessionStorage.removeItem('access_token');
+        sessionStorage.removeItem('user_data');
         this.isAuth.next(false);
         this.router.navigate(['/login']);
-      },
-      error => {
+        this.currentUserSafe = null;
+        this.userData.next(null);
+      }),
+      catchError(error => {
         console.log(error);
-      }
+        return throwError(error);
+      })
     );
   }
 }

@@ -11,11 +11,41 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\URL;
+use Carbon\Carbon;
 
+/**
+ * @OA\Tag(
+ *     name="Authentication",
+ *     description="API Endpoints of Authentication"
+ * )
+ */
 class AuthController extends Controller{
 
-
-
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Register a new user",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","password_confirmation"},
+     *             @OA\Property(property="name", type="string", format="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User registered successfully",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input",
+     *     )
+     * )
+     */
     public function register(Request $request)  {
 
         if ($this->validateCredentials($request)) {
@@ -55,6 +85,49 @@ class AuthController extends Controller{
         ]);
     }
 
+
+    /**
+ * @OA\Post(
+ *     path="/api/login",
+ *     summary="Login a user and return a new token",
+ *     tags={"Authentication"},
+ *     @OA\RequestBody(
+ *         description="User credentials",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="email", type="string", example="user@example.com"),
+ *             @OA\Property(property="password", type="string", example="password")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User logged in. New token created and old tokens deleted.",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(property="message", type="string", example="User logged in. New token created and old tokens deleted."),
+ *                 @OA\Property(property="access_token", type="string", example="auth_token"),
+ *                 @OA\Property(property="token_type", type="string", example="Bearer"),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(property="self", type="string", example="http://localhost/api/login"),
+ *                     @OA\Property(property="register", type="string", example="http://localhost/api/register"),
+ *                     @OA\Property(property="logout", type="string", example="http://localhost/api/logout")
+ *                 )
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(property="timestamp", type="string", example="2022-01-01T00:00:00.000000Z")
+ *             )
+ *         )
+ *     )
+ * )
+ */
     public function login(Request $request) {
 
 
@@ -90,6 +163,39 @@ class AuthController extends Controller{
         ]);
     }
 
+
+    /**
+ * @OA\Post(
+ *     path="/api/logout",
+ *     summary="Logout the authenticated user and delete all tokens",
+ *     tags={"Authentication"},
+ *     security={{"Bearer":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="User logged out. All tokens deleted.",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(property="message", type="string", example="User logged out. All tokens deleted."),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(property="self", type="string", example="http://localhost/api/logout"),
+ *                     @OA\Property(property="login", type="string", example="http://localhost/api/login"),
+ *                     @OA\Property(property="register", type="string", example="http://localhost/api/register")
+ *                 )
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(property="timestamp", type="string", example="2022-01-01T00:00:00.000000Z")
+ *             )
+ *         )
+ *     )
+ * )
+ */
     // Destroy all tokens related to the user
     public function logout(Request $request) {
 
@@ -173,6 +279,38 @@ class AuthController extends Controller{
             return $this->genericError('Invalid credentials. Please try again.', null);
         }
         return null;
+    }
+
+
+    /**
+     * @OA\Get(
+     *     path="/api/check-token",
+     *     summary="Return 200 if the token provided is valid",
+     *     tags={"Authentication"},
+     *     security={{"Bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Return 200 if the token provided is valid",
+     *     )
+     * )
+     */
+    public function checkToenValid() {
+        return response()->json(['message' => 'Token is valid'], 200); //return 200 if the token provided is valid (because dani asked for this shitty endpoint)
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/health-check",
+     *     tags={"Authentication"},
+     *     summary="Return OK and timestamp if the server is running",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Return OK and timestamp if the server is running",
+     *     )
+     * )
+     */
+    public function healthCheck() {
+        return response()->json([ 'status' => 'OK', 'timestamp' => Carbon::now() ]);
     }
 
 }

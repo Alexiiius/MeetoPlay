@@ -1,1 +1,38 @@
-<div class=""></div>
+<div class="w-full h-full grid grid-rows-1 grid-cols-3 items-center">
+  <!-- Userdata -->
+  <div class="dropdown dropdown-top col-span-2">
+    <div tabindex="0" role="button" class="flex items-center space-x-3">
+      <!-- Avatar -->
+      <div class="avatar">
+        <div class="w-12 rounded-full">
+          @if (isLoading) {
+          <div class="skeleton w-12 h-12 rounded-full shrink-0"></div>
+          } @else {
+            <img src="{{user?.avatar}}" />
+          }
+        </div>
+      </div>
+
+      <!-- Username + Status -->
+      <div class="flex flex-col flex-grow min-w-0">
+        <div class="flex flex-col">
+          @if (isLoading) {
+          <div class="skeleton w-20 h-3 mb-1"></div>
+          } @else {
+            <span class=" overflow-hidden whitespace-nowrap text-ellipsis max-w-full min-w-0">{{user?.name}}</span>
+          }
+          <app-user-status [isLoading]="isLoading" [user]="user" [sizeClass]="'small'"></app-user-status>
+        </div>
+      </div>
+    </div>
+    <ul tabindex="0" class="dropdown-content z-[1] shadow bg-base-200 rounded-box w-60 mb-3">
+      <app-extra [isLoading]="isLoading" [user]="user"></app-extra>
+    </ul>
+  </div>
+
+  <!-- Home BTN -->
+  <div class="flex flex-nowrap justify-end items-center">
+    <app-home></app-home>
+    <app-settings></app-settings>
+  </div>
+</div>

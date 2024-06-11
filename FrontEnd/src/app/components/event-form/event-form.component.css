@@ -1,0 +1,13 @@
+input[type="datetime-local"] {
+  color-scheme: dark light;
+}
+
+.scrollbar-hidde {
+  scrollbar-width: none; /* Para Firefox */
+  -ms-overflow-style: none;  /* Para Internet Explorer y Edge */
+}
+
+.scrollbar-hidde::-webkit-scrollbar {
+  display: none; /* Para Chrome, Safari y Opera */
+}
+

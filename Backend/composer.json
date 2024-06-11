@@ -6,7 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "consoletvs/charts": "^6.7",
+        "darkaonline/l5-swagger": "^8.6",
+        "intervention/image": "^3.6",
+        "intervention/image-laravel": "^1.2",
         "laravel/framework": "^11.0",
+        "laravel/pulse": "^1.1",
+        "laravel/reverb": "@beta",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.4",

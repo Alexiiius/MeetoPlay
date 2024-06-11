@@ -11,9 +11,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Event;
+use App\Models\Message;
+use App\Models\GameUserStats;
+use App\Models\GameModeStats;
+use Illuminate\Contracts\Auth\CanResetPassword;
 
-class User extends Authenticatable implements MustVerifyEmail
-{
+class User extends Authenticatable implements MustVerifyEmail, CanResetPassword {
     use HasFactory, Notifiable, HasApiTokens;
 
     /**
@@ -121,6 +126,86 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function sendEmailVerificationNotification() {
         $this->notify(new VerifyEmail);
+    }
+
+    public function followers() {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
+    }
+
+    public function following() {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
+    }
+
+    public function followingArray() {
+        return $this->following()->get()->pluck('id');
+    }
+
+    public function events() {
+        return $this->belongsToMany(Event::class, 'event_users', 'user_id', 'event_id');
+    }
+
+    public function friends() {
+        $followers = $this->followers()->get();
+        $following = $this->following()->get();
+        $friends = User::whereHas('followers', function ($query) {
+            $query->where('follower_id', $this->id);
+        })->whereHas('following', function ($query) {
+            $query->where('user_id', $this->id);
+        })->get();
+    
+        return $friends->pluck('id');
+    }
+
+    public function getFollowersWithTags() {
+        return $this->followers()->get()->map(function ($follower) {
+            return [
+                'id' => $follower->id,
+                'tag' => $follower->tag,
+                'name' => $follower->name,
+                'full_tag' => $follower->getFullNameAttribute(),
+                'avatar' => $follower->avatar,
+                'status' => $follower->status,
+            ];
+        });
+    }
+
+    public function getFollowingWithTags() {
+        return $this->following()->get()->map(function ($following) {
+            return [
+                'id' => $following->id,
+                'tag' => $following->tag,
+                'name' => $following->name,
+                'full_tag' => $following->getFullNameAttribute(),
+                'avatar' => $following->avatar,
+                'status' => $following->status,
+            ];
+        });
+    }
+
+    public function sentMessages(): HasMany {
+        return $this->hasMany(Message::class, 'from_user_id');
+    }
+
+    public function receivedMessages(): HasMany {
+        return $this->hasMany(Message::class, 'to_user_id');
+    }
+
+    public function gameStats() {
+        return $this->hasMany(GameUserStats::class, 'user_id', 'id');
+    }
+
+    public function gameModes() {
+        return $this->hasMany(GameModeStats::class, 'user_id', 'id');
+    }
+
+    public function setStatus($status) {
+ 
+        if (!in_array($status, ['online', 'offline', 'afk', 'dnd', 'invisible'])) {
+            throw new \Exception('Invalid status.');
+        }
+ 
+        $this->status = $status;
+        $this->save();
     }
 
 }

@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Events;
+
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+use App\Models\Message;
+use App\Models\User;
+
+class GlobalMessage implements ShouldBroadcast {
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public array $message;
+
+    public function __construct(array $data) {
+        $this->message = $data;
+    }
+
+
+    public function broadcastOn(): array {
+        return [
+            new Channel('public'),
+        ];
+    }
+
+
+}

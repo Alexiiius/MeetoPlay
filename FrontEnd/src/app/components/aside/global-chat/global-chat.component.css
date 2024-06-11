@@ -1,0 +1,27 @@
+/* Estilo para la barra de desplazamiento */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Estilo para la pista de la barra de desplazamiento */
+::-webkit-scrollbar-track {
+  background: #26262600;
+  border-radius: 10px;
+}
+
+/* Estilo para la manija de la barra de desplazamiento al pasar el mouse */
+::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
+
+/* Estilo para la manija de la barra de desplazamiento cuando no se está haciendo hover */
+::-webkit-scrollbar-thumb {
+  background: #38bff8a1;
+  width: 3px;
+  border-radius: 10px;
+  transition: all 1s ease;
+}
+
+#publicMessagesContainer {
+  transition: scrollTop 0.5s;
+}

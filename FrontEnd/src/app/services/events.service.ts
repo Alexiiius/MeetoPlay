@@ -1,61 +1,114 @@
 import { Injectable } from '@angular/core';
-import { FormatedNewEvent } from '../interfaces/formated-new-event';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { backAPIUrl } from '../config';
+import { Observable, Subject } from 'rxjs';
+import { UserReduced } from '../interfaces/user-reduced';
+import { Owner } from '../models/owner';
+import { EventRequirments } from '../models/eventRequirments';
+import { Event } from '../models/event';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventsService {
 
-  YOUR_TOKEN = 'YOUR_TOKEN'
   private backAPIUrl = backAPIUrl;
+
   constructor(private http: HttpClient) { }
 
   postNewEvent(newEvent: any) {
-    let formatedNewEvent = this.formatNewEvent(newEvent);
-    console.log('Creating new event: ');
-    console.log(formatedNewEvent);
-
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + this.YOUR_TOKEN
-    });
-
-    return this.http.post(this.backAPIUrl + '/create/event', formatedNewEvent, { headers: headers });
+    return this.http.post(this.backAPIUrl + '/event/create', newEvent);
   }
 
-  formatNewEvent(newEvent: any): FormatedNewEvent {
+  updateEvent(eventId: number, updatedEvent: any) {
+    return this.http.put(this.backAPIUrl + '/event/update/' + eventId, updatedEvent);
+  }
 
-    let formatedNewEvent = {
-      data: {
-        event: {
-          event_title: newEvent.whatForm.title,
-          game_id: newEvent.whatForm.game.id,
-          game_name: newEvent.whatForm.game.name,
-          game_mode: newEvent.whatForm.gameMode.name,
-          game_pic: newEvent.whatForm.game.image,
-          platform: newEvent.whatForm.platform.name,
-          event_owner_id: 1, //TODO: Cambiar por el id del usuario logueado
-          date_time_begin: newEvent.whenForm.eventBegin,
-          date_time_end: newEvent.whenForm.eventEnd,
-          date_time_inscription_begin: newEvent.toggleInscription ? newEvent.whenForm.inscriptionBegin : null,
-          date_time_inscription_end: newEvent.toggleInscription ? newEvent.whenForm.inscriptionEnd : null,
-          max_participants: newEvent.whoForm.maxParticipants ? newEvent.whoForm.maxParticipants : 0,
-          privacy: newEvent.whoForm.privacy,
-        },
-        event_requirements: {
+  deleteEvent(eventId: number) {
+    return this.http.delete(this.backAPIUrl + '/event/delete/' + eventId);
+  }
 
-          max_rank: newEvent.whoForm.toggleRequirments && newEvent.whoForm.rank ? newEvent.whoForm.maxRank : null,
-          min_rank: newEvent.whoForm.toggleRequirments && newEvent.whoForm.rank ? newEvent.whoForm.minRank : null,
+  getPublicEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/public/${page}`);
+  }
 
-          max_level: newEvent.whoForm.toggleRequirments && newEvent.whoForm.level ? newEvent.whoForm.maxLevel : null,
-          min_level: newEvent.whoForm.toggleRequirments && newEvent.whoForm.level ? newEvent.whoForm.minLevel : null,
+  getFriendsEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/friends/${page}`);
+  }
 
-          max_hours_played: newEvent.whoForm.toggleRequirments && newEvent.whoForm.hoursPlayed ? newEvent.whoForm.maxHours : null,
-          min_hours_played: newEvent.whoForm.toggleRequirments && newEvent.whoForm.hoursPlayed ? newEvent.whoForm.minHours : null
-        }
-      }
-    }
-    return formatedNewEvent;
+  getFollowingEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/following/${page}`);
+  }
+
+  getHiddenEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/hidden/${page}`);
+  }
+
+  getMyEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/my/${page}`);
+  }
+
+  getParticipatingEvents(page: number) {
+    return this.http.get<any[]>(`${this.backAPIUrl}/events/participating/${page}`);
+  }
+
+  getSearchedEvents(page: number, group: string, search: string): Observable<{data: {events: any[]}}> {
+    console.log(`${this.backAPIUrl}/events/search/${search}/${group}/${page}`);
+    return this.http.get<{data: {events: any[]}}>(`${this.backAPIUrl}/events/search/${search}/${group}/${page}`);
+  }
+
+  joinEvent(eventId: number) {
+    return this.http.post(`${this.backAPIUrl}/event/${eventId}/join`, {});
+  }
+
+  leaveEvent(eventId: number) {
+    return this.http.post(`${this.backAPIUrl}/event/${eventId}/leave`, {});
+  }
+
+  transformToEvent(apiResponse: any): Event {
+    const eventRequirments = new EventRequirments(
+      apiResponse.event_requirements.max_rank,
+      apiResponse.event_requirements.min_rank,
+      apiResponse.event_requirements.max_level,
+      apiResponse.event_requirements.min_level,
+      apiResponse.event_requirements.max_hours_played,
+      apiResponse.event_requirements.min_hours_played
+    );
+
+    const owner = new Owner(
+      apiResponse.owner.id,
+      apiResponse.owner.tag,
+      apiResponse.owner.name,
+      apiResponse.owner.avatar
+    );
+
+    const participants = apiResponse.participants.map((participant: any) => {
+      return {
+        id: participant.id,
+        name: participant.name,
+        tag: participant.tag,
+        avatar: participant.avatar,
+        status: participant.status
+      } as UserReduced;
+
+    }); return new Event(
+      apiResponse.id,
+      apiResponse.event_title,
+      apiResponse.game_id,
+      apiResponse.game_name,
+      apiResponse.game_mode,
+      apiResponse.game_pic,
+      apiResponse.platform,
+      apiResponse.event_owner_id,
+      apiResponse.date_time_begin,
+      apiResponse.date_time_end,
+      apiResponse.date_time_inscription_begin,
+      apiResponse.date_time_inscription_end,
+      apiResponse.max_participants,
+      apiResponse.privacy,
+      eventRequirments,
+      owner,
+      participants
+    );
   }
 }

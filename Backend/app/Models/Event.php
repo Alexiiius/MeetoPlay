@@ -31,9 +31,33 @@ class Event extends Model {
         return $this->belongsTo(User::class, 'event_owner_id');
     }
 
-    public function requirement() {
+    public function event_requirements() {
         return $this->belongsTo(EventRequirement::class, 'event_requirement_id');
     }
+
+    public function participants() {
+        return $this->belongsToMany(User::class, 'event_users', 'event_id', 'user_id');
+    }
+
+    public function insertParticipant($user_id) {
+        if ($this->participants()->where('users.id', $user_id)->exists()) {
+            throw new \Exception('Already a participant');
+        }
+    
+        $this->participants()->attach($user_id);
+        $this->participants()->where('users.id', $user_id)->updateExistingPivot($user_id, ['created_at' => now()]);
+        $this->participants()->where('users.id', $user_id)->updateExistingPivot($user_id, ['updated_at' => now()]);
+        $this->save();
+    }
+    
+    public function removeParticipant($user_id) {
+        if (!$this->participants()->where('users.id', $user_id)->exists()) {
+            throw new \Exception('Not a participant');
+        }
+    
+        $this->participants()->detach($user_id);
+    }
+
 
     
 }

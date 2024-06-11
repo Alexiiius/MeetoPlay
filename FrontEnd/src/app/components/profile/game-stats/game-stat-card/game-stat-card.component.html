@@ -1,0 +1,94 @@
+<div class="relative">
+  <div tabindex="0" class="collapse bg-base-200/80 hover:bg-base-200 hover:shadow-lg transition-colors duration-300 ease-in-out"
+    [ngClass]="{'bg-base-200': isOpen, 'bg-base-200/80': !isOpen}" [class.collapse-arrow]="logedUser.id !== profileId">
+    <input type="checkbox" [(ngModel)]="isOpen"/>
+    <div class="collapse-title grid grid-rows-1 grid-cols-4">
+      <div class="flex space-x-3 items-center"><img class="w-14 h-auto" src="{{gameStat.game_pic}}" alt="">
+        <span>{{gameStat.game_name}}</span>
+      </div>
+      <div class="flex items-center justify-center ">
+        <span>Nickname: <span class="font-medium">{{gameStat.nickname_game}}</span></span>
+      </div>
+      <div class="flex items-center justify-center ">
+        <span>Nivel: <span class="font-medium">{{gameStat.lv_account}}</span></span>
+      </div>
+      <div class="flex items-center justify-center ">
+        <span>Tiempo jugado: <span class="font-medium">{{gameStat.hours_played}}</span></span>
+      </div>
+
+    </div>
+    <div class="collapse-content">
+      <div class="w-full flex items-center justify-between">
+        <h3 class="font-medium text-base">Gamemode Stats</h3>
+
+        @if (isDataLoading) {
+          <button class="btn btn-sm btn-square btn-secondary cursor-wait">
+            <span class="loading loading-spinner text-base-200"></span>
+          </button>
+        } @else if (logedUser.id === profileId){
+          <button class="btn btn-sm btn-square btn-secondary" (click)="addGamemodeRankLvlComponent($event)">
+            <i class='bx bx-plus bx-sm text-base-200'></i>
+          </button>
+        }
+
+      </div>
+      <table class="table">
+        <thead>
+          <tr class="border-b-primary/20">
+            <th class="font-light w-2/5">Modo de juego</th>
+            <th class="font-light w-2/5">Rango/Nivel</th>
+            @if (logedUser.id === profileId) {
+              <th class="font-light w-1/5">Acción</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="bg-base-300" app-select-gamemode-rank-lvl *ngFor="let component of gamemodeRankLvlComponents; let i = index"
+            [gamemodes]="gamemodes" (deleteRequest)="deleteGamemodeRankLvlComponent(i)" [gamemodeStatToEdit]="editingGamemodeStat"
+            [gameId]="gameStat.game_id" [gameUserStatsId]="gameStat.id" [fullGame]="fullGame" [isLoading]="isDataLoading"
+              ></tr>
+
+          @for (gamemodeStat of gameStat.gamemode_stats; track gameStat.id;) {
+          <tr class="hover border-b-neutral/20" app-gamemode-stats [gamemodeStat]="gamemodeStat"
+            (gamemodeStatEditing)="onGamemodeStatEditing(gamemodeStat)" [isLoading]="isDataLoading">
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="3" class="text-center">
+              <span>No hay estadisticas para los modos de juego de {{gameStat.game_name}} 😯</span>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  @if(logedUser.id === profileId) {
+    <div class="dropdown dropdown-left absolute top-2 right-2 z-10">
+      <div tabindex="0" role="button" class="btn btn-circle btn-ghost btn-sm"><i
+          class='bx bx-dots-vertical-rounded bx-sm'></i></div>
+      <ul tabindex="0" class="dropdown-content fixed z-20 menu p-2 shadow bg-base-100 rounded-box w-52">
+
+        <li>
+          <button (click)="openEditGameStatForm()">
+            <i class='bx bx-edit-alt text-secondary'></i>Editar GameStat
+          </button>
+        </li>
+
+        <li>
+          <button (click)="deleteGamemodeStat()">
+            @if (isDeleting) {
+              <span class="loading loading-spinner text-error loading-sm"></span>Borrando...
+            } @else {
+              <i class='bx bx-trash text-error'></i>Borrar GameStat
+            }
+          </button>
+        </li>
+      </ul>
+    </div>
+  }
+</div>
+
+<app-game-stat-form [gameStat]="gameStat"/>

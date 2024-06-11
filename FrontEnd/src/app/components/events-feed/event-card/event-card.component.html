@@ -1,0 +1,103 @@
+<div class="relative text-lg">
+  <div tabindex="0"
+    class="collapse bg-base-200/80 shadow-md hover:bg-base-200 hover:shadow-lg transition-all duration-300"
+    [ngClass]="{'collapse-arrow': isRoute('/main'), 'bg-base-200': isChecked, 'bg-base-200/80': !isChecked}">
+    <input type="checkbox" [(ngModel)]="isChecked" />
+    <div class="collapse-title flex items-center justify-between">
+      <div class="flex items-center">
+        <img class="w-14 h-auto mr-3" src="{{event.game_pic}}" alt="gameLogo">
+        <div class="flex flex-col">
+          <span class="text-nowrap text-ellipsis w-64 2xl:w-96 overflow-hidden">{{event.event_title}}</span>
+          <span class="font-light text-neutral/90 text-base">{{event.game_name}} - {{event.game_mode}} -
+            {{event.platform}}</span>
+        </div>
+      </div>
+      <div class="flex items-center">
+        <span class="text-base font-light overflow-hidden text-ellipsis w-36 text-nowrap text-right 2xl:w-full">Creado
+          por
+          <span class="font-normal">{{event.owner.name}}</span></span>
+        <div class="avatar">
+          <div class="w-12 ml-3 rounded-full">
+            <img src="{{event.owner.avatar}}" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="collapse-content">
+      <div class="flex justify-between">
+
+        <div class="text-base grid grid-cols-[min-content_auto_auto] gap-2 font-light col-span-2 w-fit">
+          <span>Empieza</span>
+          <div class="flex items-center">
+            <i class='bx bx-calendar mr-1'></i>
+            <span class="font-mono">{{formattedDateBegin}}</span>
+          </div>
+          <div class="flex items-center">
+            <i class='bx bx-time-five mr-1'></i>
+            <span class="font-mono">{{formattedTimeBegin}}</span>
+          </div>
+          <span>Termina</span>
+          <div class="flex items-center">
+            <i class='bx bx-calendar mr-1'></i>
+            <span class="font-mono">{{formattedDateEnd}}</span>
+          </div>
+          <div class="flex items-center">
+            <i class='bx bx-time-five mr-1'></i>
+            <span class="font-mono">{{formattedTimeEnd}}</span>
+          </div>
+        </div>
+
+        <div class="flex items-end justify-end gap-x-3">
+          <div class="flex flex-col gap-1 items-end">
+            @if (isJoined) {
+            <div #participatingBadge class="badge badge-success gap-2" (click)="hideParticipatingBadge()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="inline-block w-4 h-4 stroke-current cursor-pointer">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              Ya participas 🚀
+            </div>
+            }
+            @if (friendsParticipating) {
+            <div #friendsParticipatingBadge class="badge badge-accent gap-2" (click)="hideFriendsParticipatingBadge()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                class="inline-block w-4 h-4 stroke-current cursor-pointer">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              Amigos participando 🎮
+            </div>
+            }
+            @if(!isEventInsciptionOpen()) {
+              <div #inscriptionCloseBadge class="badge badge-error gap-2" (click)="hideInscriptionCloseBadge()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  class="inline-block w-4 h-4 stroke-current cursor-pointer">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Incripción cerrada 🔒
+              </div>
+            } @else {
+              <div #inscriptionOpenBadge class="badge badge-primary gap-2" (click)="hideInscriptionOpenBadge()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  class="inline-block w-4 h-4 stroke-current cursor-pointer">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Incripción abierta 🔥
+              </div>
+            }
+          </div>
+          <app-more-event-info-modal (isJoinedChange)="isJoinedChange($event)"
+            (friendsParticipatingChange)="FriendsParticipatingChange($event)" [event]="event"
+            [eventInscriptionEndTime]="eventInscriptionEndTime" [formattedDateBegin]="formattedDateBegin"
+            [formattedTimeBegin]="formattedTimeBegin" [formattedDateEnd]="formattedDateEnd"
+            [formattedTimeEnd]="formattedTimeEnd" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (isActivatedRouteInChildRoute('/profile')) {
+  <app-event-options [event]="event"></app-event-options>
+  }
+
+</div>

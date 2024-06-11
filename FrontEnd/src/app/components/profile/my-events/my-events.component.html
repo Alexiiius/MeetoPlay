@@ -1,0 +1,35 @@
+<div class="w-full h-full flex flex-col justify-start space-y-4 rounded-lg">
+  @if (isLoading) {
+  <div *ngFor="let i of [].constructor(8)" class="skeleton bg-neutral/25 w-full h-[88px] min-h-[88px] shadow-lg"></div>
+  }
+  @for (event of myEvents; track event.id) {
+  <app-event-card [event]="event" />
+
+  } @empty {
+  <div class="flex flex-col items-center justify-center space-y-2 mt-20">
+    <i class='bx bx-calendar-x bx-lg'></i>
+    <p class="text-md">No has creado ningún evento 🤨</p>
+    <p class="text-lg">¿A qué esperas?</p>
+    <button class="btn btn-primary" (click)="openNewEventModal()">
+      Crear evento
+    </button>
+  </div>
+
+
+  }
+
+  <div class="flex space-x-1">
+
+    @if (hasMoreEvents) {
+    <button class="btn btn-ghost rounded-box font-normal bg-base-200/60 w-full" (click)="loadMoreEvents()">
+      @if (isLoading) {
+      <span class="loading loading-infinity text-primary w-10"></span>
+      } @else {
+      <i class='bx bxs-plus-square bx-sm text-primary'></i>
+      }
+    </button>
+    }
+  </div>
+</div>
+
+<app-event-form></app-event-form>

@@ -1,0 +1,59 @@
+<td [formGroup]="gamemodeStatForm">
+  <select class="select select-bordered w-52 2xl:w-full text-base" formControlName="gamemode" formControlName="gamemode"
+    (change)="onGamemodeChange()" [class.select-error]="isInvalid('gamemode')">
+
+    @if (isLoading) {
+    <option value="default" class="flex items-end" hidden selected>⏳ Cargando...</option>
+    } @else {
+    <option hidden selected value="default">Modo de juego</option>
+    @for (gamemode of gamemodes; track gamemode.id) {
+    <option value="{{ gamemode.id }}">{{ gamemode.name }}</option>
+    } @empty {
+    <option value="default" class="flex items-end" hidden selected>⏳ Cargando...</option>
+    }
+    }
+
+  </select>
+</td>
+
+<td [formGroup]="gamemodeStatForm">
+  @if (selectedGamemode && selectedGamemode.ranked === true) {
+
+  <select formControlName="rank" class="select select-bordered w-52 2xl:w-full"
+    [class.select-error]="isInvalid('rank')">
+    <option value="default" selected hidden>Rango máximo</option>
+    @for (rank of selectedGamemode.ranks; track $index) {
+    <option value="{{rank}}">{{rank}}</option>
+    }
+  </select>
+
+  } @else if (selectedGamemode) {
+
+  <input type="text" placeholder="Nivel" class="input input-bordered w-52 2xl:w-full" formControlName="lvl"
+    [class.input-error]="isInvalid('lvl')" min="0"/>
+  }
+</td>
+
+<td>
+  <div class="flex gap-2">
+
+    <button class="btn btn-ghost btn-sm btn-square hover:bg-base-200" (click)="onSave(); $event.stopPropagation()"
+      [disabled]="gamemodeStatForm.status === 'INVALID'" [class.opacity-20]="gamemodeStatForm.status === 'INVALID'">
+      @if (isSaving) {
+      <span class="loading loading-spinner text-success"></span>
+      } @else {
+      <i class='bx bx-check text-success bx-sm'></i>
+      }
+    </button>
+
+    @if (isEditing) {
+      <button class="btn btn-ghost btn-sm btn-square hover:bg-base-200" (click)="cancelEdit(); $event.stopPropagation()">
+        <i class='bx bx-x bx-sm text-error'></i>
+      </button>
+    } @else {
+      <button class="btn btn-ghost btn-sm btn-square hover:bg-base-200" (click)="onDelete(); $event.stopPropagation()">
+        <i class='bx bx-trash text-error bx-sm'></i>
+      </button>
+    }
+  </div>
+</td>

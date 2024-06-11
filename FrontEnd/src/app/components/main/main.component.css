@@ -1,9 +1,19 @@
 
 #main-container {
   background-size: 200% 200%;
-  background-image: radial-gradient(circle, rgb(91 33 182), rgb(34 211 238), rgb(91 33 182));
+  background-image: radial-gradient(circle, #8b5cf6, #38bdf8, #8b5cf6);
   animation: gradient 30s ease-in-out infinite;
 }
+
+.scrollbar-hidde {
+  scrollbar-width: none; /* Para Firefox */
+  -ms-overflow-style: none;  /* Para Internet Explorer y Edge */
+}
+
+.scrollbar-hidde::-webkit-scrollbar {
+  display: none; /* Para Chrome, Safari y Opera */
+}
+
 
 @keyframes gradient {
   0% {

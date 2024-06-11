@@ -1,0 +1,37 @@
+<div class="dropdown dropdown-left absolute top-2 right-2 z-10">
+  <div tabindex="0" role="button" class="btn btn-circle btn-ghost btn-sm"><i
+      class='bx bx-dots-vertical-rounded bx-sm'></i></div>
+  <ul tabindex="0" class="dropdown-content fixed z-20 menu p-2 shadow bg-base-100 rounded-box w-52">
+
+    <li>
+      <button (click)="openDeleteModal()"><i class='bx bx-trash text-error'></i>Borrar evento</button>
+    </li>
+
+    <li>
+      <button (click)="openEditModal()"><i class='bx bx-edit-alt text-secondary'></i>Editar evento</button>
+    </li>
+  </ul>
+</div>
+
+
+<dialog id="deleteEventModal" #deleteEventModal class="modal">
+  <div class="modal-box border-2 border-error">
+    <h3 class="font-medium text-lg">Eliminar evento</h3>
+    <p class="font-normal">¿Seguro que quiere borrar este evento?</p>
+    <p class="py-4 font-normal">Esta acción es irreversible</p>
+
+    <div class="modal-action">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn btn-ghost font-medium mr-2 text-neutral/90" (click)="closeDeleteModal()">Cancelar</button>
+        <button (click)="deleteEvent()" class="btn btn-error font-medium">
+          @if (deletingEvent) {
+            <span class="loading loading-spinner loading-md"></span>
+          } @else {
+            Borrar
+          }
+        </button>
+    </div>
+  </div>
+</dialog>
+
+<app-event-form [event]="event" ></app-event-form>

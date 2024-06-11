@@ -128,7 +128,7 @@ README still under construction...
   - Frontend: Multiple bugs fixed
  
 - 1.0.0 🗓️ (11/06/2024)
-  WE ARE DONE!!
+ - WE ARE DONE!!
   
 ## Bibliography
 - Frontend

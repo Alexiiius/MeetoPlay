@@ -1,19 +1,29 @@
+<div class="relative inline-flex group w-full z-10 mb-2">
+  <div
+    class="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-accent via-secondary to-primary rounded-xl blur-md group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt">
+  </div>
+  <div (click)="openNewEventModal()"
+    class="w-full relative inline-flex items-center justify-center py-3 text-lg font-medium text-nuetral transition-all duration-200 bg-base-100 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-base-100"
+    role="button">Crear evento
+</div>
+</div>
+
+<div class="collapse collapse-arrow bg-base-100">
+  <input type="checkbox" name="aside-accordion" checked="checked" />
+  <div class="collapse-title text-lg font-normal">
+    Chat de la comunidad
+  </div>
+  <div class="collapse-content px-0">
+    <app-global-chat />
+  </div>
+</div>
 <div class="collapse collapse-arrow bg-base-100">
   <input type="radio" name="aside-accordion" />
   <div class="collapse-title text-lg font-normal">
     Buscador usuarios
   </div>
   <div class="collapse-content">
-    <app-users-searcher/>
-  </div>
-</div>
-<div class="collapse collapse-arrow bg-base-100">
-  <input type="radio" name="aside-accordion" checked="checked"/>
-  <div class="collapse-title text-lg font-normal">
-    Chat de la comunidad
-  </div>
-  <div class="collapse-content px-2">
-    <app-global-chat/>
+    <app-users-searcher />
   </div>
 </div>
 <div class="collapse collapse-arrow bg-base-100">
@@ -26,7 +36,4 @@
   </div>
 </div>
 
-<button class="btn" (click)="openNewEventModal()">New Event</button>
-
-<app-event-form/>
-
+<app-event-form />

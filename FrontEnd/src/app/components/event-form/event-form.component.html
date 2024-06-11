@@ -36,7 +36,7 @@
                 <span class="label-text">Título del evento</span>
               </div>
               <input type="text" placeholder="🤔 Este evento se titula..." class="input input-bordered col-span-full"
-                formControlName="title" [attr.autofocus]="isUpdating ? null : ''" [class.input-error]="isInvalid('whatForm', 'title')">
+                formControlName="title" maxlength="114" [attr.autofocus]="isUpdating ? null : ''" [class.input-error]="isInvalid('whatForm', 'title')">
             </label>
 
 

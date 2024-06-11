@@ -166,6 +166,883 @@
                 ]
             }
         },
+        "/api/user/delete": {
+            "post": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Delete the authenticated user",
+                "operationId": "115aa0a7a216bcd67b01ded9da45f5b2",
+                "requestBody": {
+                    "description": "Password for verification",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Password incorrect",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Password incorrect."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/search/{search}": {
+            "get": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Search for a user by name or tag",
+                "operationId": "f076f0dbaaa799a67de87e0b8aa1aade",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "path",
+                        "description": "Search term. Use 'name#tag' to search by both name and tag",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "John#0011"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "John Doe"
+                                            },
+                                            "tag": {
+                                                "type": "string",
+                                                "example": "developer"
+                                            },
+                                            "avatar": {
+                                                "type": "string",
+                                                "example": "https://example.com/avatar.jpg"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/status/{status}": {
+            "patch": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Change the status of the authenticated user",
+                "operationId": "138a327f7e5254a9ce937170d7fa3806",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "description": "New status to set",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "online"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status changed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Status changed successfully"
+                                        },
+                                        "old_status": {
+                                            "type": "string",
+                                            "example": "offline"
+                                        },
+                                        "new_status": {
+                                            "type": "string",
+                                            "example": "online"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Status change failed or already the same status.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Status change failed or already the same status."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/avatar/update": {
+            "post": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Update the avatar of the authenticated user",
+                "operationId": "dcb4b3ca27ce5a0ed450a404b62de1b5",
+                "requestBody": {
+                    "description": "New avatar",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "avatar": {
+                                        "description": "New avatar image",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "You have successfully upload image.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "You have successfully upload image."
+                                                },
+                                                "avatar": {
+                                                    "type": "string",
+                                                    "example": "avatars/userId_avatar.jpg"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/avatar/update"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error uploading image.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Error uploading image."
+                                                },
+                                                "error": {
+                                                    "type": "string",
+                                                    "example": "Error message"
+                                                },
+                                                "avatar": {
+                                                    "type": "string",
+                                                    "example": "avatars/userId_avatar.jpg"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/avatar/update"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/bio/update": {
+            "patch": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Update the bio of the authenticated user",
+                "operationId": "209d216790e0ab29b63d04fefce896ff",
+                "requestBody": {
+                    "description": "New bio",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "bio": {
+                                        "type": "string",
+                                        "example": "This is my new bio"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Bio updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Bio updated successfully"
+                                                },
+                                                "bio": {
+                                                    "type": "string",
+                                                    "example": "This is my new bio"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/bio/update"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bio update failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Bio update failed."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/socials/update": {
+            "patch": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Update the socials of the authenticated user",
+                "operationId": "8bfe053864d68baa1ab26e1468d17f82",
+                "requestBody": {
+                    "description": "New socials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "socials": {
+                                        "type": "object",
+                                        "example": {
+                                            "twitter": "myTwitter",
+                                            "facebook": "myFacebook",
+                                            "instagram": "myInstagram",
+                                            "X": "myX",
+                                            "discord": "myDiscord",
+                                            "steam": "mySteam",
+                                            "twitch": "myTwitch",
+                                            "youtube": "myYoutube"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Socials updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Socials updated successfully"
+                                                },
+                                                "socials": {
+                                                    "type": "object",
+                                                    "example": {
+                                                        "twitter": "myTwitter",
+                                                        "facebook": "myFacebook",
+                                                        "instagram": "myInstagram",
+                                                        "X": "myX",
+                                                        "discord": "myDiscord",
+                                                        "steam": "mySteam",
+                                                        "twitch": "myTwitch",
+                                                        "youtube": "myYoutube"
+                                                    }
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/socials/update"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Socials update failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Socials update failed."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/password/update": {
+            "patch": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Update the password of the authenticated user",
+                "operationId": "56042512c874373a4220e6c4e67d759e",
+                "requestBody": {
+                    "description": "Current and new password",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "type": "string",
+                                        "example": "oldPassword"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "example": "newPassword"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Password updated successfully"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/password/update"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Password incorrect",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Password incorrect."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/send/email-verification": {
+            "get": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Resend the email verification of the authenticated user",
+                "operationId": "31382fe962b71dfc226c6fd64b2638fe",
+                "responses": {
+                    "200": {
+                        "description": "Email verification sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Email verification sent successfully"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/send/email-verification"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Email already verified",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Email already verified."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/email/update": {
+            "patch": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Update the email of the authenticated user",
+                "operationId": "629dd4ab109e1ab7476e6e37dcddef9e",
+                "requestBody": {
+                    "description": "New email and current password",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "newEmail@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "currentPassword"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email updated successfully, please verify your email. Token deleted.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Email updated successfully, please verify your email. Token deleted."
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "newEmail@example.com"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "newToken"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/email/update"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Password incorrect.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Password incorrect."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/name/update": {
+            "patch": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Update the name of the authenticated user",
+                "operationId": "8f576d2101d453de72052f7dda3a76a7",
+                "requestBody": {
+                    "description": "New name and password for verification",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Name updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Name updated successfully"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "/api/user/name/update"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "string",
+                                                            "example": "01-01-2022T00:00:00. UTC"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Password incorrect",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Password incorrect."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [
@@ -387,7 +1264,7 @@
     "tags": [
         {
             "name": "User Endpoints",
-            "description": "API Endpoints for User usage. Required TOKEN for all requests."
+            "description": "Endpoints for authenticated users"
         },
         {
             "name": "Authentication",

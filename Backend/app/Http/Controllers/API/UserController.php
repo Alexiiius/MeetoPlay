@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
 /**
  * @OA\Tag(
  *     name="User Endpoints",
- *     description="API Endpoints for User usage. Required TOKEN for all requests."
+ *     description="Endpoints for authenticated users"
  * )
  */
 class UserController extends Controller {
@@ -129,6 +129,40 @@ class UserController extends Controller {
         }
     }
 
+
+
+    /**
+ * @OA\Post(
+ *     path="/api/user/delete",
+ *     summary="Delete the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\RequestBody(
+ *         description="Password for verification",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="password", type="string", example="password")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User deleted successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string", example="User deleted successfully")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Password incorrect",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Password incorrect.")
+ *         )
+ *     )
+ * )
+ */
     public function destroy(Request $request) {
 
         $user = auth()->user();
@@ -148,6 +182,35 @@ class UserController extends Controller {
     }
 
 
+    /**
+ * @OA\Get(
+ *     path="/api/user/search/{search}",
+ *     summary="Search for a user by name or tag",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\Parameter(
+ *         name="search",
+ *         in="path",
+ *         description="Search term. Use 'name#tag' to search by both name and tag",
+ *         required=true,
+ *         @OA\Schema(type="string", example="John#0011")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Search results",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(
+ *                 type="object",
+ *                 @OA\Property(property="id", type="integer", example=1),
+ *                 @OA\Property(property="name", type="string", example="John Doe"),
+ *                 @OA\Property(property="tag", type="string", example="developer"),
+ *                 @OA\Property(property="avatar", type="string", example="https://example.com/avatar.jpg")
+ *             )
+ *         )
+ *     )
+ * )
+ */
     public function search(string $search) {
         $parts = explode('#', $search);
 
@@ -168,6 +231,42 @@ class UserController extends Controller {
         return $users;
     }
 
+
+
+
+   /**
+ * @OA\Patch(
+ *     path="/api/user/status/{status}",
+ *     summary="Change the status of the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\Parameter(
+ *         name="status",
+ *         in="path",
+ *         description="New status to set",
+ *         required=true,
+ *         @OA\Schema(type="string", example="online")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Status changed successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string", example="Status changed successfully"),
+ *             @OA\Property(property="old_status", type="string", example="offline"),
+ *             @OA\Property(property="new_status", type="string", example="online")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Status change failed or already the same status.",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string", example="Status change failed or already the same status.")
+ *         )
+ *     )
+ * )
+ */
     public function changeStatus(Request $request, string $status) {
 
         $user = auth()->user();
@@ -191,6 +290,66 @@ class UserController extends Controller {
 
     }
 
+
+    /**
+ * @OA\Post(
+ *     path="/api/user/avatar/update",
+ *     summary="Update the avatar of the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\RequestBody(
+ *         description="New avatar",
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="avatar",
+ *                     description="New avatar image",
+ *                     type="string",
+ *                     format="binary"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="You have successfully upload image.",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="message", type="string", example="You have successfully upload image."),
+ *                 @OA\Property(property="avatar", type="string", example="avatars/userId_avatar.jpg"),
+ *                 @OA\Property(property="Links", type="object", 
+ *                     @OA\Property(property="self", type="string", example="/api/user/avatar/update")
+ *                 ),
+ *                 @OA\Property(property="meta", type="object", 
+ *                     @OA\Property(property="timestamp", type="string", example="01-01-2022T00:00:00. UTC")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error uploading image.",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="message", type="string", example="Error uploading image."),
+ *                 @OA\Property(property="error", type="string", example="Error message"),
+ *                 @OA\Property(property="avatar", type="string", example="avatars/userId_avatar.jpg"),
+ *                 @OA\Property(property="Links", type="object", 
+ *                     @OA\Property(property="self", type="string", example="/api/user/avatar/update")
+ *                 ),
+ *                 @OA\Property(property="meta", type="object", 
+ *                     @OA\Property(property="timestamp", type="string", example="01-01-2022T00:00:00. UTC")
+ *                 )
+ *             )
+ *         )
+ *     )
+ * )
+ */
     public function updateAvatar(Request $request) {
 
         try {
@@ -240,6 +399,50 @@ class UserController extends Controller {
 
     }
 
+
+
+
+    /**
+ * @OA\Patch(
+ *     path="/api/user/bio/update",
+ *     summary="Update the bio of the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\RequestBody(
+ *         description="New bio",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="bio", type="string", example="This is my new bio")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Bio updated successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="message", type="string", example="Bio updated successfully"),
+ *                 @OA\Property(property="bio", type="string", example="This is my new bio"),
+ *                 @OA\Property(property="Links", type="object", 
+ *                     @OA\Property(property="self", type="string", example="/api/user/bio/update")
+ *                 ),
+ *                 @OA\Property(property="meta", type="object", 
+ *                     @OA\Property(property="timestamp", type="string", example="01-01-2022T00:00:00. UTC")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bio update failed",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Bio update failed.")
+ *         )
+ *     )
+ * )
+ */
     public function updateBio(Request $request) {
 
         $request->validate([
@@ -261,6 +464,48 @@ class UserController extends Controller {
         ]]);
     }
 
+
+    /**
+ * @OA\Patch(
+ *     path="/api/user/socials/update",
+ *     summary="Update the socials of the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\RequestBody(
+ *         description="New socials",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="socials", type="object", example={"twitter": "myTwitter", "facebook": "myFacebook", "instagram": "myInstagram", "X": "myX", "discord": "myDiscord", "steam": "mySteam", "twitch": "myTwitch", "youtube": "myYoutube"})
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Socials updated successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="message", type="string", example="Socials updated successfully"),
+ *                @OA\Property(property="socials", type="object", example={"twitter": "myTwitter", "facebook": "myFacebook", "instagram": "myInstagram", "X": "myX", "discord": "myDiscord", "steam": "mySteam", "twitch": "myTwitch", "youtube": "myYoutube"}),
+ *                 @OA\Property(property="Links", type="object", 
+ *                     @OA\Property(property="self", type="string", example="/api/user/socials/update")
+ *                 ),
+ *                 @OA\Property(property="meta", type="object", 
+ *                     @OA\Property(property="timestamp", type="string", example="01-01-2022T00:00:00. UTC")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Socials update failed",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Socials update failed.")
+ *         )
+ *     )
+ * )
+ */
     public function updateSocials(Request $request) {
 
         //validate using SocialsRule
@@ -287,6 +532,49 @@ class UserController extends Controller {
         ]]);
     }
 
+
+
+    /**
+ * @OA\Patch(
+ *     path="/api/user/password/update",
+ *     summary="Update the password of the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\RequestBody(
+ *         description="Current and new password",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="password", type="string", example="oldPassword"),
+ *             @OA\Property(property="new_password", type="string", example="newPassword")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Password updated successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="message", type="string", example="Password updated successfully"),
+ *                 @OA\Property(property="Links", type="object", 
+ *                     @OA\Property(property="self", type="string", example="/api/user/password/update")
+ *                 ),
+ *                 @OA\Property(property="meta", type="object", 
+ *                     @OA\Property(property="timestamp", type="string", example="01-01-2022T00:00:00. UTC")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Password incorrect",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Password incorrect.")
+ *         )
+ *     )
+ * )
+ */
     public function updatePassword(Request $request) {
 
         $request->validate([
@@ -314,6 +602,39 @@ class UserController extends Controller {
         ]]);
     }
 
+
+    /**
+ * @OA\Get(
+ *     path="/api/user/send/email-verification",
+ *     summary="Resend the email verification of the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Email verification sent successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="message", type="string", example="Email verification sent successfully"),
+ *                 @OA\Property(property="Links", type="object", 
+ *                     @OA\Property(property="self", type="string", example="/api/user/send/email-verification")
+ *                 ),
+ *                 @OA\Property(property="meta", type="object", 
+ *                     @OA\Property(property="timestamp", type="string", example="01-01-2022T00:00:00. UTC")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Email already verified",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Email already verified.")
+ *         )
+ *     )
+ * )
+ */
     public function resendEmailVerification(Request $request) {
         $user = auth()->user();
 
@@ -333,6 +654,53 @@ class UserController extends Controller {
         ]]);
     }
 
+
+
+
+
+    /**
+ * @OA\Patch(
+ *     path="/api/user/email/update",
+ *     summary="Update the email of the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\RequestBody(
+ *         description="New email and current password",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="email", type="string", example="newEmail@example.com"),
+ *             @OA\Property(property="password", type="string", example="currentPassword")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Email updated successfully, please verify your email. Token deleted.",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="message", type="string", example="Email updated successfully, please verify your email. Token deleted."),
+ *                 @OA\Property(property="email", type="string", example="newEmail@example.com"),
+ *                 @OA\Property(property="token", type="string", example="newToken"),
+ *                 @OA\Property(property="Links", type="object", 
+ *                     @OA\Property(property="self", type="string", example="/api/user/email/update")
+ *                 ),
+ *                 @OA\Property(property="meta", type="object", 
+ *                     @OA\Property(property="timestamp", type="string", example="01-01-2022T00:00:00. UTC")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Password incorrect.",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Password incorrect.")
+ *         )
+ *     )
+ * )
+ */
     public function updateEmail(Request $request) {
 
         $request->validate([
@@ -367,6 +735,50 @@ class UserController extends Controller {
         ]]);
     }
 
+
+
+    /**
+ * @OA\Patch(
+ *     path="/api/user/name/update",
+ *     summary="Update the name of the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\RequestBody(
+ *         description="New name and password for verification",
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="name", type="string", example="John Doe"),
+ *             @OA\Property(property="password", type="string", example="password")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Name updated successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="data", type="object", 
+ *                 @OA\Property(property="message", type="string", example="Name updated successfully"),
+ *                 @OA\Property(property="name", type="string", example="John Doe"),
+ *                 @OA\Property(property="Links", type="object", 
+ *                     @OA\Property(property="self", type="string", example="/api/user/name/update")
+ *                 ),
+ *                 @OA\Property(property="meta", type="object", 
+ *                     @OA\Property(property="timestamp", type="string", example="01-01-2022T00:00:00. UTC")
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Password incorrect",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="error", type="string", example="Password incorrect.")
+ *         )
+ *     )
+ * )
+ */
     public function updateName(Request $request) {
 
         $request->validate([

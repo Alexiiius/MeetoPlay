@@ -253,6 +253,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.chatService.sendMessage(this.toUserId, text).subscribe(
       (response) => {
         newMessage.isLoading = false;
+        this.chatService.lastUserChattingWithId.next(this.toUserId);
       },
       (error) => {
         newMessage.isLoading = false;

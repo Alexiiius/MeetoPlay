@@ -13,6 +13,13 @@ use App\Rules\SocialsRule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+
+/**
+ * @OA\Tag(
+ *     name="User Endpoints",
+ *     description="API Endpoints for User usage. Required TOKEN for all requests."
+ * )
+ */
 class UserController extends Controller {
 
     //return all users id, name and email
@@ -26,6 +33,38 @@ class UserController extends Controller {
         //
     }
 
+
+/**
+ * @OA\Get(
+ *     path="/api/user",
+ *     summary="Return all data from the authenticated user",
+ *     tags={"User Endpoints"},
+ *     security={{"Bearer":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Return all data from the authenticated user",
+ *         @OA\MediaType(
+ *             mediaType="application/json",
+ *             @OA\Schema(
+ *                 @OA\Property(property="id", type="integer", example=35),
+ *                 @OA\Property(property="name", type="string", example="John Doe"),
+ *                 @OA\Property(property="email", type="string", example="user3@example.com"),
+ *                 @OA\Property(property="email_verified_at", type="string", example=null),
+ *                 @OA\Property(property="tag", type="string", example="0035"),
+ *                 @OA\Property(property="avatar", type="string", example="http://localhost/storage/avatars/default.jpg"),
+ *                 @OA\Property(property="date_of_birth", type="string", example=null),
+ *                 @OA\Property(property="status", type="string", example="Offline"),
+ *                 @OA\Property(property="is_admin", type="integer", example=0),
+ *                 @OA\Property(property="bio", type="string", example="Hello, I am using MeetoPlay!"),
+ *                 @OA\Property(property="socials", type="string", example=null),
+ *                 @OA\Property(property="email_verification_token", type="string", example="7494e5b87e24fdbd228f086dfcb5dbdeb9281294813757f4c0331fde73dac6d7"),
+ *                 @OA\Property(property="created_at", type="string", example="2024-06-11T08:06:15.000000Z"),
+ *                 @OA\Property(property="updated_at", type="string", example="2024-06-11T08:06:15.000000Z")
+ *             )
+ *         )
+ *     )
+ * )
+ */
     //return all data from the authenticated user
     public function user(Request $request) {
         return $request->user();

@@ -1,14 +1,99 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Example API",
-        "description": "Example info",
+        "title": "MeetoPlat API",
+        "description": "All endpoints of the MeetoPlat API",
         "contact": {
-            "name": "Swagger API Team"
+            "name": "Alejandro",
+            "email": "alexius1996@gmail.com"
         },
         "version": "1.0"
     },
     "paths": {
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "User Endpoints"
+                ],
+                "summary": "Return all data from the authenticated user",
+                "operationId": "facf643270f6f524d7a721a4018aa7fb",
+                "responses": {
+                    "200": {
+                        "description": "Return all data from the authenticated user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 35
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "user3@example.com"
+                                        },
+                                        "email_verified_at": {
+                                            "type": "string",
+                                            "example": null
+                                        },
+                                        "tag": {
+                                            "type": "string",
+                                            "example": "0035"
+                                        },
+                                        "avatar": {
+                                            "type": "string",
+                                            "example": "http://localhost/storage/avatars/default.jpg"
+                                        },
+                                        "date_of_birth": {
+                                            "type": "string",
+                                            "example": null
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "Offline"
+                                        },
+                                        "is_admin": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "bio": {
+                                            "type": "string",
+                                            "example": "Hello, I am using MeetoPlay!"
+                                        },
+                                        "socials": {
+                                            "type": "string",
+                                            "example": null
+                                        },
+                                        "email_verification_token": {
+                                            "type": "string",
+                                            "example": "7494e5b87e24fdbd228f086dfcb5dbdeb9281294813757f4c0331fde73dac6d7"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2024-06-11T08:06:15.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2024-06-11T08:06:15.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [
@@ -65,20 +150,26 @@
             }
         }
     },
+    "components": {
+        "securitySchemes": {
+            "Bearer": {
+                "type": "http",
+                "description": "Use a JWT token received from the authentication API.",
+                "name": "Bearer",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
     "tags": [
+        {
+            "name": "User Endpoints",
+            "description": "API Endpoints for User usage. Required TOKEN for all requests."
+        },
         {
             "name": "Authentication",
             "description": "API Endpoints of Authentication"
         }
-    ],
-    "components": {
-        "securitySchemes": {
-            "Bearer": {
-                "type": "apiKey",
-                "description": "Bearer {token}",
-                "name": "Authorization",
-                "in": "header"
-            }
-        }
-    }
+    ]
 }

@@ -42,7 +42,6 @@ export class ChatsComponent implements OnInit {
     });
 
     this.chatsService.lastUserChattingWithId.subscribe((userId: number) => {
-      console.log('aqui')
       this.moveChatToStart(userId);
     });
 

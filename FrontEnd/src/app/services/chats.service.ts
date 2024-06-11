@@ -28,11 +28,9 @@ export class ChatsService {
 
   backAPIUrl = backAPIUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   sendMessage(toUserId: number, message: string) {
-    console.log('toUserId: ', toUserId);
-    console.log('message: ', message);
     return this.http.post(`${this.backAPIUrl}/message/send`, {
       to_user_id: toUserId,
       text: message
@@ -47,11 +45,23 @@ export class ChatsService {
     return this.http.put(`${this.backAPIUrl}/message/read`, { message_ID: toMarkAsRead });
   }
 
-  getChats(){
+  getChats() {
     return this.http.get(`${this.backAPIUrl}/message/get/conversations`);
   }
 
-  getUnreadMessages(){
+  getUnreadMessages() {
     return this.http.get(`${this.backAPIUrl}/message/get/unread`);
+  }
+
+  getLastGlobalMessages() {
+    return this.http.get(`${this.backAPIUrl}/message/get/global`);
+  }
+
+  sendPublicMessage(message: string) {
+    return this.http.post(`${this.backAPIUrl}/message/send`, {
+      to_user_id: 1,
+      text: message,
+      group_name: "global"
+    })
   }
 }

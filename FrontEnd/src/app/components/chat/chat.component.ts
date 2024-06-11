@@ -13,6 +13,7 @@ import { UserService } from '../../services/user.service';
 import { UserStatusComponent } from '../profilecard/user-status/user-status.component';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UserData } from '../../interfaces/user-data';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
 @Component({
   selector: 'app-chat',
@@ -21,7 +22,8 @@ import { UserData } from '../../interfaces/user-data';
     FormsModule,
     CommonModule,
     UserStatusComponent,
-    RouterLink
+    RouterLink,
+    PickerComponent
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
@@ -32,6 +34,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   @ViewChild('messagesContainer') messagesContainer: ElementRef;
 
   showScrollButton = false;
+  showEmojis = false;
 
   loggedUser: UserData;
   userChattingWith: UserReduced;
@@ -99,6 +102,14 @@ export class ChatComponent implements OnInit, AfterViewInit {
         }
       });
     });
+  }
+
+  addEmoji(event: any) {
+    this.message += event.emoji.native;
+  }
+
+  toggleEmojis() {
+    this.showEmojis = !this.showEmojis;
   }
 
   onNewMessage(message: any) {
@@ -223,7 +234,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const newMessage = {
+    const newMessage: LiveMessage = {
       to_user_id: this.toUserId,
       text: this.message,
       isLoading: true,

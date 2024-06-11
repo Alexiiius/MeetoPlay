@@ -5,9 +5,9 @@
         <img src="{{userChattingWith.avatar}}" />
       </div>
     </div>
-    <div class="ml-2 flex flex-col cursor-pointer group" [routerLink]="['/profile', userChattingWith.id]" >
+    <div class="ml-2 flex flex-col cursor-pointer group" [routerLink]="['/profile', userChattingWith.id]">
       <span class="group-hover:underline">{{userChattingWith.name}}</span>
-      <app-user-status [user]="userChattingWith" [isChat]="true"/>
+      <app-user-status [user]="userChattingWith" [isChat]="true" />
     </div>
 
     <div class="dropdown dropdown-left ml-auto">
@@ -44,70 +44,79 @@
     </div>
     } @else {
 
-      <!-- Mensajes cargados desde base de datos -->
-      @for (date of groupedMessages|keyvalue; track date.key) {
-        <div class="w-full flex justify-center date-header sticky top-0 z-10">
-          <div class="badge badge-neutral w-20">{{date.key}}</div>
-        </div>
-        @for (message of date.value; track message.id) {
-          @if (message.from_user_id !== loggedUser.id) {
-          <div class="chat chat-start">
-            <div class="chat-bubble chat-bubble-primary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">{{message.text}}
-              <time class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
-            </div>
-          </div>
-          } @else {
-          <div class="chat chat-end">
-            <div class="chat-bubble chat-bubble-secondary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">
-              <span>{{message.text}}</span>
-              <time class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
-            </div>
-            @if (!message.read_at) {
-            <i class='bx bx-check text-secondary'></i>
-            } @else {
-            <i class='bx bx-check-double text-secondary'></i>
-            }
-          </div>
-          }
-        }
+    <!-- Mensajes cargados desde base de datos -->
+    @for (date of groupedMessages|keyvalue; track date.key) {
+    <div class="w-full flex justify-center date-header sticky top-0 z-10">
+      <div class="badge badge-neutral w-20">{{date.key}}</div>
+    </div>
+    @for (message of date.value; track message.id) {
+    @if (message.from_user_id !== loggedUser.id) {
+    <div class="chat chat-start">
+      <div class="chat-bubble chat-bubble-primary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">
+        {{message.text}}
+        <time
+          class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
+      </div>
+    </div>
+    } @else {
+    <div class="chat chat-end">
+      <div class="chat-bubble chat-bubble-secondary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">
+        <span>{{message.text}}</span>
+        <time
+          class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
+      </div>
+      @if (!message.read_at) {
+      <i class='bx bx-check text-secondary'></i>
+      } @else {
+      <i class='bx bx-check-double text-secondary'></i>
       }
+    </div>
+    }
+    }
+    }
     }
 
     <!-- Mensajes en directo -->
     @for (message of liveMessages; track $index) {
-      @if (message.to_user_id !== loggedUser.id) {
-        <div class="chat chat-end">
-          <div class="chat-bubble chat-bubble-secondary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">
-            <span>{{message.text}}</span>
-            <time class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
-          </div>
-          @if (message.isLoading) {
-          <span class="loading loading-ball loading-xs text-secondary"></span>
-          } @else {
-          <i class='bx bx-check text-secondary'></i>
-          }
-        </div>
+    @if (message.to_user_id !== loggedUser.id) {
+    <div class="chat chat-end">
+      <div class="chat-bubble chat-bubble-secondary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">
+        <span>{{message.text}}</span>
+        <time
+          class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
+      </div>
+      @if (message.isLoading) {
+      <span class="loading loading-ball loading-xs text-secondary"></span>
       } @else {
-        <div class="chat chat-start">
-          <div class="chat-bubble chat-bubble-primary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">{{message.text}}
-            <time class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
-          </div>
-        </div>
+      <i class='bx bx-check text-secondary'></i>
       }
+    </div>
+    } @else {
+    <div class="chat chat-start">
+      <div class="chat-bubble chat-bubble-primary break-words grid grid-cols-[minmax(0,1fr),auto] gap-x-2">
+        {{message.text}}
+        <time
+          class="font-normal text-xs opacity-50 justify-self-end self-end whitespace-nowrap">{{formatDate(message.created_at)}}</time>
+      </div>
+    </div>
+    }
     }
   </div>
 
-  <button #scrollButton class="scroll-to-bottom absolute bottom-12 right-3 btn btn-circle" (click)="scrollToBottom()" [style.display]="showScrollButton ? 'block' : 'none'"><i class='bx bx-chevrons-down bx-sm'></i></button>
+  <button #scrollButton class="scroll-to-bottom absolute bottom-12 right-3 btn btn-circle" (click)="scrollToBottom()"
+    [style.display]="showScrollButton ? 'block' : 'none'"><i class='bx bx-chevrons-down bx-sm'></i></button>
 
-  <label class="input h-10 min-h-10 bg-neutral w-full mt-auto  rounded-box flex items-center gap-2 text-base-100">
+  <label class="input h-10 min-h-10 bg-neutral w-full mt-2 rounded-box flex items-center gap-2 text-base-100 relative">
     <input type="text" class="grow ml-2" placeholder="Escribe un mensaje a Username" [(ngModel)]="message"
       (keydown.enter)="sendMessage()" />
-    <button class="btn btn-ghost btn-sm btn-circle">
+    <button class="btn btn-ghost btn-sm btn-circle" (click)="toggleEmojis()">
       <i class='bx bx-smile bx-sm'></i>
     </button>
     <button class="btn btn-ghost btn-sm btn-circle" (click)="sendMessage()">
       <i class='bx bx-send bx-sm'></i>
     </button>
+    @if(showEmojis) {
+    <emoji-mart class="absolute bottom-12 right-4 z-50" set="twitter" (emojiClick)="addEmoji($event)"></emoji-mart>
+    }
   </label>
-
 </div>

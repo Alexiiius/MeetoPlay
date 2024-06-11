@@ -182,5 +182,19 @@ class MessageController extends Controller {
         ]);
     }
 
+    public function getGlobalMenssage(){
+        $messages = Message::where('to_user_id', 1)
+                            ->where('to_user_name', 'Public')
+                            ->orderBy('created_at', 'desc')
+                            ->take(20)
+                            ->get();
+
+        return response()->json([
+            'data' => [
+                'messages' => $messages,
+            ],
+        ]);
+    }
+
 
 }

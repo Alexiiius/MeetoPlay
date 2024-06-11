@@ -131,11 +131,7 @@ export class ChatsComponent implements OnInit {
       };
 
       this.chats.push(newChat);
-      this.navigateToChatWithUser(newChat);
-    } else {
-      // Si se encuentra, abre el chat
-      this.navigateToChatWithUser(existingChat);
-    }
+    } 
   }
 
   deleteDuplicatedChats() {

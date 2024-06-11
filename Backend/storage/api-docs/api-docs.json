@@ -2366,6 +2366,397 @@
                 ]
             }
         },
+        "/api/message/send": {
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Send a message to a user or to global chat",
+                "operationId": "sendMessage",
+                "requestBody": {
+                    "description": "Message data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "to_user_id": {
+                                        "description": "ID of the user to send the message to",
+                                        "type": "integer"
+                                    },
+                                    "text": {
+                                        "description": "Text of the message",
+                                        "type": "string"
+                                    },
+                                    "group_name": {
+                                        "description": "Group name to send the message to",
+                                        "type": "string",
+                                        "enum": [
+                                            "global",
+                                            "private"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "Links": {
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string"
+                                                        },
+                                                        "user": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "message_id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "message_text": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/message/get/{id}/{page}": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Get all messages between auth user and id user",
+                "operationId": "getMessages",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user to get messages from",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "path",
+                        "description": "Page number",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Messages retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "messages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "from_user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "to_user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/message/read": {
+            "put": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Mark all messages from arrayID as read",
+                "operationId": "markAsRead",
+                "requestBody": {
+                    "description": "Message IDs to mark as read",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "message_ID": {
+                                        "description": "Array of message IDs to mark as read",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Messages marked as read successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "messages_count": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/message/get/unread": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Get all unread messages from auth user",
+                "operationId": "getUnreadMessages",
+                "responses": {
+                    "200": {
+                        "description": "Unread messages retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "unread_messages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "from_user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "to_user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "read_at": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/message/get/conversations": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Get all conversations from auth user with other users",
+                "operationId": "getConversations",
+                "responses": {
+                    "200": {
+                        "description": "Conversations retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "conversations": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "from_user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "to_user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "user": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "tag": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "avatar": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "status": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/user": {
             "get": {
                 "tags": [
@@ -3629,6 +4020,10 @@
         {
             "name": "GameUserStats",
             "description": "Endpoints for User Stats in Games"
+        },
+        {
+            "name": "Messages",
+            "description": "Endpoints for Messages between users"
         },
         {
             "name": "User Endpoints",

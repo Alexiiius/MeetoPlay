@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\URL;
+use Carbon\Carbon;
 
 /**
  * @OA\Tag(
@@ -278,6 +279,38 @@ class AuthController extends Controller{
             return $this->genericError('Invalid credentials. Please try again.', null);
         }
         return null;
+    }
+
+
+    /**
+     * @OA\Get(
+     *     path="/api/check-token",
+     *     summary="Return 200 if the token provided is valid",
+     *     tags={"Authentication"},
+     *     security={{"Bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Return 200 if the token provided is valid",
+     *     )
+     * )
+     */
+    public function checkToenValid() {
+        return response()->json(['message' => 'Token is valid'], 200); //return 200 if the token provided is valid (because dani asked for this shitty endpoint)
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/health-check",
+     *     tags={"Authentication"},
+     *     summary="Return OK and timestamp if the server is running",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Return OK and timestamp if the server is running",
+     *     )
+     * )
+     */
+    public function healthCheck() {
+        return response()->json([ 'status' => 'OK', 'timestamp' => Carbon::now() ]);
     }
 
 }

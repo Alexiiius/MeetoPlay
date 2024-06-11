@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Carbon;
 
 //import the controllers
 use App\Http\Controllers\Auth\AuthController;
@@ -104,9 +103,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-    Route::get('/check-token', function () {
-        return response()->json(['message' => 'Token is valid'], 200); //return 200 if the token provided is valid (because dani asked for this shitty endpoint)
-    });
+    Route::get('/check-token', [AuthController::class, 'checkToenValid']); //check if the token is valid
 
 
 });
@@ -120,10 +117,9 @@ Route::middleware(['auth:sanctum' , 'admin'])->group(function () {
 
 });
 
+
 //Health check
-Route::get('health-check', function () {
-    return response()->json([ 'status' => 'OK', 'timestamp' => Carbon::now() ]);
-});
+Route::get('health-check', [AuthController::class, 'healthCheck']);
 
 //Pepazo endpoint for fun
 Route::get('/pepazo', function () {

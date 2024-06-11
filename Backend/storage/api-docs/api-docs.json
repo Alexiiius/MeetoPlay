@@ -4143,6 +4143,39 @@
                     }
                 ]
             }
+        },
+        "/api/check-token": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Return 200 if the token provided is valid",
+                "operationId": "30cf00c2d373672b55cb50d9757d985a",
+                "responses": {
+                    "200": {
+                        "description": "Return 200 if the token provided is valid"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/health-check": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Return OK and timestamp if the server is running",
+                "operationId": "c46fe7e9702e86281443bb65aba25621",
+                "responses": {
+                    "200": {
+                        "description": "Return OK and timestamp if the server is running"
+                    }
+                }
+            }
         }
     },
     "components": {

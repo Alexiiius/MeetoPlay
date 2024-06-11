@@ -102,6 +102,7 @@ export class EditProfileComponent implements OnInit{
   }
 
   closePassConfirmationModal() {
+    this.password = '';
     this.modalDialog.nativeElement.close();
   }
 

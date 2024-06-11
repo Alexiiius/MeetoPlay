@@ -1,140 +1,142 @@
 <dialog class="modal" #editProfileModal>
 
-<div class="modal-box relative">
+  <div class="modal-box relative">
 
-  <header class="text-base w-full text-right absolute top-7 right-10">
-    <span>Editando perfil</span>
-  </header>
+    <header class="text-base w-full text-right absolute top-7 right-10">
+      <span>Editando perfil</span>
+    </header>
 
-  <div role="tablist" class="tabs tabs-lifted">
+    <div role="tablist" class="tabs tabs-lifted">
 
-    <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Perfil" checked />
-    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-      <div class="flex justify-between items-center">
-        @if (showDropzone) {
-        <div class="relative w-min lg:tooltip lg:tooltip-right" data-tip="Se recomienda el uso de imagenes con resolución 1:1 (cuadradas) 🤖">
-          <div appDnd (fileDropped)="onFileDropped($event)" [ngClass]="{'border-2': !newAvatarUrl}"
-            class="border-dashed border-neutral/40 w-32 h-32 rounded-full flex items-center justify-center text-neutral/60 p-4 hover:border-neutral/80 transition-colors duration-300">
+      <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Perfil" checked />
+      <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+        <div class="flex justify-between items-center">
+          @if (showDropzone) {
+          <div class="relative w-min lg:tooltip lg:tooltip-right"
+            data-tip="Se recomienda el uso de imagenes con resolución 1:1 (cuadradas) 🤖">
+            <div appDnd (fileDropped)="onFileDropped($event)" [ngClass]="{'border-2': !newAvatarUrl}"
+              class="border-dashed border-neutral/40 w-32 h-32 rounded-full flex items-center justify-center text-neutral/60 p-4 hover:border-neutral/80 transition-colors duration-300">
 
-            <input type="file" #fileDropRef id="fileDropRef" multiple (change)="onFileSelected($event)" accept="image/*"
-              class="absolute z-20 opacity-0 w-32 h-32 rounded-full top-0 left-0 cursor-pointer">
+              <input type="file" #fileDropRef id="fileDropRef" multiple (change)="onFileSelected($event)"
+                accept="image/*" class="absolute z-20 opacity-0 w-32 h-32 rounded-full top-0 left-0 cursor-pointer">
 
-            @if (newAvatarUrl) {
-            <div class="avatar">
-              <div class="w-32 rounded-full">
-                <img [src]="newAvatarUrl" alt="New Avatar"> />
+              @if (newAvatarUrl) {
+              <div class="avatar">
+                <div class="w-32 rounded-full">
+                  <img [src]="newAvatarUrl" alt="New Avatar"> />
+                </div>
+              </div>
+              } @else {
+              <span class="font-mono text-center text-sm">Suelta aquí la imagen o <div
+                  class="badge badge-primary cursor-pointer mt-1 font-medium">pulsa</div></span>
+              }
+            </div>
+
+            <button [disabled]="isSavingAvatar" [ngClass]="{'opacity-20': isSavingAvatar}"
+              class="button btn btn-ghost btn-circle btn-sm absolute -top-3 -right-3 flex items-center z-30"
+              (click)="toggleDropzone()">
+              <i class='bx bx-x bx-sm text-error'></i>
+            </button>
+
+            <button (click)="saveNewAvatar()" [disabled]="!newAvatar" [ngClass]="{'opacity-20': !newAvatar}"
+              class="button btn btn-ghost btn-circle btn-sm absolute -bottom-3 -right-3 flex items-center z-30">
+              @if (isSavingAvatar) {
+              <span class="loading loading-spinner text-success"></span>
+              } @else {
+              <i class='bx bx-check bx-sm text-success'></i>
+              }
+            </button>
+          </div>
+          } @else {
+          <div class="flex">
+
+            <div class="avatar placeholder cursor-pointer" (click)="toggleDropzone()">
+              <div class="bg-neutral text-neutral-content rounded-full border-4 border-base-200 w-32 relative group">
+                <img src="{{originalAvatar}}" alt="userAvatar">
+                <div
+                  class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-opacity duration-300">
+                  <span
+                    class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs font-semibold">
+                    CAMBIAR FOTO</span>
+                </div>
               </div>
             </div>
-            } @else {
-            <span class="font-mono text-center text-sm">Suelta aquí la imagen o <div
-                class="badge badge-primary cursor-pointer mt-1 font-medium">pulsa</div></span>
-            }
           </div>
+          }
 
-          <button [disabled]="isSavingAvatar" [ngClass]="{'opacity-20': isSavingAvatar}"
-            class="button btn btn-ghost btn-circle btn-sm absolute -top-3 -right-3 flex items-center z-30"
-            (click)="toggleDropzone()">
-            <i class='bx bx-x bx-sm text-error'></i>
-          </button>
-
-          <button (click)="saveNewAvatar()" [disabled]="!newAvatar" [ngClass]="{'opacity-20': !newAvatar}"
-            class="button btn btn-ghost btn-circle btn-sm absolute -bottom-3 -right-3 flex items-center z-30">
-            @if (isSavingAvatar) {
-            <span class="loading loading-spinner text-success"></span>
-            } @else {
-            <i class='bx bx-check bx-sm text-success'></i>
-            }
-          </button>
-        </div>
-        } @else {
-        <div class="flex">
-
-          <div class="avatar placeholder cursor-pointer" (click)="toggleDropzone()">
-            <div class="bg-neutral text-neutral-content rounded-full border-4 border-base-200 w-32 relative group">
-              <img src="{{originalAvatar}}" alt="userAvatar">
-              <div
-                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center transition-opacity duration-300">
-                <span
-                  class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs font-semibold">
-                  CAMBIAR FOTO</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        }
-
-        <div class="form-control relative">
-          <label class="label">
-            <span class="label-text">Nickname</span>
-          </label>
-          <div class="flex items-center gap-2">
-            <label class="input input-bordered flex items-center gap-2">
-
-              <input type="text" class="grow" placeholder="Nuevo nickname" [(ngModel)]="newNickname" maxlength="15"/>
-
-              <button [ngClass]="newNickname !== originalNickname ? 'opacity-100' : 'opacity-0'"
-                [disabled]="newNickname === originalNickname" (click)="openPassConfirmationModal()"
-                class="button btn btn-ghost btn-square btn-sm flex items-center -mr-2 transition-opacity duration-300">
-                <i class='bx bx-check bx-sm text-success'></i>
-              </button>
+          <div class="form-control relative">
+            <label class="label">
+              <span class="label-text">Nickname</span>
             </label>
+            <div class="flex items-center gap-2">
+              <label class="input input-bordered flex items-center gap-2">
+
+                <input type="text" class="grow" placeholder="Nuevo nickname" [(ngModel)]="newNickname" maxlength="15"/>
+
+                <button [ngClass]="newNickname !== originalNickname ? 'opacity-100' : 'opacity-0'"
+                  [disabled]="newNickname === originalNickname" (click)="openPassConfirmationModal()"
+                  class="button btn btn-ghost btn-square btn-sm flex items-center -mr-2 transition-opacity duration-300">
+                  <i class='bx bx-check bx-sm text-success'></i>
+                </button>
+              </label>
+            </div>
+            <span class="font-mono mt-2 absolute text-neutral/50 -bottom-7 left-3">{{newNickname}}#tag</span>
           </div>
-          <span class="font-mono mt-2 absolute text-neutral/50 -bottom-7 left-3">{{newNickname}}#tag</span>
+        </div>
+
+        <div class="form-control flex">
+          <label class="label">
+            <span class="label-text">Bio</span>
+          </label>
+          <div class="flex items-center gap-2 relative">
+            <textarea class="textarea text-base textarea-bordered h-24 max-h-32 w-full" placeholder="Bio"
+              [(ngModel)]="newBio" maxlength="150"></textarea>
+            <button [ngClass]="newBio !== originalBio ? 'opacity-100' : 'opacity-0'" [disabled]="newBio === originalBio"
+              (click)="saveNewBio()"
+              class="button btn btn-ghost btn-square btn-sm flex items-center transition-opacity duration-300 absolute bottom-2 right-2">
+              @if (isSavingBio) {
+              <span class="loading loading-spinner text-success"></span>
+              } @else {
+              <i class='bx bx-check bx-sm text-success'></i>
+              }
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="form-control flex">
-        <label class="label">
-          <span class="label-text">Bio</span>
-        </label>
-        <div class="flex items-center gap-2 relative">
-          <textarea class="textarea text-base textarea-bordered h-24 max-h-32 w-full" placeholder="Bio"
-            [(ngModel)]="newBio" maxlength="150"></textarea>
-          <button [ngClass]="newBio !== originalBio ? 'opacity-100' : 'opacity-0'" [disabled]="newBio === originalBio" (click)="saveNewBio()"
-            class="button btn btn-ghost btn-square btn-sm flex items-center transition-opacity duration-300 absolute bottom-2 right-2">
-            @if (isSavingBio) {
-            <span class="loading loading-spinner text-success"></span>
-            } @else {
-            <i class='bx bx-check bx-sm text-success'></i>
-            }
-          </button>
+      <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Socials" />
+      <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+
+        <div class="flex flex-col gap-4">
+          <app-social-link-input socialNetwork="Discord" [socialLink]="socials.Discord"
+            (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials" />
+          <app-social-link-input socialNetwork="Instagram" [socialLink]="socials.Instagram"
+            (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials" />
+          <app-social-link-input socialNetwork="X" [socialLink]="socials.X" (socialLinkUpdated)="saveNewSocials($event)"
+            [isSavingSocials]="isSavingSocials" />
+          <app-social-link-input socialNetwork="Steam" [socialLink]="socials.Steam"
+            (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials" />
+          <app-social-link-input socialNetwork="Twitch" [socialLink]="socials.Twitch"
+            (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials" />
+          <app-social-link-input socialNetwork="YouTube" [socialLink]="socials.Youtube"
+            (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials" />
         </div>
-      </div>
-    </div>
 
-    <input type="radio" name="edit_profile_tabs" role="tab" class="tab" aria-label="Socials" />
-    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-
-      <div class="flex flex-col gap-4">
-        <app-social-link-input socialNetwork="Discord" [socialLink]="socials.Discord"
-          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
-        <app-social-link-input socialNetwork="Instagram" [socialLink]="socials.Instagram"
-          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
-        <app-social-link-input socialNetwork="X" [socialLink]="socials.X"
-          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
-        <app-social-link-input socialNetwork="Steam" [socialLink]="socials.Steam"
-          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
-        <app-social-link-input socialNetwork="Twitch" [socialLink]="socials.Twitch"
-          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
-        <app-social-link-input socialNetwork="YouTube" [socialLink]="socials.Youtube"
-          (socialLinkUpdated)="saveNewSocials($event)" [isSavingSocials]="isSavingSocials"/>
       </div>
 
     </div>
-
   </div>
-</div>
 
-<form method="dialog" class="modal-backdrop">
-  <button>close</button>
-</form>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
 
 </dialog>
 
 <dialog id="pass_confirmation_modal" #pass_confirmation_modal class="modal">
   <div class="modal-box w-min">
     <form method="dialog">
-      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closePassConfirmationModal()">✕</button>
     </form>
     <h3 class="font-semibold text-lg">Confirmación</h3>
     <label class="form-control w-full max-w-xs">
@@ -148,7 +150,7 @@
             clip-rule="evenodd" />
         </svg>
 
-        <input type="password" class="grow" value="password" [(ngModel)]="password" />
+        <input type="password" class="grow" value="password" [(ngModel)]="password" (keyup.enter)="saveNewNickname()"/>
 
         <button [ngClass]="password !== '' ? 'opacity-100' : 'opacity-0'" [disabled]="password === ''"
           (click)="saveNewNickname()"

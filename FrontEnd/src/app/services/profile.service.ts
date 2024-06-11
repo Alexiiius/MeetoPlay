@@ -82,5 +82,9 @@ export class ProfileService {
   setUserStatus(status: string): Observable<any> {
     return this.http.patch(`${this.backAPIUrl}/user/status/${status}`, '');
   }
+
+  resendVerificationEmail(): Observable<any> {
+    return this.http.get(`${this.backAPIUrl}/user/send/email-verification'`);
+  }
 }
 

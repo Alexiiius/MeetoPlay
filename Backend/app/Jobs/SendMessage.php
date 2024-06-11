@@ -19,6 +19,7 @@ class SendMessage implements ShouldQueue {
 
     public function __construct(public Message $data) {
         $this->message = [
+            'message_id' => $data->id,
             'from_user_id' => $data->from_user_id,
             'to_user_id' => $data->to_user_id,
             "from_user_name" => $data->from_user_name,

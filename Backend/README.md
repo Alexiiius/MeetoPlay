@@ -5,7 +5,7 @@
 - Composer
 - MySQL >= 5.7
 
-## Installation
+## Installation for local
 
 - Install dependencies ``` npm install ``` and ``` composer install  ```
 - Launch Sail (if needed) ``` ./vendor/bin/sail up  ```
@@ -37,3 +37,4 @@ TODO
 - [Laravel Reverb](https://laravel.com/docs/11.x/reverb)
 - [Laravel Pulse](https://laravel.com/docs/11.x/pulse)
 - [Supervisor Config](https://laravel.com/docs/11.x/queues#supervisor-configuration)
+- [L5 Swagger IO](https://github.com/DarkaOnLine/L5-Swagger?tab=readme-ov-file)

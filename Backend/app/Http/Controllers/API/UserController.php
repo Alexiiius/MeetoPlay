@@ -13,8 +13,7 @@ use App\Rules\SocialsRule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
-{
+class UserController extends Controller {
 
     //return all users id, name and email
     public function index() {

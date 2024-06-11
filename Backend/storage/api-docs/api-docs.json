@@ -1,0 +1,84 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Example API",
+        "description": "Example info",
+        "contact": {
+            "name": "Swagger API Team"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "operationId": "ca7c0cb6772de9bffbb8c896980cebc8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User registered successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "API Endpoints of Authentication"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "Bearer": {
+                "type": "apiKey",
+                "description": "Bearer {token}",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    }
+}

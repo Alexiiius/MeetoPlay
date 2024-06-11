@@ -12,10 +12,39 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\URL;
 
+/**
+ * @OA\Tag(
+ *     name="Authentication",
+ *     description="API Endpoints of Authentication"
+ * )
+ */
 class AuthController extends Controller{
 
-
-
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Register a new user",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","password_confirmation"},
+     *             @OA\Property(property="name", type="string", format="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User registered successfully",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input",
+     *     )
+     * )
+     */
     public function register(Request $request)  {
 
         if ($this->validateCredentials($request)) {

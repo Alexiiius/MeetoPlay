@@ -1,5 +1,5 @@
 <label class="input input-bordered flex items-center gap-2 min-w-0">
-  <input type="text" class="grow min-w-0" placeholder="Buscar" [formControl]="search" />
+  <input type="text" class="grow min-w-0" placeholder="Buscar" [formControl]="search" maxlength="20"/>
   @if (isSearching) {
   <span class="loading loading-ring loading-md text-accent"></span>
   } @else {

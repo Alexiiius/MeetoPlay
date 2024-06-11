@@ -27,7 +27,7 @@
             <span class="label-text">Nickname</span>
           </div>
           <input type="text" formControlName="nickname" class="input input-bordered" placeholder="Escribe aquí tu apodo"
-            [ngClass]="{'input-error': isInvalid('nickname')}">
+            [ngClass]="{'input-error': isInvalid('nickname')}" maxlength="50">
         </label>
 
         <label class="form-control w-full">

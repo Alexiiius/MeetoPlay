@@ -29,8 +29,8 @@
 
   } @else if (selectedGamemode) {
 
-  <input type="text" placeholder="Nivel" class="input input-bordered w-52 2xl:w-full" formControlName="lvl"
-    [class.input-error]="isInvalid('lvl')" />
+  <input type="number" placeholder="Nivel" class="input input-bordered w-52 2xl:w-full" formControlName="lvl"
+    [class.input-error]="isInvalid('lvl')" min="0"/>
   }
 </td>
 

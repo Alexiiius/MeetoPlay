@@ -40,7 +40,7 @@ Route::get('/email/verify/{id}/{hash}/{token?}', function ($id, $hash, $token = 
         event(new Verified($user));
 
         //TODO DANI HAZ PLANTILLA PUBLICA PARA ESTO
-        return response()->json('Email verified');
+        return redirect()->away('https://meetoplay.eu/verified-email');
     }
 
     return response()->json('Email verification failed', 400);

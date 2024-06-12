@@ -215,7 +215,7 @@
               @if (inscriptionToggle) {
               <div class="relative">
                 <input type="number" placeholder="🎟️ Plazas" class="input input-bordered min-w-0 max-w-32"
-                  formControlName="maxParticipants" min="0"
+                  formControlName="maxParticipants" min="1"
                   [class.select-error]="isInvalid('whoForm','maxParticipants')">
                 <span *ngIf="eventForm.get('whoForm')?.get('maxParticipants')?.errors?.['maxPlayersExceeded']"
                   class="absolute text-error text-xs font-light left-2 top-12">Max players {{maxPlayers}}</span>

@@ -1,0 +1,165 @@
+<div class="layout">
+  <header class="layout__header">
+    <nav class="layout__header__navbar">
+
+      <div class="layout__header__navbar__logo">
+        <object data="assets/landing/logo.svg" type="image/svg+xml" class="layout__header__navbar__logo__svg"></object>
+        <span class="layout__header__navbar__logo__text">MeetoPlay</span>
+      </div>
+
+      <div class="layout__header__navbar__links">
+        <a [routerLink]="['/login']" class="layout__header__navbar__links__link">Acceder</a>
+        <a (click)="scrollToAnchor('what')" class="layout__header__navbar__links__link">What?</a>
+        <a (click)="scrollToAnchor('when')" class="layout__header__navbar__links__link">When</a>
+        <a (click)="scrollToAnchor('who')" class="layout__header__navbar__links__link">Who?</a>
+        <a (click)="scrollToAnchor('why')" class="layout__header__navbar__links__link">Why?</a>
+      </div>
+
+      <div class="layout__header__navbar__btncontainer">
+        <button class="layout__header__navbar__btncontainer__btn" [routerLink]="['/register']">
+          Unirse
+        </button>
+      </div>
+
+      <button class="layout__header__navbar__menu-btn" (click)="toggleSideMenu()">
+        <i class='bx bx-menu bx-sm'></i>
+      </button>
+
+    </nav>
+
+    <div class="layout__header__textsplashcontainer">
+      <canvas #myCanvas class="layout__header__textsplashcontainer__textsplash"></canvas>
+      <p>Deja de liarla para quedar con tus colegas</p>
+    </div>
+  </header>
+
+  <section id="what" class="layout__row layout__what">
+    <div class="layout__what__mockup">
+      <object data="assets/landing/notipanel.svg" type="image/svg+xml" class="layout__what__mockup__svg"></object>
+    </div>
+
+    <div class="layout__what__text">
+      <div class="layout__what__text__tittle">
+        <span><span class="layout__what__text__tittle__specialword" (click)="playWhatAudio()">What?</span> Eso nos preguntamos nosotros</span>
+      </div>
+      <div class="layout__what__text__phrase">
+        Esto es la red social que te va a solucionar la vida. Aquí vas a poder organizar tu “dura” vida gamer, o esa es
+        la intención.
+      </div>
+    </div>
+  </section>
+
+  <section id="when" class="layout__row layout__when">
+    <div class="layout__when__text">
+      <div class="layout__when__text__tittle">
+        <span><span class="layout__when__text__tittle__specialword" (click)="playWhenAudio()">When?</span> Cuando quieras, osea, ya!</span>
+      </div>
+      <div class="layout__when__text__phrase">
+        Únete a nuestra comunidad y empieza a conocer gente con la que jugar de chill o tryhardear a tope.
+      </div>
+    </div>
+    <div class="layout__when__mockup" id="myObject">
+      <object data="assets/landing/eventcard.svg" type="image/svg+xml" class="layout__when__mockup__svg"></object>
+    </div>
+  </section>
+
+  <div id="who" class="layout__row layout__who">
+    <div class="layout__who__mockup">
+      <object data="assets/landing/chat.svg" type="image/svg+xml" class="layout__who__mockup__svg"></object>
+    </div>
+
+    <section class="layout__who__text">
+      <div class="layout__who__text__tittle">
+        <span><span class="layout__who__text__tittle__specialword" (click)="playWhoAudio()">Who?</span> Tú, yo, nosotros, todos</span>
+      </div>
+      <div class="layout__who__text__phrase">
+        Esta web está desarrollada por gamers y para gamers, anímate a conocernos y a formar parte de nuestra comunidad.
+      </div>
+    </section>
+  </div>
+
+  <section id="why" class="layout__row layout__why">
+    <div class="layout__why__text">
+      <div class="layout__why__text__tittle">
+        <span><span class="layout__why__text__tittle__specialword" (click)="playWhyAudio()">Why?</span> Esta claro no?
+          <p>Necesitas esta web</p>
+        </span>
+      </div>
+      <div class="layout__why__text__phrase">
+        Un lugar donde conocer gente nueva con tus gustos y además poder hacer lo que más te gusta...
+      </div>
+    </div>
+    <button [routerLink]="['/register']" class="layout__why__button">
+      Crear cuenta
+    </button>
+
+    <div class="layout__why__container">
+      <video class="layout__why__container__video" autoplay muted loop playsinline>
+        <source src="assets/landing/video/video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </section>
+
+  <footer class="layout__footer">
+    <object class="layout__footer__languaje" data="assets/landing/languajeselector.svg" type="image/svg+xml"></object>
+
+    <div class="layout__footer__columns">
+      <div class="layout__footer__columns__column">
+        <span class="layout__footer__columns__column__title">Producto</span>
+        <span class="layout__footer__columns__column__link" [routerLink]="['/register']">Crear cuenta</span>
+        <span class="layout__footer__columns__column__link">GamesStructureAPI</span>
+      </div>
+
+
+      <div class="layout__footer__columns__column">
+        <span class="layout__footer__columns__column__title">Compañía</span>
+        <span class="layout__footer__columns__column__link">Sobre nosotros</span>
+        <span class="layout__footer__columns__column__link">Trabaja con nosotros</span>
+        <span class="layout__footer__columns__column__link">Estado</span>
+      </div>
+
+
+      <div class="layout__footer__columns__column">
+        <span class="layout__footer__columns__column__title">Recursos</span>
+        <span class="layout__footer__columns__column__link">Gamming</span>
+        <span class="layout__footer__columns__column__link">Eventos sociales</span>
+      </div>
+
+
+      <div class="layout__footer__columns__column">
+        <span class="layout__footer__columns__column__title">Legal</span>
+        <span class="layout__footer__columns__column__link">Privacidad</span>
+        <span class="layout__footer__columns__column__link">Condiciones</span>
+        <span class="layout__footer__columns__column__link">Configuración de cookies</span>
+        <span class="layout__footer__columns__column__link">Agradecimientos</span>
+      </div>
+    </div>
+
+    <div class="layout__footer__decoration">
+      <div class="layout__footer__decoration__line"></div>
+      <div class="layout__footer__decoration__underline">
+        <object data="assets/landing/logo.svg" type="image/svg+xml" class="llayout__footer__decoration__underline__logo"></object>
+        <button class="layout__footer__decoration__underline__button" [routerLink]="['/login']">
+          Unirse
+        </button>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+<div class="layout__header__navbar__side-menu" [ngClass]="isSideMenuOpen ? 'open': 'close'">
+  <header class="layout__header__navbar__side-menu__header">
+    <object data="assets/landing/logo.svg" type="image/svg+xml"
+      class="layout__header__navbar__side-menu__header__svg"></object>
+    <span class="layout__header__navbar__side-menu__header__text">MeetoPlay</span>
+    <button class="layout__header__navbar__side-menu__header__button" (click)="toggleSideMenu()">
+      <i class='bx bx-x bx-sm'></i>
+    </button>
+  </header>
+  <a (click)="scrollToAnchor('what', true)" class="layout__header__navbar__side-menu__link">What?</a>
+  <a (click)="scrollToAnchor('when', true)" class="layout__header__navbar__side-menu__link">When</a>
+  <a (click)="scrollToAnchor('who', true)" class="layout__header__navbar__side-menu__link">Who?</a>
+  <a (click)="scrollToAnchor('why', true)" class="layout__header__navbar__side-menu__link">Why?</a>
+</div>

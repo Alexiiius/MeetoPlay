@@ -20,7 +20,7 @@
  - Websocket host in 8080. Remember to activate queue and schedule, otherwise private and global chat dont work!
  - Remember to link the storage route or the avatar dont work too!
  - If the project refuse to launch in local ask anything to us!
- - PD: test /api/health-check ;)
+ - PD: test /health-check ;)
 
    ![image](https://github.com/Alexiiius/MeetoPlay/assets/26854412/b9b40138-2004-4b68-b8e9-d6baa90a1e9f)
 

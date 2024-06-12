@@ -22,6 +22,9 @@
  - If the project refuse to launch in local ask anything to us!
  - PD: test /api/health-check ;)
 
+   ![image](https://github.com/Alexiiius/MeetoPlay/assets/26854412/b9b40138-2004-4b68-b8e9-d6baa90a1e9f)
+
+
 ## Credits
 
 [Alejandro Sánchez Fernández](https://github.com/Alexiiius).

@@ -29,7 +29,7 @@
             </button>
             } @else {
             <button class="btn btn-success w-24 font-normal" (click)="joinEvent()"
-              [disabled]="join_LeaveLoading || !isEventInsciptionOpen()">
+              [disabled]="join_LeaveLoading || !isEventInsciptionOpen() || isEventFull()">
               @if (join_LeaveLoading) {
               <span class="loading loading-spinner text-secondary"></span>
               } @else {
@@ -126,7 +126,8 @@
           <div class="flex items-end">Cargando participantes <span class="loading loading-dots loading-xs"></span></div>
           } @else {
 
-          @if (friendParticipants.length == 0 && followedParticipants.length == 0 && otherParticipants.length == 0  && !loggedUserParticipating) {
+          @if (friendParticipants.length == 0 && followedParticipants.length == 0 && otherParticipants.length == 0 &&
+          !loggedUserParticipating) {
           <div class="col-span-full font-normal text-xl">No hay participantes todavía 😅</div>
           } @else {
 
@@ -204,6 +205,7 @@
 
       <div class="flex gap-1 items-center justify-end pointer-events-none absolute right-9 top-[30px]">
         @if (isEventInsciptionOpen()) {
+        @if (!isEventFull()) {
         <span class="text-md font-light">El plazo de inscripción acaba en</span>
         <span class="countdown font-mono text-lg font-normal flex items-center">
           <span [style.--value]="countdown.days"></span>d
@@ -211,6 +213,9 @@
           <span [style.--value]="countdown.minutes"></span>m
           <span [style.--value]="countdown.seconds"></span>s
         </span>
+        } @else {
+        <span class="text-md font-light">Evento lleno</span>
+        }
         } @else {
         <span class="text-md font-light">La incripción a este evento está cerrada</span>
         }

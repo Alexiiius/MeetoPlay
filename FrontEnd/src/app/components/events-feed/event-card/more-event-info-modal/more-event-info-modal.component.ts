@@ -292,6 +292,10 @@ export class MoreEventInfoModalComponent implements OnDestroy {
     return now < this.eventInscriptionEndTime;
   }
 
+  isEventFull(){
+    return this.event.participants.length >= this.event.max_participants;
+  }
+
   calculateEventDuration() {
     const dateEnd = new Date(this.event.date_time_end);
     const dateBegin = new Date(this.event.date_time_begin);

@@ -41,7 +41,7 @@ export class WebSocketService {
     this.Echo = new Echo({
       broadcaster: 'reverb',
       key: 'ixyw7gpei8mjty0vi0n5',
-      wsHost: 'meetoplay.duckdns.org',
+      wsHost: 'meetoplay.es',
       wsPort: 8085,
       wssPort: 443,
       forceTLS: true,
@@ -63,7 +63,7 @@ export class WebSocketService {
     this.Echo = new Echo({
       broadcaster: 'reverb',
       key: 'ixyw7gpei8mjty0vi0n5',
-      wsHost: 'meetoplay.duckdns.org',
+      wsHost: 'meetoplay.es',
       wsPort: 8085,
       wssPort: 443,
       forceTLS: true,
@@ -73,7 +73,7 @@ export class WebSocketService {
           'Authorization': 'Bearer ' + this.token,
         },
       },
-      authEndpoint: `https://meetoplay.duckdns.org/api/broadcasting/auth`
+      authEndpoint: `https://meetoplay.es/api/broadcasting/auth`
     });
 
     this.privateMessagesChannel = `App.Models.User.${userId}`;

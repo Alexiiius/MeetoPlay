@@ -1,6 +1,7 @@
 # MeetoPlay
 
-DAW 2024 
+DAW Upper Grade 2024 Final Project
+
 
 ![image](https://github.com/Alexiiius/MeetoPlay/assets/26854412/9c9735da-9299-4eec-8508-618650afb4b0)
 

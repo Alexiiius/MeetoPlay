@@ -17,7 +17,10 @@
 
 ## Usage
 
-TODO
+ - Websocket host in 8080. Remember to activate queue and schedule, otherwise private and global chat dont work!
+ - Remember to link the storage route or the avatar dont work too!
+ - If the project refuse to launch in local ask anything to us!
+ - PD: test /api/health-check ;)
 
 ## Credits
 

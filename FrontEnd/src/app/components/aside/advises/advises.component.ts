@@ -14,7 +14,7 @@ export class AdvisesComponent implements OnInit {
 
   @Output() hasAdvises = new EventEmitter<boolean>();
 
-  advises: Advise[];
+  advises: Advise[] = [];
 
   sampleAdvise: Advise = {
     id: 1,
@@ -28,18 +28,16 @@ export class AdvisesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.advises = [this.sampleAdvise];
-
     if (!sessionStorage.getItem('advisesComponentLoaded')) {
       if (this.advises.length > 0) {
-        this.alertService.showAlert('info', 'Hay avisos nuevos Revisa los avisos para mantenerte informado 🔔');
+        this.alertService.showAlert('info', 'Hay avisos nuevos Revisalos para mantenerte informado 🔔');
       }
       sessionStorage.setItem('advisesComponentLoaded', 'true');
     }
 
-    // this.advisesService.getAdvises().subscribe((advises: Advise[]) => {
-    //   this.advises = advises
-    // });
+    this.advisesService.getAdvises().subscribe((advises: Advise[]) => {
+      this.advises = advises
+    });
   }
 
 }

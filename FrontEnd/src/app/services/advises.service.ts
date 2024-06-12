@@ -13,12 +13,9 @@ export class AdvisesService {
 
   constructor(
     private http: HttpClient
-  ) {
-
-   }
+  ) {}
 
   getAdvises(): Observable<Advise[]> {
-    return this.http.get<Advise[]>(`${this.backAPIUrl}/advises`);
-    // return this.http.get(`${this.backAPIUrl}/advises`);
+    return this.http.get<Advise[]>(`${this.backAPIUrl}/advises/get`);
   }
 }

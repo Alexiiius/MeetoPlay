@@ -3,7 +3,7 @@
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: min-content min-content;
   grid-column-gap: 10px;
-  grid-row-gap: 50px;
+  grid-row-gap: 40px;
   padding-inline: 20px;
   padding-block: 40px;
   background: linear-gradient(300deg, #38bdf8, #8b5cf6, #00ffff);
@@ -207,8 +207,8 @@
   }
 
   &__textsplashcontainer {
-    grid-column-start: 4;
-    grid-column-end: 10;
+    grid-column-start: 3;
+    grid-column-end: 11;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -216,7 +216,7 @@
 
     &__textsplash {
       width: 100%;
-      height: auto;
+      height: 200px;
     }
 
     p {
@@ -232,6 +232,11 @@
     &__textsplashcontainer {
       grid-column-start: 2;
       grid-column-end: 12;
+
+      &__textsplash {
+        width: 100%;
+        height: 100px;
+      }
 
       p {
         font-weight: 400;

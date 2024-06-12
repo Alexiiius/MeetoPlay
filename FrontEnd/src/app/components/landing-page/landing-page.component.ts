@@ -1,5 +1,5 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -12,13 +12,15 @@ import { RouterLink } from '@angular/router';
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
-export class LandingPageComponent implements OnInit, OnDestroy{
+export class LandingPageComponent implements OnInit, OnDestroy {
   isSideMenuOpen: boolean = false;
 
   whatAudio = new Audio();
   whenAudio = new Audio();
   whoAudio = new Audio();
   whyAudio = new Audio();
+
+  @ViewChild('myCanvas') myCanvas: ElementRef;
 
   constructor(
     private renderer: Renderer2,
@@ -46,13 +48,48 @@ export class LandingPageComponent implements OnInit, OnDestroy{
     window.removeEventListener('scroll', this.scroll, true);
   }
 
+  ngAfterViewInit() {
+    const canvas = this.myCanvas.nativeElement;
+    const context = canvas.getContext('2d');
+    const image = new Image();
+    image.src = 'assets/landing/textsplash.svg';
+
+    const drawImage = () => {
+      // Aumenta la resolución del canvas
+      const scale = window.devicePixelRatio;
+      canvas.width = canvas.offsetWidth * scale;
+      canvas.height = canvas.offsetHeight * scale;
+      context.scale(scale, scale);
+
+      // Calcula la escala para mantener la relación de aspecto
+      const imageScale = Math.min(canvas.offsetWidth / image.width, canvas.offsetHeight / image.height);
+
+      // Calcula el tamaño de la imagen escalada
+      const imageWidth = image.width * imageScale;
+      const imageHeight = image.height * imageScale;
+
+      // Calcula la posición para centrar la imagen en el canvas
+      const imageX = (canvas.offsetWidth - imageWidth) / 2;
+      const imageY = (canvas.offsetHeight - imageHeight) / 2;
+
+      // Limpia el canvas y dibuja la imagen
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+    };
+
+    image.onload = drawImage;
+
+    // Redibuja la imagen cuando cambia el tamaño de la ventana
+    window.addEventListener('resize', drawImage);
+  }
+
   scrollToAnchor(anchor: string, sideMenu: boolean = false): void {
     if (sideMenu) {
       this.toggleSideMenu();
     }
     const element = document.getElementById(anchor);
     if (element) {
-      element.scrollIntoView({behavior: 'smooth', block: 'center'});
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
   scroll = (event: Event): void => {

@@ -85,6 +85,20 @@ export class AuthService {
     );
   }
 
+  //Borra el token de session o local storage y guarda el nuevo token dependiendo de donde estuviera guardado
+  resetToken(token: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (localStorage.getItem('access_token')) {
+        localStorage.removeItem('access_token');
+        localStorage.setItem('access_token', token);
+      } else {
+        sessionStorage.removeItem('access_token');
+        sessionStorage.setItem('access_token', token);
+      }
+      resolve();
+    });
+  }
+
   storeToken(token: string, rememberMe: boolean): Promise<void> {
     localStorage.removeItem('access_token');
     sessionStorage.removeItem('access_token');

@@ -13,6 +13,8 @@ A web app where you can chat with others, create or join game events and more!
 ## Contents
 
 - [Developers](#developers)
+- [Links](#links)
+- [Usage](#usage)
 - [Draft](#draft)
 - [Versions](#versions)
 - [Bibliography](#bibliography)
@@ -21,6 +23,18 @@ A web app where you can chat with others, create or join game events and more!
 
 - [Daniel Ramírez Vaquero](https://github.com/DaniRamirezVaquero)
 - [Alejandro Sánchez Fernández](https://github.com/Alexiiius)
+
+## Links
+
+  - [Frontend](http://meetoplay.eu)
+  - [Backend](https://meetoplay.es)
+  - [Backend API Documentation Swagger](https://meetoplay.es/api/documentation)
+  - [API](https://meetoplay.net)
+  - Links may be down. Ask us if you want to locally up the project!
+
+## Usage
+
+  - [Backend Laravel 11](./Backend#readme.md)
 
 ## Draft
 

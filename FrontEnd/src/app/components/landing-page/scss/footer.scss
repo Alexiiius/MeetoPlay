@@ -1,0 +1,114 @@
+.layout__footer {
+  background-color: $base-100;
+
+  padding-top: 60px;
+  padding-bottom: 40px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: min-content auto;
+  grid-column-gap: 10px;
+  place-content: center;
+  align-items: start;
+  justify-items: center;
+  color: $neutral;
+  font-size: 0.8rem;
+  text-align: center;
+  font-weight: 300;
+  letter-spacing: 0.1rem;
+
+  &__languaje {
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
+
+  @media (max-width: 600px) {
+    &__languaje {
+      display: none;
+    }
+  }
+
+  &__columns {
+    grid-column-start: 5;
+    grid-column-end: 11;
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(200px, 1fr)
+    ); // Ajusta el valor 200px al tamaño mínimo que deseas para tus columnas
+    gap: 20px; // Ajusta el espacio entre las columnas
+    width: 100%;
+
+    &__column {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      gap: 6px;
+      font-size: clamp(0.875rem, 0.8481rem + 0.1266vw, 1rem);
+
+      &__title {
+        font-weight: 600;
+        color: $secondary;
+        font-family: "Raleway", sans-serif;
+        margin-bottom: 2px;
+      }
+
+      &__link {
+        color: $neutral;
+        font-weight: 300;
+        transition: color 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  &__decoration {
+    margin-top: 10px;
+    grid-column-start: 2;
+    grid-column-end: 12;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &__line {
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(to right, $primary, $secondary);
+      margin-block: 20px;
+      border-radius: 8px;
+    }
+
+    &__underline {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      height: 60px;
+
+      &__logo {
+        width: 65px;
+        height: 54px;
+      }
+
+      &__button {
+        font-size: 16px;
+        font-weight: 500;
+        color: $base-100;
+        font-family: "Kanit", sans-serif;
+        cursor: pointer;
+        padding: 5px 25px;
+        border-radius: 8px;
+        background: $neutral;
+        transition: color 0.3s;
+        height: 45px;
+
+        &:hover {
+          color: $base-200;
+        }
+      }
+    }
+  }
+}

@@ -8,7 +8,9 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { GameStatsComponent } from './components/profile/game-stats/game-stats.component';
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';
 import { ParticipatingEventsComponent } from './components/profile/participating-events/participating-events.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { ChatComponent } from './components/chat/chat.component';
+
 
 export const routes: Routes = [
   {
@@ -28,7 +30,8 @@ export const routes: Routes = [
       { path: 'chat-with/:usernamefulltag', title: 'Meetoplay | Chat', component: ChatComponent, canActivate: [authGuard, chatGuard] }
     ]
   },
-  { path: 'login', title: 'Meetoplay', component: LoginRegisterComponent, data: { mode: 'login' } },
+  { path: 'welcome', title: 'Meetoplay | Welcome', component: LandingPageComponent},
+  { path: 'login', title: 'Meetoplay | Login', component: LoginRegisterComponent, data: { mode: 'login' } },
   { path: 'register', title: 'Meetoplay | Register', component: LoginRegisterComponent, data: { mode: 'register' } },
   { path: '**', redirectTo: 'main' }
 

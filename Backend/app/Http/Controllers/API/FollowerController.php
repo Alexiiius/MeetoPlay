@@ -7,8 +7,88 @@ use Illuminate\Http\Request;
 use App\Models\Follower;
 use App\Models\User;
 
+
+/**
+ * @OA\Tag(
+ *     name="Relationships",
+ *     description="Endpoints for Relationships between users"
+ * )
+ */
 class FollowerController extends Controller {
 
+
+
+    /**
+ * @OA\Post(
+ *     path="/api/follow/{id}",
+ *     tags={"Relationships"},
+ *     summary="Auth user follow other user",
+ *     operationId="follow",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the user to follow",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User followed successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="self",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="user followed",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="followers of user followed",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="meta",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="follow_count",
+ *                         type="string"
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function follow(Request $request, $id) {
         
         $follower = $request->user();
@@ -69,6 +149,79 @@ class FollowerController extends Controller {
 
     }
 
+
+
+    /**
+ * @OA\Post(
+ *     path="/api/unfollow/{id}",
+ *     tags={"Relationships"},
+ *     summary="Auth user unfollow other user",
+ *     operationId="unfollow",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the user to unfollow",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User unfollowed successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="self",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="user unfollowed",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="followers",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="meta",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="follow_count",
+ *                         type="string"
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function unfollow(Request $request, $id) {
             
             $follower = $request->user();
@@ -116,6 +269,74 @@ class FollowerController extends Controller {
         }
         
 
+
+    /**
+ * @OA\Get(
+ *     path="/api/followers/{id}",
+ *     tags={"Relationships"},
+ *     summary="Show all followers from id user",
+ *     operationId="followers",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the user to get followers",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Followers retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="self",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="user",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="meta",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="followers_count",
+ *                         type="integer"
+ *                     ),
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function followers($id) {
         $user = User::find($id);
         if ($user) {
@@ -142,6 +363,77 @@ class FollowerController extends Controller {
         }
     }
 
+
+
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/following/{id}",
+ *     tags={"Relationships"},
+ *     summary="Show all user that the id user is following",
+ *     operationId="following",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the user to get following",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Following retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="self",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="user",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="meta",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="following_count",
+ *                         type="integer"
+ *                     ),
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function following($id) {
         $user = User::find($id);
         if ($user) {
@@ -168,6 +460,77 @@ class FollowerController extends Controller {
         }
     }
 
+
+
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/isfollowing/{id}",
+ *     tags={"Relationships"},
+ *     summary="Show if auth user follow id user",
+ *     operationId="show",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the user to check if the current user is following",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Following status retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="self",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="user",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="meta",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="boolean",
+ *                         type="boolean"
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function show(Request $request, $id) {
         $follower = $request->user();
         $followed = User::find($id);
@@ -210,6 +573,90 @@ class FollowerController extends Controller {
         }
     }
 
+
+
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/friends/{id}",
+ *     tags={"Relationships"},
+ *     summary="Show all friends of a id user",
+ *     operationId="friends",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the user to get friends",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Friends retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="self",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="user",
+ *                         type="string"
+ *                     )
+ *                 ),
+ *                 @OA\Property(
+ *                     property="meta",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="friends_count",
+ *                         type="integer"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="friends",
+ *                         type="array",
+ *                         @OA\Items(
+ *                             type="object",
+ *                             @OA\Property(property="id", type="integer"),
+ *                             @OA\Property(property="tag", type="string"),
+ *                             @OA\Property(property="name", type="string"),
+ *                             @OA\Property(property="full_tag", type="string"),
+ *                             @OA\Property(property="avatar", type="string"),
+ *                             @OA\Property(property="status", type="string")
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="User not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function friends($id) {
         $user = User::find($id);
         if (!$user) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { backAPIUrl } from '../config';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { UserReduced } from '../interfaces/user-reduced';
 import { Owner } from '../models/owner';
 import { EventRequirments } from '../models/eventRequirments';

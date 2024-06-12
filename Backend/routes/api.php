@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Carbon;
 
 //import the controllers
 use App\Http\Controllers\Auth\AuthController;
@@ -11,6 +10,8 @@ use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\FollowerController;
 use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\GameUserStatsController;
+use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\API\AdvisesController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']); //register a new user using name, email password and password_confirmation
@@ -96,11 +97,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/message/get/conversations', [MessageController::class, 'getConversations']); //get all conversations from auth user
 
+    // ------------------------------------------------------------------ ADVISES ------------------------------------------------------------
+
+    Route::get('/advises/get', [AdvisesController::class, 'getActualAdvises']); //return all advises that are active
+
     // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-    Route::get('/check-token', function () {
-        return response()->json(['message' => 'Token is valid'], 200); //return 200 if the token provided is valid (because dani asked for this shitty endpoint)
-    });
+    Route::get('/check-token', [AuthController::class, 'checkToenValid']); //check if the token is valid
 
 
 });
@@ -110,14 +113,19 @@ Route::middleware(['auth:sanctum' , 'admin'])->group(function () {
 
     Route::get('/users', [UserController::class, 'index']); //return name, email and id from all users
 
+    Route::post('/advises/create', [AdvisesController::class, 'createAdvise']); //create a new advise only for admin
+
 });
 
+
 //Health check
-Route::get('health-check', function () {
-    return response()->json([ 'status' => 'OK', 'timestamp' => Carbon::now() ]);
-});
+Route::get('health-check', [AuthController::class, 'healthCheck']);
 
 //Pepazo endpoint for fun
 Route::get('/pepazo', function () {
     return response()->json(['pepazo' => 'pepazo']);
+});
+
+Route::middleware('auth:sanctum')->post('/broadcasting/auth', function (Request $request) {
+    return Broadcast::auth($request);
 });

@@ -16,9 +16,9 @@ use App\Models\Event;
 use App\Models\Message;
 use App\Models\GameUserStats;
 use App\Models\GameModeStats;
+use Illuminate\Contracts\Auth\CanResetPassword;
 
-class User extends Authenticatable implements MustVerifyEmail
-{
+class User extends Authenticatable implements MustVerifyEmail, CanResetPassword {
     use HasFactory, Notifiable, HasApiTokens;
 
     /**

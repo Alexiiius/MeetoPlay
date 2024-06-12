@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Event } from '../../../models/event';
 import { format } from 'date-fns';
 import { MoreEventInfoModalComponent } from './more-event-info-modal/more-event-info-modal.component';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EventOptionsComponent } from './event-options/event-options.component';
 
 @Component({
@@ -51,6 +51,11 @@ export class EventCardComponent implements OnInit {
     return this.router.url === route;
   }
 
+  isEventInsciptionOpen() {
+    const now = new Date();
+    return now < this.eventInscriptionEndTime;
+  }
+
   isActivatedRouteInChildRoute(routePath: string): boolean {
     const urlSegments = this.router.url.split('/').filter(segment => segment);
     const routePathSegments = routePath.split('/').filter(segment => segment);
@@ -74,6 +79,8 @@ export class EventCardComponent implements OnInit {
 
   @ViewChild('participatingBadge') participatingBadge: ElementRef;
   @ViewChild('friendsParticipatingBadge') friendsParticipatingBadge: ElementRef;
+  @ViewChild('inscriptionCloseBadge') inscriptionCloseBadge: ElementRef;
+  @ViewChild('inscriptionOpenBadge') inscriptionOpenBadge: ElementRef;
 
   hideParticipatingBadge() {
     this.participatingBadge.nativeElement.style.display = 'none';
@@ -81,6 +88,14 @@ export class EventCardComponent implements OnInit {
 
   hideFriendsParticipatingBadge() {
     this.friendsParticipatingBadge.nativeElement.style.display = 'none';
+  }
+
+  hideInscriptionCloseBadge() {
+    this.inscriptionCloseBadge.nativeElement.style.display = 'none';
+  }
+
+  hideInscriptionOpenBadge() {
+    this.inscriptionOpenBadge.nativeElement.style.display = 'none';
   }
 
   noRequirments() {

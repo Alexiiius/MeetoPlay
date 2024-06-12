@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { Gamemode } from '../../../../../models/gamemode';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { APIService } from '../../../../../services/api.service';
 import { NewFullGame } from '../../../../../interfaces/new-fullGame';
 import { FormatedNewGamemodeStat } from '../../../../../interfaces/formated-new-gamemode-stat';
 import { UserService } from '../../../../../services/user.service';
@@ -175,6 +174,7 @@ export class SelectGamemodeRankLvlComponent {
 
         this.userService.postGamemodeStat(formatedNewGamemodeStat).subscribe(
           (response) => {
+            console.log(response)
             this.alertService.showAlert('success', 'GameStat creado con éxito! 😄');
             this.profileService.gamemodeStatCreated.next(response.data.GamemodeStats);
             this.deleteRequest.emit();

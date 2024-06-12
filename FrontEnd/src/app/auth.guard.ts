@@ -3,6 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { map } from 'rxjs';
 import { UserService } from './services/user.service';
+import { ChatsService } from './services/chats.service';
 
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -29,6 +30,29 @@ export const OwnProfileGuard: CanActivateFn = (route, state) => {
   const currentUserId = userData ? JSON.parse(userData).id : null;
 
   if (currentUserId && id == currentUserId) {
+    return true;
+  } else {
+    router.navigate(['/']);
+    return false;
+  }
+};
+
+export const chatGuard: CanActivateFn = (route, state) => {
+  const chatService = inject(ChatsService);
+  const router = inject(Router);
+
+  const userChatingWith = chatService.getUser();
+  let usernameInUrl = route.paramMap.get('usernamefulltag');
+
+  if (userChatingWith.full_tag){
+    userChatingWith.full_tag = userChatingWith.full_tag.replace(/\s/g, '');
+  }
+
+  if (usernameInUrl) {
+    usernameInUrl = decodeURIComponent(usernameInUrl)
+  }
+
+  if(userChatingWith && userChatingWith.full_tag === usernameInUrl){
     return true;
   } else {
     router.navigate(['/']);

@@ -41,8 +41,19 @@ export class ProfilecardComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.userService.getLogedUserData().subscribe((user: UserData) => {
-      this.user = user;
+    this.userService.currentUser.subscribe(user => {
+      if (user) {
+        this.user = user;
+        const previousUserStatus = localStorage.getItem('user_status');
+        if (previousUserStatus) {
+          this.profileService.setUserStatus(previousUserStatus.toLowerCase()).subscribe();
+
+          this.user.status = previousUserStatus;
+        } else {
+          this.profileService.setUserStatus('online').subscribe();
+          this.user.status = 'Online';
+        }
+      }
       this.isLoading = false;
     });
 

@@ -41,6 +41,8 @@ export class ProfileService {
   gameStatsSource = new BehaviorSubject<GameStat[] | []>([]);
   gameStats$ = this.gameStatsSource.asObservable();
 
+  userStatusChanged = new Subject<string>();
+
   setUserProfileId(id: number) {
     this.userProfileId.next(id);
   }
@@ -75,6 +77,14 @@ export class ProfileService {
 
   updatePassword(newPassword: string, password: string): Observable<any> {
     return this.http.patch(`${this.backAPIUrl}/user/password/update`, { password: password, new_password: newPassword });
+  }
+
+  setUserStatus(status: string): Observable<any> {
+    return this.http.patch(`${this.backAPIUrl}/user/status/${status}`, '');
+  }
+
+  resendVerificationEmail(): Observable<any> {
+    return this.http.get(`${this.backAPIUrl}/user/send/email-verification'`);
   }
 }
 

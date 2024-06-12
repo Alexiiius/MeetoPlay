@@ -12,12 +12,149 @@ use App\Models\EventRequirement;
 use App\Models\User;
 use App\Models\Event;
 
+
+/**
+ * @OA\Tag(
+ *     name="Events",
+ *     description="Endpoints for Events"
+ * )
+ */
 class EventController extends Controller
 {
 
 
-    public function store(Request $request)
-    {
+
+ /**
+ * @OA\Post(
+ *     path="/api/event/create",
+ *     tags={"Events"},
+ *     summary="Create a new event",
+ *     security={{"Bearer":{}}},
+ *     operationId="createEvent",
+ *     @OA\RequestBody(
+ *         description="Event data to be created",
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="application/json",
+ *             @OA\Schema(
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="data",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="event",
+ *                         type="object",
+ *                         @OA\Property(
+ *                             property="event_title",
+ *                             type="string",
+ *                             description="Title of the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="game_id",
+ *                             type="integer",
+ *                             description="ID of the game"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="game_name",
+ *                             type="string",
+ *                             description="Name of the game"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="game_mode",
+ *                             type="string",
+ *                             description="Mode of the game"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="game_pic",
+ *                             type="string",
+ *                             description="Picture URL of the game",
+ *                             example="https://www.example.com/image.jpg"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="platform",
+ *                             type="string",
+ *                             description="Platform of the game"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="event_owner_id",
+ *                             type="integer",
+ *                             description="ID of the event owner"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="date_time_begin",
+ *                             type="string",
+ *                             format="date-time",
+ *                             description="Start date and time of the event",
+ *                             example="2025-12-31 23:59:59"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="date_time_end",
+ *                             type="string",
+ *                             format="date-time",
+ *                             description="End date and time of the event",
+ *                             example="2024-12-31 23:59:59"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="max_participants",
+ *                             type="integer",
+ *                             description="Maximum number of participants"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="privacy",
+ *                             type="public",
+ *                             description="Privacy setting of the event",
+ *                             enum={"hidden", "friends", "public", "followers"}
+ *                         )
+ *                     ),
+ *                     @OA\Property(
+ *                         property="event_requirements",
+ *                         type="object",
+ *                         @OA\Property(
+ *                             property="max_rank",
+ *                             type="string",
+ *                             description="Maximum rank for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="min_rank",
+ *                             type="string",
+ *                             description="Minimum rank for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="max_level",
+ *                             type="integer",
+ *                             description="Maximum level for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="min_level",
+ *                             type="integer",
+ *                             description="Minimum level for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="max_hours_played",
+ *                             type="integer",
+ *                             description="Maximum hours played for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="min_hours_played",
+ *                             type="integer",
+ *                             description="Minimum hours played for the event"
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Event created successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad request"
+ *     )
+ * )
+ */
+    public function store(Request $request) {
         $request->validate([
             'data.event.event_title' => 'required|string',
             'data.event.game_id' => 'required|integer',
@@ -66,8 +203,56 @@ class EventController extends Controller
         ], 201);
     }
 
-    public function show($id)
-    {
+
+    /**
+ * @OA\Get(
+ *     path="/api/event/{id}",
+ *     tags={"Events"},
+ *     summary="Show a specific event if the user has permission to see it",
+ *     operationId="showEvent",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the event to retrieve",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Event retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Event not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
+    public function show($id) {
 
         $event = Event::with('event_requirements')
             ->with(['owner' => function ($query) {
@@ -105,6 +290,69 @@ class EventController extends Controller
         ]);
     }
 
+
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/events/public/{page}",
+ *     tags={"Events"},
+ *     summary="Show all public events if the user has permission to see it",
+ *     operationId="showPublicEvents",
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="path",
+ *         description="Page number to retrieve",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Public events retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="current_page",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_pages",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_events",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Page not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function showPublicEvents($page)
     {
         $perPage = 10;
@@ -136,6 +384,68 @@ class EventController extends Controller
         ]);
     }
 
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/events/hidden/{page}",
+ *     tags={"Events"},
+ *     summary="Show all hidden events of auth user if the user has permission to see it. Paginated.",
+ *     operationId="showHiddenEvents",
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="path",
+ *         description="Page number to retrieve",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Hidden events retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="current_page",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_pages",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_events",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Page not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function showHiddenEvents($page)
     {
         $perPage = 10;
@@ -171,6 +481,67 @@ class EventController extends Controller
         ]);
     }
 
+
+    /**
+ * @OA\Get(
+ *     path="/api/events/my/{page}",
+ *     tags={"Events"},
+ *     summary="Show all events of auth user if the user has permission to see it. Paginated.",
+ *     operationId="showMyEvents",
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="path",
+ *         description="Page number to retrieve",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User's events retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="current_page",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_pages",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_events",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Page not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function showMyEvents($page)
     {
         $perPage = 10;
@@ -203,6 +574,69 @@ class EventController extends Controller
         ]);
     }
 
+
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/events/friends/{page}",
+ *     tags={"Events"},
+ *     summary="Show all events of friends of auth user if the user has permission to see it. Paginated.",
+ *     operationId="showFriendsEvents",
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="path",
+ *         description="Page number to retrieve",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Friends' events retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="current_page",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_pages",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_events",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Page not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function showFriendsEvents($page)
     {
         $perPage = 10;
@@ -239,6 +673,69 @@ class EventController extends Controller
         ]);
     }
 
+
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/events/following/{page}",
+ *     tags={"Events"},
+ *     summary="Show all public and followers events of the users that auth user is following if the user has permission to see it. Paginated.",
+ *     operationId="showFollowingEvents",
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="path",
+ *         description="Page number to retrieve",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Following users' events retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="current_page",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_pages",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_events",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Page not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function showFollowingEvents(Request $request)
     {
         $perPage = 10;
@@ -275,6 +772,69 @@ class EventController extends Controller
         ]);
     }
 
+
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/events/participating/{page}",
+ *     tags={"Events"},
+ *     summary="Show all events in which the auth user is participating. Paginated.",
+ *     operationId="showParticipatingEvents",
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="path",
+ *         description="Page number to retrieve",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Participating events retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="current_page",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_pages",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_events",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Page not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     //eventos en los que participo
     public function showParticipatingEvents(Request $request)
     {
@@ -308,6 +868,146 @@ class EventController extends Controller
         ]);
     }
 
+
+ /**
+ * @OA\Put(
+ *     path="/api/event/update/{id}",
+ *     tags={"Events"},
+ *     summary="Create a new event",
+ *     security={{"Bearer":{}}},
+ *     operationId="updateEvent",
+ *  *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of event to update",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\RequestBody(
+ *         description="Event data to be created",
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="application/json",
+ *             @OA\Schema(
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="data",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="event",
+ *                         type="object",
+ *                         @OA\Property(
+ *                             property="event_title",
+ *                             type="string",
+ *                             description="Title of the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="game_id",
+ *                             type="integer",
+ *                             description="ID of the game"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="game_name",
+ *                             type="string",
+ *                             description="Name of the game"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="game_mode",
+ *                             type="string",
+ *                             description="Mode of the game"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="game_pic",
+ *                             type="string",
+ *                             description="Picture URL of the game",
+ *                             example="https://www.example.com/image.jpg"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="platform",
+ *                             type="string",
+ *                             description="Platform of the game"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="event_owner_id",
+ *                             type="integer",
+ *                             description="ID of the event owner"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="date_time_begin",
+ *                             type="string",
+ *                             format="date-time",
+ *                             description="Start date and time of the event",
+ *                             example="2025-12-31 23:59:59"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="date_time_end",
+ *                             type="string",
+ *                             format="date-time",
+ *                             description="End date and time of the event",
+ *                             example="2024-12-31 23:59:59"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="max_participants",
+ *                             type="integer",
+ *                             description="Maximum number of participants"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="privacy",
+ *                             type="public",
+ *                             description="Privacy setting of the event",
+ *                             enum={"hidden", "friends", "public", "followers"}
+ *                         )
+ *                     ),
+ *                     @OA\Property(
+ *                         property="event_requirements",
+ *                         type="object",
+ *                         @OA\Property(
+ *                             property="max_rank",
+ *                             type="string",
+ *                             description="Maximum rank for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="min_rank",
+ *                             type="string",
+ *                             description="Minimum rank for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="max_level",
+ *                             type="integer",
+ *                             description="Maximum level for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="min_level",
+ *                             type="integer",
+ *                             description="Minimum level for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="max_hours_played",
+ *                             type="integer",
+ *                             description="Maximum hours played for the event"
+ *                         ),
+ *                         @OA\Property(
+ *                             property="min_hours_played",
+ *                             type="integer",
+ *                             description="Minimum hours played for the event"
+ *                         )
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Event created successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad request"
+ *     )
+ * )
+ */
     public function updateEvent($id, Request $request) {
         $event = Event::find($request->id);
         $user = auth()->user();
@@ -374,6 +1074,38 @@ class EventController extends Controller
     }
 
 
+
+    /**
+ * @OA\Delete(
+ *     path="/api/event/delete/{id}",
+ *     tags={"Events"},
+ *     summary="Delete an event",
+ *     security={{"Bearer":{}}},
+ *     description="Delete an event by its id",
+ *     operationId="destroy",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of event to delete",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Event deleted successfully"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Event not found"
+ *     ),
+ * )
+ */
     public function destroy(Request $request)
     {
 
@@ -402,8 +1134,76 @@ class EventController extends Controller
         ], 200);
     }
 
-    public function addParticipant(Request $request)
-    {
+
+    /**
+ * @OA\Post(
+ *     path="/api/event/{id}/join",
+ *     tags={"Events"},
+ *     summary="Add auth user as participant to an event",
+ *     operationId="addParticipant",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the event to join",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Participant added successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="self",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="event",
+ *                         type="string"
+ *                     )
+ *                 )
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Event not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
+    public function addParticipant(Request $request) {
 
         $event = Event::find($request->id);
 
@@ -435,6 +1235,76 @@ class EventController extends Controller
         ], 200);
     }
 
+
+
+    /**
+ * @OA\Post(
+ *     path="/api/event/{id}/leave",
+ *     tags={"Events"},
+ *     summary="Remove auth user as participant from an event",
+ *     operationId="removeParticipant",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the event to leave",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Participant removed successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="message",
+ *                     type="string"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="Links",
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="self",
+ *                         type="string"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="event",
+ *                         type="string"
+ *                     )
+ *                 )
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Event not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function removeParticipant(Request $request)
     {
 
@@ -534,6 +1404,91 @@ class EventController extends Controller
         ]);
     }
 
+
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/events/search/{search}/{group}/{page}",
+ *     tags={"Events"},
+ *     summary="Search for events by title, owner name, platform, game name or game mode. Paginated.",
+ *     operationId="searchNEW",
+ *     @OA\Parameter(
+ *         name="search",
+ *         in="path",
+ *         description="Search query",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Parameter(
+ *         name="group",
+ *         in="path",
+ *         description="Group to search in ('followed' or 'friends')",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Parameter(
+ *         name="page",
+ *         in="path",
+ *         description="Page number to retrieve",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Search results retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *             ),
+ *             @OA\Property(
+ *                 property="meta",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="current_page",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_pages",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="total_events",
+ *                     type="integer"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="timestamp",
+ *                     type="string",
+ *                     format="date-time"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad Request"
+ *     ),
+ *     @OA\Response(
+ *         response=403,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Page not found"
+ *     ),
+ *     security={
+ *         {"Bearer": {}}
+ *     }
+ * )
+ */
     public function searchNEW($search, $group, Request $request) {
         $query = $request->search;
 

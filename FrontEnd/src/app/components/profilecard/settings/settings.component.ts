@@ -107,6 +107,7 @@ export class SettingsComponent implements OnInit {
         this.isLoadingNewEmail = false;
         this.alertService.showAlert('success', 'Email actualizado con éxito! 📨');
         this.currentEmail = email;
+        this.profileService.resendVerificationEmail().subscribe();
         const token = response.data.token.split('|')[1];
         this.showWrongPassword = false;
         this.showDuplicatedEmail = false;

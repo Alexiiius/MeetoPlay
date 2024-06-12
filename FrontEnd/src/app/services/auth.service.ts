@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { backAPIUrl } from '../config';
 import { Router } from '@angular/router';
 import { LoginResponse, RegisterResponse } from '../interfaces/back-end-api-response';
@@ -21,7 +21,11 @@ export class AuthService {
 
   public currentUserSafe: UserData | null;
 
-  constructor(private http: HttpClient, private router: Router, private profileService: ProfileService) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private profileService: ProfileService) {
+
     this.profileService.profileAvatarUpdated.subscribe(newAvatar => {
       let userData = JSON.parse(sessionStorage.getItem('user_data') || '{}');
       userData.avatar = newAvatar;
@@ -164,7 +168,10 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.post(this.backAPIUrl + '/logout', '').pipe(
+    return this.profileService.setUserStatus('offline').pipe(
+      switchMap(() => {
+        return this.http.post(this.backAPIUrl + '/logout', '');
+      }),
       tap(() => {
         localStorage.removeItem('access_token');
         sessionStorage.removeItem('access_token');

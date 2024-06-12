@@ -3,38 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
 * {
   box-sizing: border-box;
   margin: 0;
-}
-
-/* Estilo para la barra de desplazamiento */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Estilo para la pista de la barra de desplazamiento */
-::-webkit-scrollbar-track {
-  background: #262626;
-  border-radius: 10px;
-}
-
-/* Estilo para la manija de la barra de desplazamiento */
-::-webkit-scrollbar-thumb {
-  background: #404040;
-  border-radius: 10px;
-}
-
-/* Estilo para la manija de la barra de desplazamiento al pasar el mouse */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-/* Estilo para la manija de la barra de desplazamiento cuando no se está haciendo hover */
-::-webkit-scrollbar-thumb {
-  background: #888;
-  width: 6px;
 }
 
 html,

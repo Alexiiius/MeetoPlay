@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { UserData } from '../../interfaces/user-data';
@@ -12,6 +12,8 @@ import { UserReduceFollowing } from '../../interfaces/user-reduce-following';
 import { ProfileService } from '../../services/profile.service';
 import { GameStatFormComponent } from './game-stat-form/game-stat-form.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { UserReduced } from '../../interfaces/user-reduced';
+import { ChatsService } from '../../services/chats.service';
 
 @Component({
   selector: 'app-profile',
@@ -53,7 +55,10 @@ export class ProfileComponent {
     private route: ActivatedRoute,
     private userService: UserService,
     private router: Router,
-    private profileService: ProfileService) { }
+    private profileService: ProfileService,
+    private chatService: ChatsService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
     ngOnInit() {
       this.route.params.subscribe(params => {
@@ -74,6 +79,7 @@ export class ProfileComponent {
             this.isLoggedUser = isLoggedUser;
             this.isFollowing = isFollowing;
             this.isLoading = false;
+            this.cdr.detectChanges();
           });
         });
       });
@@ -103,6 +109,19 @@ export class ProfileComponent {
         }
       });
     }
+
+  chatButtonClicked() {
+    const userReduced: UserReduced = {
+      id: this.user.id,
+      name: this.user.name,
+      tag: this.user.tag,
+      full_tag: `${this.user.name}#${this.user.tag}`,
+      avatar: this.user.avatar,
+      status: this.user.status
+    };
+
+    this.chatService.newChatCreated.next(userReduced);
+  }
 
   openEditProfileModal() {
     this.editProfileComponent.openEditProfileModal();

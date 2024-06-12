@@ -1,0 +1,85 @@
+<div class="flex flex-col h-full relative">
+
+  <div class="bg-gradient-to-r from-violet-500 to-sky-400 rounded-box p-0.5">
+    <div class="py-1.5 px-0.5 bg-base-100 rounded-box">
+      <div #publicMessagesContainer id="publicMessagesContainer"
+        class="w-full h-full max-h-[310px] 2xl:max-h-[580px] flex flex-col gap-2 flex-grow overflow-y-auto p-2 bg-base-100 rounded-box">
+
+        @if(lastMessagesLoading) {
+          @for (item of items; track $index) {
+            <div class="w-full px-2 py-1 flex flex-col gap-2 justify-center max-w-[220px] 2xl:max-w-[390px]">
+              <header class="2xl:text-base text-sm font-medium skeleton h-3 w-12"></header>
+              <p class="2xl:text-base text-sm font-normal break-words skeleton h-2.5 w-24"></p>
+            </div>
+            @if (!$last) {
+            <div class="divider m-0"></div>
+            }
+          }
+        } @else {
+          @for (message of lastMessages; track message.id) {
+            <div class="w-full px-2 py-1 flex flex-col justify-center max-w-[220px] 2xl:max-w-[390px]">
+              <header class="flex gap-2 items-end">
+                <span class="2xl:text-base text-sm font-medium {{message.color}}">
+                  @if (message.from_user_id === logedUser.id) {
+                    Tú
+                    } @else {
+                    {{message.from_user_name}}
+                    }
+                </span>
+                <span class="2xl:text-base text-xs font-light text-neutral/40">
+                  {{message.created_at | date: 'dd/MM HH:mm'}}
+                </span>
+              </header>
+              <p class="2xl:text-base text-sm font-normal break-words">{{message.text}}</p>
+            </div>
+            @if (!$last) {
+            <div class="divider m-0"></div>
+            }
+            }
+
+            @for (message of LiveMessages; track $index) {
+            @if ($first) {
+            <div class="divider m-0"></div>
+            }
+            <div class="w-full px-2 py-1 flex flex-col justify-center max-w-[220px] 2xl:max-w-[390px]">
+              <header class="flex gap-2 items-end">
+                <span class="2xl:text-base text-sm font-medium {{message.color}}">
+                  @if (message.from_user_id === logedUser.id) {
+                  Tú
+                  } @else {
+                  {{message.from_user_name}}
+                  }
+                </span>
+                <span class="2xl:text-base text-xs font-light text-neutral/40">
+                  {{message.created_at | date: 'dd/MM HH:mm'}}
+                </span>
+              </header>
+              <p class="2xl:text-base text-sm font-normal break-words">{{message.text}}</p>
+            </div>
+            @if (!$last) {
+            <div class="divider m-0"></div>
+            }
+            }
+        }
+
+      </div>
+    </div>
+  </div>
+
+  <label
+    class="input h-8 min-h-8 px-2 min-w-0 bg-neutral w-full mt-3 rounded-box flex items-center gap-0.5 text-base-100">
+    <input type="text" class="w-full ml-1 min-w-0" placeholder="Escribe un mensaje..." [(ngModel)]="message"
+      (keydown.enter)="sendMessage()" maxlength="255"/>
+    <button class="btn btn-ghost btn-sm btn-circle" (click)="toggleEmojis()">
+      <i class='bx bx-smile bx-sm'></i>
+    </button>
+    <button class="btn btn-ghost btn-sm btn-circle" (click)="sendMessage()">
+      <i class='bx bx-send bx-sm'></i>
+    </button>
+  </label>
+
+</div>
+
+@if (showEmojis) {
+<emoji-mart class="fixed top-28 right-80 2xl:right-[58px] 2xl:top-[314px] mr-3 z-50" set="twitter" (emojiClick)="addEmoji($event)"></emoji-mart>
+}

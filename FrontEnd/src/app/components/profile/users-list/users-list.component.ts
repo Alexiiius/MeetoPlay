@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
 import { forkJoin } from 'rxjs';
 import { UserReduceFollowing } from '../../../interfaces/user-reduce-following';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { UserReduced } from '../../../interfaces/user-reduced';
+import { ChatsService } from '../../../services/chats.service';
 
 @Component({
   selector: 'app-users-list',
@@ -35,7 +37,10 @@ export class UsersListComponent {
 
   @Output() userFollowed = new EventEmitter<any>();
 
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService,
+    private chatService: ChatsService,
+    private router: Router) { }
 
   openModal(list: string, userList: UserReduceFollowing[]) {
     this.modalDialog.nativeElement.showModal();
@@ -85,5 +90,18 @@ export class UsersListComponent {
 
   isLogedUser(userId: number): boolean {
     return this.logedUserId === userId;
+  }
+
+  chatButtonClicked(user: UserReduceFollowing) {
+    const userReduced: UserReduced = {
+      id: user.id,
+      name: user.name,
+      tag: user.tag,
+      full_tag: `${user.name}#${user.tag}`,
+      avatar: user.avatar,
+      status: user.status
+    };
+
+    this.chatService.newChatCreated.next(userReduced);
   }
 }

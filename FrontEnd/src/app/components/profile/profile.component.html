@@ -80,11 +80,11 @@
             <h1 class="text-2xl font-normal w-full text-nowrap">{{user.name}}</h1>
             <span class="text-neutral/60 font-light text-sm">{{user.name}}#{{user.tag}}</span>
             @if (isLoggedUser) {
-              <button (click)="openEditProfileModal()"
-                class="flex items-center p-1 px-2 hover:bg-base-300 gap-2 rounded-box -ml-2">
-                <i class='bx bxs-edit text-secondary'></i>
-                <span class="font-base-300 font-normal text-sm">Editar perfil</span>
-              </button>
+            <button (click)="openEditProfileModal()"
+              class="flex items-center p-1 px-2 hover:bg-base-300 gap-2 rounded-box -ml-2">
+              <i class='bx bxs-edit text-secondary'></i>
+              <span class="font-base-300 font-normal text-sm">Editar perfil</span>
+            </button>
             }
           </div>
         </div>
@@ -150,7 +150,7 @@
               <span class="group-hover:text-neutral">Dejar de seguir</span>
             </button>
             }
-            <button class="group btn btn-outline btn-secondary font-normal btn-sm">
+            <button class="group btn btn-outline btn-secondary font-normal btn-sm" (click)="chatButtonClicked()">
               <i class='bx bx-chat text-secondary bx-sm group-hover:text-base-100'></i>
               <span class="group-hover:text-neutral">Chat</span>
             </button>
@@ -164,13 +164,14 @@
   <!-- Bio -->
   <div class="w-full dropdown dropdown-hover">
     <div #bioDiv tabindex="0" role="button"
-      class="m-1 h-6 2xl:h-20 overflow-hidden text-ellipsis whitespace-nowrap font-normal"
+      class="m-1 h-6 2xl:h-20 overflow-hidden text-ellipsis whitespace-nowrap 2xl:whitespace-normal font-normal break-all"
       [ngClass]="{'pointer-events-none': !isOverflow(bioDiv)}">
       {{user.bio}}
     </div>
     @if (isOverflow(bioDiv)) {
-    <div tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-full border-neutral">
-      {{user.bio}}
+    <div tabindex="0"
+      class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-full border-neutral">
+      <span class="break-all">{{user.bio}}</span>
     </div>
     }
   </div>
@@ -186,7 +187,7 @@
         }
       </div>
 
-      <button *ngIf="checkRoute()"
+      <button *ngIf="checkRoute() && isLoggedUser"
         class="btn btn-primary text-neutral min-h-0 h-[40px] w-[40px] btn-square flex items-center justify-center"
         (click)="openGameStatFormModal()">
         <i class='bx bx-plus bx-sm'></i>
@@ -209,5 +210,5 @@
 
   <app-game-stat-form />
 
-  <app-edit-profile [user]="user"/>
+  <app-edit-profile [user]="user" />
 </div>

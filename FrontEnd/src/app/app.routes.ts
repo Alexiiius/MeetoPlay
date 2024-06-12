@@ -3,12 +3,14 @@ import { Routes } from '@angular/router';
 import { EventsFeedComponent } from './components/events-feed/events.component';
 import { LoginRegisterComponent } from './components/login-register/login-register.component';
 import { MainComponent } from './components/main/main.component';
-import { authGuard, OwnProfileGuard } from './auth.guard';
+import { authGuard, chatGuard, OwnProfileGuard } from './auth.guard';
 import { ProfileComponent } from './components/profile/profile.component';
 import { GameStatsComponent } from './components/profile/game-stats/game-stats.component';
 import { MyEventsComponent } from './components/profile/my-events/my-events.component';
 import { ParticipatingEventsComponent } from './components/profile/participating-events/participating-events.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { ChatComponent } from './components/chat/chat.component';
+
 
 export const routes: Routes = [
   {
@@ -25,6 +27,7 @@ export const routes: Routes = [
           { path: '**', redirectTo: 'gameStats' }
         ]
       },
+      { path: 'chat-with/:usernamefulltag', title: 'Meetoplay | Chat', component: ChatComponent, canActivate: [authGuard, chatGuard] }
     ]
   },
   { path: 'welcome', title: 'Meetoplay | Welcome', component: LandingPageComponent},

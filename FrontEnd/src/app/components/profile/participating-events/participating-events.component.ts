@@ -3,6 +3,7 @@ import { EventsService } from '../../../services/events.service';
 import { Event } from '../../../models/event';
 import { EventCardComponent } from '../../events-feed/event-card/event-card.component';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-participating-events',
@@ -10,6 +11,7 @@ import { CommonModule } from '@angular/common';
   imports: [
     EventCardComponent,
     CommonModule,
+    RouterLink
   ],
   templateUrl: './participating-events.component.html',
   styleUrl: './participating-events.component.css'

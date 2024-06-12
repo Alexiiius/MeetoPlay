@@ -3,6 +3,10 @@
   <div
     class="modal-box w-8/12 max-w-5xl bg-opacity-60 bg-clip-padding backdrop-filter backdrop-blur-lg relative rounded-box p-6 bg-base-200 border border-primary/50 scrollbar-hidde flex flex-col">
 
+    @if (isFormSubmmiting) {
+      <div class="w-full h-full rounded-box bg-base-100/20 z-20 absolute top-0 left-0"></div>
+    }
+
     <header class="text-base">
       @if (isUpdating) {
       <span>Editando GameStat </span>
@@ -27,14 +31,14 @@
             <span class="label-text">Nickname</span>
           </div>
           <input type="text" formControlName="nickname" class="input input-bordered" placeholder="Escribe aquí tu apodo"
-            [ngClass]="{'input-error': isInvalid('nickname')}">
+            [ngClass]="{'input-error': isInvalid('nickname')}" maxlength="50">
         </label>
 
         <label class="form-control w-full">
           <div class="label">
             <span class="label-text">Nivel</span>
           </div>
-          <input type="number" min="0" formControlName="level" class="input input-bordered"
+          <input type="text" maxlength="30" formControlName="level" class="input input-bordered"
             placeholder="Nivel de tu cuenta" [ngClass]="{'input-error': isInvalid('level')}">
         </label>
 

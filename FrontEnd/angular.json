@@ -21,7 +21,8 @@
             "assets": ["src/favicon.svg", "src/assets"],
             "styles": [
               "src/styles.css",
-              "node_modules/boxicons/css/boxicons.min.css"
+              "node_modules/boxicons/css/boxicons.min.css",
+              "node_modules/@ctrl/ngx-emoji-mart/picker.css"
             ],
             "scripts": []
           },
@@ -31,12 +32,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "8kb"
                 }
               ],
               "outputHashing": "all"

@@ -34,6 +34,10 @@ class ActiveEvents extends Component
     $occupancyPercentages = $this->events->map(function ($event) {
       $currentOccupancy = $event->participants->count();
       $maxParticipants = $event->max_participants;
+
+      if ($maxParticipants == 0) {
+        return 0;
+      }
       return ($currentOccupancy / $maxParticipants) * 100;
     });
 

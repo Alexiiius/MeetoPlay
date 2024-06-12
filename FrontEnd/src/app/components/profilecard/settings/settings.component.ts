@@ -107,20 +107,16 @@ export class SettingsComponent implements OnInit {
         this.isLoadingNewEmail = false;
         this.alertService.showAlert('success', 'Email actualizado con éxito! 📨');
         this.currentEmail = email;
-        this.profileService.resendVerificationEmail().subscribe();
-        const token = response.data.token.split('|')[1];
+
         this.showWrongPassword = false;
         this.showDuplicatedEmail = false;
         this.newEmailForm.reset();
 
-        //Comprueba si el token está guardado en local o session Storage y lo sustituye
-        if (localStorage.getItem('access_token')) {
-          localStorage.setItem('access_token', token);
-        }
+        const token = response.data.token.split('|')[1];
 
-        if (sessionStorage.getItem('access_token')) {
-          sessionStorage.setItem('access_token', token);
-        }
+        this.authService.resetToken(token).then(() => {
+          this.profileService.resendVerificationEmail().subscribe();
+      });
       },
       error => {
         console.log(error);

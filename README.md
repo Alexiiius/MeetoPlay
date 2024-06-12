@@ -1,15 +1,18 @@
 # MeetoPlay
 
-DAW 2024 course final project
+DAW 2024 
 
-README still under construction...
+![image](https://github.com/Alexiiius/MeetoPlay/assets/26854412/9c9735da-9299-4eec-8508-618650afb4b0)
+
+A web app where you can chat with others, create or join game events and more!
+
 
 ## Contents
 
 - [Developers](#developers)
 - [Draft](#draft)
-- [Versions](#Versions)
-- [Bibliography](#Bibliography)
+- [Versions](#versions)
+- [Bibliography](#bibliography)
 
 ## Developers
 
@@ -148,6 +151,11 @@ README still under construction...
   - [Render Exceptios](https://laravel.com/docs/11.x/errors#renderable-exceptions)
   - [Middleware](https://laravel.com/docs/11.x/middleware)
   - [Unauthorized request JSON response](https://laracasts.com/discuss/channels/laravel/laravel-11-api-unauthorized-requests-redirects-to-login-page?page=1&replyId=930192)
+  - [Console Kernel](https://rezakhademix.medium.com/laravel-11-no-http-kernel-no-casts-no-console-kernel-721c62adb6ef)
+  - [Laravel Reverb](https://laravel.com/docs/11.x/reverb)
+  - [Laravel Pulse](https://laravel.com/docs/11.x/pulse)
+  - [Supervisor Config](https://laravel.com/docs/11.x/queues#supervisor-configuration)
+  - [L5 Swagger IO](https://github.com/DarkaOnLine/L5-Swagger?tab=readme-ov-file)
 
 ## Checkpoint Video
   [Video🎬](https://drive.google.com/file/d/1F81V0F58sIDZHxnyY5XTL2U2HFycFt-Y/view?usp=sharing)

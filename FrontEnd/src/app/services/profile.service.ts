@@ -84,7 +84,7 @@ export class ProfileService {
   }
 
   resendVerificationEmail(): Observable<any> {
-    return this.http.get(`${this.backAPIUrl}/user/send/email-verification'`);
+    return this.http.get(`${this.backAPIUrl}/user/send/email-verification`);
   }
 }
 

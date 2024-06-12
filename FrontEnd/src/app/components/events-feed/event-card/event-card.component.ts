@@ -56,6 +56,10 @@ export class EventCardComponent implements OnInit {
     return now < this.eventInscriptionEndTime;
   }
 
+  isEventFull(){
+    return this.event.participants.length >= this.event.max_participants;
+  }
+
   isActivatedRouteInChildRoute(routePath: string): boolean {
     const urlSegments = this.router.url.split('/').filter(segment => segment);
     const routePathSegments = routePath.split('/').filter(segment => segment);
@@ -81,6 +85,8 @@ export class EventCardComponent implements OnInit {
   @ViewChild('friendsParticipatingBadge') friendsParticipatingBadge: ElementRef;
   @ViewChild('inscriptionCloseBadge') inscriptionCloseBadge: ElementRef;
   @ViewChild('inscriptionOpenBadge') inscriptionOpenBadge: ElementRef;
+  @ViewChild('eventFullBadge') eventFullBadge: ElementRef;
+
 
   hideParticipatingBadge() {
     this.participatingBadge.nativeElement.style.display = 'none';
@@ -96,6 +102,10 @@ export class EventCardComponent implements OnInit {
 
   hideInscriptionOpenBadge() {
     this.inscriptionOpenBadge.nativeElement.style.display = 'none';
+  }
+
+  hideEventFullBadge() {
+    this.eventFullBadge.nativeElement.style.display = 'none';
   }
 
   noRequirments() {

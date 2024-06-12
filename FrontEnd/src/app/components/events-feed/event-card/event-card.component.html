@@ -51,8 +51,8 @@
         <div class="flex items-end justify-end gap-x-3">
           <div class="flex flex-col gap-1 items-end">
             @if (isJoined) {
-            <div #participatingBadge class="badge badge-success gap-2" (click)="hideParticipatingBadge()">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            <div #participatingBadge class="badge badge-success gap-2" >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" (click)="hideParticipatingBadge()"
                 class="inline-block w-4 h-4 stroke-current cursor-pointer">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
@@ -60,8 +60,8 @@
             </div>
             }
             @if (friendsParticipating) {
-            <div #friendsParticipatingBadge class="badge badge-accent gap-2" (click)="hideFriendsParticipatingBadge()">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            <div #friendsParticipatingBadge class="badge badge-accent gap-2" >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" (click)="hideFriendsParticipatingBadge()"
                 class="inline-block w-4 h-4 stroke-current cursor-pointer">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
@@ -69,20 +69,29 @@
             </div>
             }
             @if(!isEventInsciptionOpen()) {
-              <div #inscriptionCloseBadge class="badge badge-error gap-2" (click)="hideInscriptionCloseBadge()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              <div #inscriptionCloseBadge class="badge badge-error gap-2" >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" (click)="hideInscriptionCloseBadge()"
                   class="inline-block w-4 h-4 stroke-current cursor-pointer">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
                 Incripción cerrada 🔒
               </div>
-            } @else {
-              <div #inscriptionOpenBadge class="badge badge-primary gap-2" (click)="hideInscriptionOpenBadge()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            } @else if(!isEventFull()) {
+              <div #inscriptionOpenBadge class="badge badge-primary gap-2" >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" (click)="hideInscriptionOpenBadge()"
                   class="inline-block w-4 h-4 stroke-current cursor-pointer">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
                 Incripción abierta 🔥
+              </div>
+            }
+            @if(isEventFull()) {
+              <div #eventFullBadge class="badge badge-error gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" (click)="hideEventFullBadge()"
+                  class="inline-block w-4 h-4 stroke-current cursor-pointer">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Evento completo 🔒
               </div>
             }
           </div>

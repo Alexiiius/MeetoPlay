@@ -6,7 +6,21 @@
   grid-row-gap: 50px;
   padding-inline: 20px;
   padding-block: 40px;
-  background: linear-gradient(to right, $secondary, $primary);
+  background: linear-gradient(300deg, #38bdf8, #8b5cf6, #00ffff);
+  background-size: 180% 180%;
+  animation: gradient-animation 18s ease infinite;
+
+  @keyframes gradient-animation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 
   &__navbar {
     grid-column-start: 2;
@@ -132,7 +146,7 @@
         padding-bottom: 20px;
         border-bottom: 1px solid $neutral;
 
-        &__svg{
+        &__svg {
           width: 55px;
           height: 46px;
         }
@@ -156,12 +170,11 @@
           }
         }
       }
-
-
     }
 
     @media (max-width: 900px) {
-      &__links, &__btncontainer {
+      &__links,
+      &__btncontainer {
         display: none;
       }
 
@@ -228,7 +241,7 @@
 }
 
 @media (max-width: 900px) {
-  .layout__header{
+  .layout__header {
     grid-row-gap: 25px;
   }
 }

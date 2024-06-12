@@ -15,6 +15,11 @@ import { RouterLink } from '@angular/router';
 export class LandingPageComponent implements OnInit, OnDestroy{
   isSideMenuOpen: boolean = false;
 
+  whatAudio = new Audio();
+  whenAudio = new Audio();
+  whoAudio = new Audio();
+  whyAudio = new Audio();
+
   constructor(
     private renderer: Renderer2,
     private el: ElementRef,
@@ -60,4 +65,28 @@ export class LandingPageComponent implements OnInit, OnDestroy{
     }
   };
 
+  // Audios
+  playWhatAudio() {
+    this.whatAudio.src = 'assets/landing/sounds/what.mp3';
+    this.whatAudio.load();
+    this.whatAudio.play();
+  }
+
+  playWhenAudio() {
+    this.whenAudio.src = 'assets/landing/sounds/when.mp3';
+    this.whenAudio.load();
+    this.whenAudio.play();
+  }
+
+  playWhoAudio() {
+    this.whoAudio.src = 'assets/landing/sounds/who.mp3';
+    this.whoAudio.load();
+    this.whoAudio.play();
+  }
+
+  playWhyAudio() {
+    this.whyAudio.src = 'assets/landing/sounds/why.mp3';
+    this.whyAudio.load();
+    this.whyAudio.play();
+  }
 }

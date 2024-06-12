@@ -38,3 +38,6 @@ TODO
 - [Laravel Pulse](https://laravel.com/docs/11.x/pulse)
 - [Supervisor Config](https://laravel.com/docs/11.x/queues#supervisor-configuration)
 - [L5 Swagger IO](https://github.com/DarkaOnLine/L5-Swagger?tab=readme-ov-file)
+- [Websocket SSL Configuration issues](https://github.com/beyondcode/laravel-websockets/issues/1143)
+- [Websocket Configuration issues](https://github.com/laravel/reverb/issues/177)
+- [Laravel Reeverb Websocket issues](https://github.com/laravel/reverb/issues/107)

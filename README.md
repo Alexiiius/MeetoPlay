@@ -8,6 +8,8 @@ README still under construction...
 
 - [Developers](#developers)
 - [Draft](#draft)
+- [Versions](#Versions)
+- [Bibliography](#Bibliography)
 
 ## Developers
 

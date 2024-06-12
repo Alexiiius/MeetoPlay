@@ -16,7 +16,7 @@ export const routes: Routes = [
   {
     path: '', component: MainComponent, canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'welcome', pathMatch: 'full' },
+      { path: '', redirectTo: 'main', pathMatch: 'full' },
       { path: 'main', title: 'Meetoplay | Main', component: EventsFeedComponent , canActivate: [authGuard]},
       {
         path: 'profile/:id', title: 'Meetoplay | Profile', component: ProfileComponent, canActivate: [authGuard], children: [

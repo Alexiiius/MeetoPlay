@@ -30,6 +30,8 @@ A web app where you can chat with others, create or join game events and more!
   - [Backend](https://meetoplay.es)
   - [Backend API Documentation Swagger](https://meetoplay.es/api/documentation)
   - [API](https://meetoplay.net)
+  - [Landing Page](https://www.meetoplay.eu/welcome)
+  - [Video](https://youtu.be/EVNFted71kI)
   - Links may be down. Ask us if you want to locally up the project!
 
 ## Usage
